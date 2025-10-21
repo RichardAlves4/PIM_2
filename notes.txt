@@ -1,7 +1,17 @@
 ##bibliotecas##
 
+pip install bcrypt
 
 ##Observações##
 
+- para iniciar o código dê play no arquivo main.py
 
 ##Contas de teste#
+
+ALUNO
+email: aluno123@gmail.com
+senha: aluno123
+
+PROFESSOR
+email: professor123@gmail.com
+senha: professor123

@@ -1,0 +1,16 @@
+{
+    "alunos": {
+        "aluno123@gmail.com": {
+            "nome": "Aluno Bomba",
+            "idade": 24,
+            "senha": "$2b$12$CaMzN/V7E/j7djO31Uu9WO.JME259CBp59KgvMZ52NvUdNIICZ7AW"
+        }
+    },
+    "professores": {
+        "professor123@gmail.com": {
+            "nome": "Renatinho",
+            "idade": 69,
+            "senha": "$2b$12$76kWC/ze/PIjMLLqzt7ioeAtA5z3Y5kq2vAH.ERB6l1vMECST1WDu"
+        }
+    }
+}
