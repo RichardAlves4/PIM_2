@@ -1,4 +1,4 @@
-from .utils import criptografar_senha, verificar_senha
+import infra
 import banco
 import re
 
@@ -77,7 +77,7 @@ def cadastro_aluno():
                 print("As senhas são diferentes. Tente novamente")
                 continue
 
-            senha_criptografada = criptografar_senha(senha) # Criptografa a senha
+            senha_criptografada = infra.criptografar_senha(senha) # Criptografa a senha
             banco.usuarios_alunos[email] = {
                 "nome": nome, 
                 "idade": idade, 
@@ -98,7 +98,7 @@ def login_aluno():
     # Verifica se o usuário existe
     if email in banco.usuarios_alunos:
         # RF04 - Verificação segura de senha
-        if verificar_senha(senha, banco.usuarios_alunos[email]["senha"]):# Verifica se a senha está correta
+        if infra.verificar_senha(senha, banco.usuarios_alunos[email]["senha"]):# Verifica se a senha está correta
             print(f"Bem-vindo, {banco.usuarios_alunos[email]['nome']}!")
             return email            
         

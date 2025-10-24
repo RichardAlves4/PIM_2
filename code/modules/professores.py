@@ -1,4 +1,4 @@
-from .utils import criptografar_senha, verificar_senha
+import infra
 import banco
 import re
 
@@ -60,7 +60,7 @@ def cadastro_professor():
                 continue
         
             # Criptografa a senha
-            senha_criptografada = criptografar_senha(senha)
+            senha_criptografada = infra.criptografar_senha(senha)
             banco.usuarios_professores[email] = {
                 "nome": nome,
                 "idade": idade,
@@ -81,7 +81,7 @@ def login_professor():
     # Verifica se o usuário existe
     if email in banco.usuarios_professores:
         # RF04 - Verificação segura de senha
-        if verificar_senha(senha, banco.usuarios_professores[email]["senha"]):# Verifica se a senha está correta
+        if infra.verificar_senha(senha, banco.usuarios_professores[email]["senha"]):# Verifica se a senha está correta
             print(f"Bem-vindo, {banco.usuarios_professores[email]['nome']}!")
             return email
         
