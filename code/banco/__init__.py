@@ -1,1 +1,1 @@
-from .db import carregar_usuarios, salvar_usuarios, editar_aluno, editar_professor, excluir_aluno, excluir_professor, usuarios_alunos, usuarios_professores
+from .db import carregar_usuarios, salvar_usuarios, update_user, delete_user, users_db
