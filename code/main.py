@@ -40,6 +40,9 @@ def menu(email):
         if options == "E":
             update_user(email)
         elif options == "D":
+            response = delete_user(email)
+            if response:
+                main()
             delete_user(email)
         elif options == "X":
             print("Desconectar!")  # Desconecta o aluno

@@ -1,81 +1,66 @@
-import infra
+import os
+import subprocess 
+import json
 import banco
-import re
+import infra
+
+C_exe = os.path.join(os.path.dirname(__file__), "..", "C", "cadastro.exe") 
+TEMP_FILE = "temp_cadastro.json" 
 
 def cadastro():
-    print("\nCADASTRO\n")
+    print("\n--- INICIANDO CADASTRO ---")
 
-    while True:
-
-        while True:
-            search_role = str(input("\nVocê é um estudante ou professor ?\nDigite:\n\n\"E\" para estudante\n\"P\" para professor\n")).upper()
-
-            if search_role not in ["E","P"]:
-                print("\nOpção inválida. Tente novamente.\n")
-                continue
-
-            if search_role == "E":
-                role = "USER"
-                break
-            elif search_role == "P":
-                role = "INSTRUCTOR"
-                break
-
-        while True:
-            nome = str(input("Informe seu nome: ")).strip().title()
-                # RF03 - Verifica se o nome é composto por apenas letras
-            if not re.fullmatch(r"[A-Za-zÀ-ÿ ]+", nome):
-                print("Nome Inválido. Use apenas letras")
-                continue
-            else:
-                break
+    try:
+        subprocess.run([C_exe], check=True, cwd=os.path.dirname(C_exe)) 
         
-        # Coleta o email do aluno para o cadastro
-        while True:
-            email = input("Informe seu melhor email: ").strip().lower()
-
-            # RF03 - Verifica se o e-mail é válido
-            if not email.endswith("@gmail.com"):
-                print("Email inválido. Use @gmail.com")
-                continue
-            elif email in banco.users_db: # Verifica se o e-mail já está cadastrado
-                print("Usuário já cadastrado")
-                continue
-            else: 
-                break
-        
-        # RF02 - Valida e coleta a idade do aluno
-        while True:
-            idade = int(input("Informe sua idade: ").strip())
-            if idade < 7:
-                print("\nIdade mínima: 7 anos\n")
-                continue
-            elif idade > 100:
-                print("\nIdade inválida! Tente novamente.\n")
-                continue
-            else:
-                break
-        
-        while True:
-            # RF04 - Coleta e verifica a senha
-            senha = input("Informe uma senha forte: ").strip()
-            repet_senha = input("Repita a senha: ").strip()
-
-            # Verifica se as senhas coincidem
-            if senha != repet_senha:
-                print("As senhas são diferentes. Tente novamente")
-                continue
-
-            senha_criptografada = infra.criptografar_senha(senha) # Criptografa a senha
-            break
-
-        banco.users_db[email] = {
-            "nome": nome, 
-            "idade": idade, 
-            "senha": senha_criptografada,
-            "role": role
-            }
-
-        banco.salvar_usuarios() # RF12 - Salva os dados no arquivo
-        print("Cadastro realizado com sucesso!")
+    except FileNotFoundError:
+        print(f"\n ERRO: Executável C não encontrado em {C_exe}. Verifique o caminho e a compilação.")
         return
+    except subprocess.CalledProcessError:
+        print("\n ERRO: O programa C falhou. Verifique se o C gerou o arquivo JSON.")
+        return
+    
+    # Define o caminho completo do arquivo temporário
+    caminho_temp_file = os.path.join(os.path.dirname(C_exe), TEMP_FILE)
+
+    # 2. LÊ OS DADOS DO ARQUIVO TEMPORÁRIO
+    try:
+        with open(caminho_temp_file, "r") as f:
+            dados_novos = json.load(f)
+    except Exception as e:
+        print(f"\n ERRO: Falha ao ler ou decodificar o arquivo de dados do C. {e}")
+        return
+    finally:
+        # Garante que o arquivo temporário seja removido após a leitura (limpeza)
+        if os.path.exists(caminho_temp_file):
+             os.remove(caminho_temp_file)
+
+    # 3. VALIDAÇÃO DE EMAIL DUPLICADO E PROCESSAMENTO FINAL (Python)
+    email = dados_novos.get('email', '').strip().lower()
+    senha_simples = dados_novos.get('senha_simples', '') 
+
+    # Validação de e-mail duplicado (crucial, pois o C não tem acesso ao banco)
+    if email in banco.users_db: 
+        print(f"\n ERRO: E-mail {email} já cadastrado.")
+        return
+    
+    # Converte a senha (em Python, usando bcrypt/infra)
+    try:
+        senha_criptografada = infra.criptografar_senha(senha_simples)
+    except Exception as e:
+        print(f"\n ERRO: Falha na criptografia da senha. {e}")
+        return
+
+    # 4. SALVA NO BANCO DE DADOS PYTHON
+    idade = int(dados_novos.get('idade', 0)) 
+    
+    banco.users_db[email] = {
+        "nome": dados_novos.get('nome'), 
+        "idade": idade, 
+        "senha": senha_criptografada,
+        "role": dados_novos.get('role')
+    }
+
+    banco.salvar_usuarios() 
+    print("\n Cadastro realizado com sucesso e persistido no banco de dados Python!")
+    return
