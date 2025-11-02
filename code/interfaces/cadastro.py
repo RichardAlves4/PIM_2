@@ -1,13 +1,13 @@
 import sys
 import os
 
-path_code = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+path_code = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 if path_code not in sys.path:
     sys.path.append(path_code)
 
-import tkinter as tk
 from tkinter import *
+import tkinter as tk
 import customtkinter as ctk
 import subprocess 
 import json
@@ -15,7 +15,7 @@ import infra
 from banco import db as banco_db
 
 # --- FUNÇÕES DE CONTROLE (Sem Alterações) ---
-C_exe = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "C", "cadastro.exe")
+C_exe = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "C", "cadastro.exe")
 TEMP_FILE = "temp_cadastro.json"
 
 # A função 'executar_cadastro()' permanece exatamente a mesma,
