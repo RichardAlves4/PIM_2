@@ -3,132 +3,81 @@
 #include <string.h>
 #include <ctype.h>
 #include <locale.h>
-#include <wctype.h>
 
+// Definições e funções de validação omitidas para brevidade, mas devem ser mantidas
 #define TEMP_FILE "temp_cadastro.json"
 #define MAX_STR_LEN 100
 
 int is_valid_name(const char *name);
 int is_valid_email_format(const char *email);
 
-int main() {
+// O executável C agora espera 5 argumentos: [1] role, [2] nome, [3] email, [4] idade, [5] senha
+int main(int argc, char *argv[]) {
+
+    // 1. Verifica se todos os argumentos foram passados (5 argumentos + nome do programa = 6)
+    if (argc != 6) {
+        // Envia uma mensagem de erro para a saída de erro padrão (stderr)
+        fprintf(stderr, "ERRO: Numero incorreto de argumentos. Esperado: <role> <nome> <email> <idade> <senha>\n");
+        return 1; // Retorna código de erro
+    }
 
     setlocale(LC_ALL, "Portuguese");
 
-    char nome[MAX_STR_LEN], email[MAX_STR_LEN], role_input[3], role_final[15];
-    char senha1[MAX_STR_LEN], senha2[MAX_STR_LEN];
-    int idade = 0;
-    int success = 0;
+    // 2. Extrai os dados dos argumentos
+    char *role_final = argv[1];
+    char *nome_original = argv[2];
+    char *email = argv[3];
+    int idade = atoi(argv[4]); // Converte string para inteiro
+    char *senha = argv[5];
 
-    printf("\nMÓDULO DE CADASTRO EXTERNO (C) \n");
+    char nome_formatado[MAX_STR_LEN];
+    strcpy(nome_formatado, nome_original);
 
-    while (1) {
-        printf("\nVocê é um estudante ou professor?\nDigite:\n\"E\" para estudante\n\"P\" para professor\n> ");
+    // 3. Executa as validações do C
 
-        if (scanf("%2s", role_input) != 1) {
-            int c; while ((c = getchar()) != '\n' && c != EOF);
-            printf("\nEntrada inválida. Tente novamente.\n");
-            continue;
-        }
-
-        int c; while ((c = getchar()) != '\n' && c != EOF);
-
-        if (role_input[0] == 'E' || role_input[0] == 'e') {
-            strcpy(role_final, "USER");
-            break;
-        } else if (role_input[0] == 'P' || role_input[0] == 'p') {
-            strcpy(role_final, "INSTRUCTOR");
-            break;
-        } else {
-            printf("Opção inválida. Tente novamente.\n");
-        }
+    // Validação de Nome
+    if (!is_valid_name(nome_formatado)) {
+        fprintf(stderr, "ERRO_VALIDACAO: Nome invalido. Use apenas letras e espacos.\n");
+        return 2;
+    }
+    if (strlen(nome_formatado) > 0) {
+        nome_formatado[0] = toupper(nome_formatado[0]); // Capitaliza a primeira letra
     }
 
-    while (1) {
-        printf("Informe seu nome: ");
-        if (fgets(nome, MAX_STR_LEN, stdin) == NULL) {
-             printf("Erro na leitura.\n");
-             continue;
-        }
-
-        size_t len = strlen(nome);
-        if (len > 0 && nome[len-1] == '\n') {
-            nome[len-1] = '\0';
-        }
-
-        if (is_valid_name(nome)) {
-            if (strlen(nome) > 0) {
-                nome[0] = toupper(nome[0]);
-            }
-            break;
-        } else {
-            printf("Nome Inválido. Use apenas letras e espaços.\n");
-        }
+    // Validação de Email
+    if (!is_valid_email_format(email)) {
+        fprintf(stderr, "ERRO_VALIDACAO: Email invalido. O email deve terminar com @gmail.com\n");
+        return 3;
     }
 
-    while (1) {
-        printf("Informe seu melhor email: ");
-        scanf("%s", email);
-
-        if (is_valid_email_format(email)) {
-            break;
-        } else {
-            printf("Email inválido. Use @gmail.com\n");
-        }
+    // Validação de Idade
+    if (idade < 7 || idade > 100) {
+        fprintf(stderr, "ERRO_VALIDACAO: Idade fora do intervalo (7-100).\n");
+        return 4;
     }
 
-    while (1) {
-        printf("Informe sua idade: ");
-        if (scanf("%d", &idade) != 1) {
-            int c; while ((c = getchar()) != '\n' && c != EOF);
-            printf("Entrada inválida. Use apenas números.\n");
-            continue;
-        }
+    // Omitimos a verificação de senha duplicada/igual aqui, pois o Python já fará isso na interface.
+    // O C apenas receberá a senha já validada.
 
-        if (idade < 7) {
-            printf("\nIdade mínima: 7 anos\n");
-            continue;
-        } else if (idade > 100) {
-            printf("\nIdade inválida! Tente novamente.\n");
-            continue;
-        } else {
-            break;
-        }
-    }
-
-    while (1) {
-        printf("Informe uma senha forte: ");
-        scanf("%s", senha1);
-        printf("Repita a senha: ");
-        scanf("%s", senha2);
-
-        if (strcmp(senha1, senha2) == 0) {
-            break;
-        } else {
-            printf("As senhas são diferentes. Tente novamente\n");
-        }
-    }
-
-    // --- Geração do JSON em C ---
+    // 4. Geração do JSON (se chegou aqui, as validações do C passaram)
     FILE *fp = fopen(TEMP_FILE, "w");
     if (fp == NULL) {
-        fprintf(stderr, "Erro ao abrir arquivo temporário para escrita!\n");
-        return 1;
+        fprintf(stderr, "ERRO: Erro ao abrir arquivo temporario para escrita!\n");
+        return 5;
     }
 
     // Escreve a estrutura JSON
     fprintf(fp, "{\n");
-    fprintf(fp, "    \"nome\": \"%s\",\n", nome);
+    fprintf(fp, "    \"nome\": \"%s\",\n", nome_formatado);
     fprintf(fp, "    \"email\": \"%s\",\n", email);
     fprintf(fp, "    \"idade\": %d,\n", idade);
     fprintf(fp, "    \"role\": \"%s\",\n", role_final);
-    fprintf(fp, "    \"senha_simples\": \"%s\"\n", senha1);
+    fprintf(fp, "    \"senha_simples\": \"%s\"\n", senha);
     fprintf(fp, "}\n");
 
     fclose(fp);
 
-    printf("\nCADASTRO CONCLUÍDO\n");
-
+    // Sucesso
     return 0;
 }
 
