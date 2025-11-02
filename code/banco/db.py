@@ -77,7 +77,8 @@ def delete_user(email):
             salvar_usuarios()
             print("Conta excluída com sucesso!\n")
             break
-
         else:
             print("Exclusão cancelada.\n")
             break
+
+carregar_usuarios()
