@@ -26,7 +26,6 @@ TEMP_FILE = "temp_cadastro.json"
 
 # 1. Configuração Inicial do CustomTkinter
 ctk.set_appearance_mode("System")  # Ou "Dark", "Light"
-ctk.set_default_color_theme("blue") # Ou "green", "dark-blue"
 
 # 2. Configuração da Janela Principal (Substituição de tk.Tk por customtkinter.CTk)
 janela = ctk.CTk()
