@@ -1,0 +1,9 @@
+{
+     "matriculas": {
+          "1_dede@aluno.sge.com.br": {
+               "turma_id": "1",
+               "aluno_email": "dede@aluno.sge.com.br",
+               "data_matricula": "05/11/2025"
+          }
+     }
+}

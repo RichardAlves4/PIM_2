@@ -1,1 +1,1 @@
-from .security import criptografar_senha, verificar_senha, privacy_terms
+from .security import criptografar_senha, verificar_senha

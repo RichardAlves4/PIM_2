@@ -1,0 +1,17 @@
+{
+     "users": {
+          "dede@aluno.sge.com.br": {
+               "nome": "dede",
+               "email": "dede@aluno.sge.com.br",
+               "role": "USER",
+               "senha": "$2b$12$9llqemA7eGN4WhBI.Hb3CO9X6hm7Cs326FdM/1n7F7K3V1gwA9qEa",
+               "rm": "202400001"
+          },
+          "ageu@professor.sge.com.br": {
+               "nome": "ageu",
+               "email": "ageu@professor.sge.com.br",
+               "role": "INSTRUCTOR",
+               "senha": "$2b$12$c5/.G3P55um/aq0fWfNfXulGLcUJ01qrKJIIOu/lsJvXO5b0ic.mK"
+          }
+     }
+}

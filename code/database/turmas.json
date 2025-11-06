@@ -1,0 +1,16 @@
+{
+     "turmas": {
+          "1": {
+               "id": "1",
+               "nome": "DS2P04",
+               "disciplina": "Python",
+               "professor_email": "ageu@professor.sge.com.br",
+               "professor_nome": "ageu",
+               "ano": "2025",
+               "periodo": "Noite",
+               "descricao": "Aulas ministradas por Ageu!",
+               "data_criacao": "05/11/2025"
+          }
+     },
+     "proximo_id": 2
+}

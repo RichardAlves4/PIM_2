@@ -1,5 +1,5 @@
-import infra
-import banco
+from database import banco
+from infra import security as infra
 
 def login():
     print("\nLOGIN\n")
