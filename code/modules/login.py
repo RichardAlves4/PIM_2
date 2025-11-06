@@ -14,6 +14,9 @@ def login():
     elif banco.users_db[email]['role'] == "INSTRUCTOR" and infra.verificar_senha(senha, banco.users_db[email]["senha"]):
         print(f"Bem-vindo, {banco.users_db[email]['nome']}!")
         return email
+    elif banco.users_db[email]['role'] == "ADMIN" and infra.verificar_senha(senha, banco.users_db[email]["senha"]):
+        print(f"Bem-vindo, {banco.users_db[email]['nome']}!")
+        return email
     else:
         print("Email ou senha incorretos!")
         return None

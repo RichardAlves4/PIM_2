@@ -12,6 +12,25 @@
                "email": "ageu@professor.sge.com.br",
                "role": "INSTRUCTOR",
                "senha": "$2b$12$c5/.G3P55um/aq0fWfNfXulGLcUJ01qrKJIIOu/lsJvXO5b0ic.mK"
+          },
+          "admin@secretaria.sge.com.br": {
+               "nome": "Secretaria",
+               "email": "admin@secretaria.sge.com.br",
+               "role": "ADMIN",
+               "senha": "$2b$12$F/FPnGR00GvgKeYvmpUbNedGx0NMW27uZqoFxdgG5vzKW5ROJ09Ay"
+          },
+          "aluno123@aluno.sge.com.br": {
+               "nome": "Aluno",
+               "email": "aluno123@aluno.sge.com.br",
+               "role": "USER",
+               "senha": "$2b$12$Zyi40.is4oqID/TTCvwxH.KFEHtM4f1FYI2.gg8Cztm.LWMkAmOwu",
+               "rm": "202400002"
+          },
+          "professor123@professor.sge.com.br": {
+               "nome": "Professor",
+               "email": "professor123@professor.sge.com.br",
+               "role": "INSTRUCTOR",
+               "senha": "$2b$12$Ja75BXYz7Zsu9j3xnUhHZe0JTCBDNWH0uao3bQPlB..p3yKua5Idm"
           }
      }
 }

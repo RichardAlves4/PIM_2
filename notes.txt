@@ -9,9 +9,13 @@ pip install bcrypt
 ##Contas de teste##
 
 ALUNO
-email: aluno123@gmail.com
+email: aluno123@aluno.sge.com.br
 senha: aluno123
 
 PROFESSOR
-email: professor123@gmail.com
+email: professor123@professor.sge.com.br
 senha: professor123
+
+PROFESSOR
+email: admin@secretaria.sge.com.br
+senha: adm123
