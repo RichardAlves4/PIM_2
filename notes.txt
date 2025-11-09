@@ -2,6 +2,9 @@
 
 pip install bcrypt
 
+pip install reportlab
+
+
 ##Observações##
 
 - para iniciar o código dê play no arquivo main.py
@@ -16,6 +19,6 @@ PROFESSOR
 email: professor123@professor.sge.com.br
 senha: professor123
 
-PROFESSOR
+ADMIN
 email: admin@secretaria.sge.com.br
 senha: adm123

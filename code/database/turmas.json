@@ -2,15 +2,26 @@
      "turmas": {
           "1": {
                "id": "1",
-               "nome": "DS2P04",
+               "nome": "Analise e Desenvolvimento de Sistemas",
                "disciplina": "Python",
                "professor_email": "ageu@professor.sge.com.br",
-               "professor_nome": "ageu",
+               "professor_nome": "Ageu Alves",
                "ano": "2025",
                "periodo": "Noite",
-               "descricao": "Aulas ministradas por Ageu!",
-               "data_criacao": "05/11/2025"
+               "descricao": "Aulas de Python com Ageu!",
+               "data_criacao": "06/11/2025"
+          },
+          "2": {
+               "id": "2",
+               "nome": "Turma 2",
+               "disciplina": "JAVA",
+               "professor_email": "professor123@professor.sge.com.br",
+               "professor_nome": "professor",
+               "ano": "2025",
+               "periodo": "Manhã",
+               "descricao": "Aula de JAVA",
+               "data_criacao": "09/11/2025"
           }
      },
-     "proximo_id": 2
+     "proximo_id": 3
 }

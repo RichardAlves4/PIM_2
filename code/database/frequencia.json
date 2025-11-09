@@ -1,0 +1,34 @@
+{
+     "frequencias": {
+          "1_alan@aluno.sge.com.br": {
+               "aula_id": "1",
+               "aluno_email": "alan@aluno.sge.com.br",
+               "presente": false,
+               "data_registro": "07/11/2025 00:22"
+          },
+          "1_lucas@aluno.sge.com.br": {
+               "aula_id": "1",
+               "aluno_email": "lucas@aluno.sge.com.br",
+               "presente": false,
+               "data_registro": "07/11/2025 00:22"
+          },
+          "1_demetrio@aluno.sge.com.br": {
+               "aula_id": "1",
+               "aluno_email": "demetrio@aluno.sge.com.br",
+               "presente": true,
+               "data_registro": "07/11/2025 00:22"
+          },
+          "1_richard@aluno.sge.com.br": {
+               "aula_id": "1",
+               "aluno_email": "richard@aluno.sge.com.br",
+               "presente": true,
+               "data_registro": "07/11/2025 00:22"
+          },
+          "1_izabelly@aluno.sge.com.br": {
+               "aula_id": "1",
+               "aluno_email": "izabelly@aluno.sge.com.br",
+               "presente": true,
+               "data_registro": "07/11/2025 00:22"
+          }
+     }
+}

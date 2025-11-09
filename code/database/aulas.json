@@ -1,0 +1,14 @@
+{
+     "aulas": {
+          "1": {
+               "id": "1",
+               "turma_id": "1",
+               "titulo": "Aula ava",
+               "conteudo": "aula ava",
+               "data": "07/11/2025",
+               "observacoes": "NP2",
+               "data_registro": "07/11/2025 00:22"
+          }
+     },
+     "proximo_id": 2
+}

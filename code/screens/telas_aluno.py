@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from tkinter import messagebox, filedialog
 from datetime import datetime
+from backend.turmas_backend import get_turmas_aluno, get_atividades_turma
 try:
     from reportlab.lib.pagesizes import A4
     from reportlab.lib import colors
@@ -19,8 +20,13 @@ class TelasAluno:
     
     def show_aluno_menu(self):
         self.app.clear_window()
-        main_frame = ctk.CTkFrame(self.app, corner_radius=0)
-        main_frame.pack(fill="both", expand=True, padx=20, pady=20)
+
+        scroll_container = ctk.CTkScrollableFrame(self.app, corner_radius=0)
+        scroll_container.pack(fill="both", expand=True, padx=0, pady=0)
+        
+        main_frame = ctk.CTkFrame(scroll_container, corner_radius=0)
+        main_frame.pack(padx=20, pady=20, fill="x")
+
         from backend.turmas_backend import get_user_data
         from database.banco import users_db
         user_data = users_db.get(self.user_email, get_user_data(self.user_email))
@@ -35,7 +41,13 @@ class TelasAluno:
         subtitle_label.pack()
         buttons_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
         buttons_frame.pack(expand=True)
-        buttons_data = [("📚 Turmas", self.show_turmas_aluno, "#3498DB"), ("📋 Atividades Pendentes", self.show_atividades_pendentes, "#E67E22"), ("✅ Atividades Concluídas", self.show_atividades_entregues, "#2CC985"), ("📊 Boletim Escolar", self.show_boletim_completo, "#9B59B6")]
+        buttons_data = [
+            ("📚 Turmas", self.show_turmas_aluno, "#3498DB"),
+            ("📋 Atividades Pendentes", self.show_atividades_pendentes, "#E67E22"),
+            ("✅ Atividades Concluídas", self.show_atividades_entregues, "#2CC985"),
+            ("📊 Boletim Escolar", self.show_boletim_completo, "#9B59B6"),
+            ("🚪 Sair", lambda: self.app.logout(), "#E74C3C")
+        ]
         for text, command, color in buttons_data:
             btn = ctk.CTkButton(buttons_frame, text=text, font=ctk.CTkFont(size=16, weight="bold"), width=400, height=55, command=command, fg_color=color, hover_color=self.darken_color(color))
             btn.pack(pady=8)
@@ -102,7 +114,7 @@ class TelasAluno:
                 info_frame.pack(side="left", fill="x", expand=True, padx=20, pady=10)
                 status_icon = "✅" if atividade['entregue'] else "⏰"
                 ctk.CTkLabel(info_frame, text=f"{status_icon} {atividade['titulo']}", font=ctk.CTkFont(size=14, weight="bold")).pack(anchor="w")
-                ctk.CTkLabel(info_frame, text=f"Prazo: {atividade['prazo']} | Valor: {atividade['valor']} pontos", font=ctk.CTkFont(size=12), text_color="gray").pack(anchor="w", pady=2)
+                ctk.CTkLabel(info_frame, text=f"Prazo: {atividade['data_entrega']} | Valor: {atividade['valor']} pontos", font=ctk.CTkFont(size=12), text_color="gray").pack(anchor="w", pady=2)
                 if atividade['entregue']:
                     if atividade.get('nota'):
                         ctk.CTkLabel(info_frame, text=f"Nota: {atividade['nota']}/{atividade['valor']}", font=ctk.CTkFont(size=12, weight="bold"), text_color="#2CC985").pack(anchor="w", pady=2)
@@ -127,11 +139,14 @@ class TelasAluno:
     
     def show_entregar_atividade(self, atividade):
         self.app.clear_window()
-        main_frame = ctk.CTkFrame(self.app, corner_radius=0)
+        
+        # ADICIONAR SCROLLABLE FRAME
+        main_frame = ctk.CTkScrollableFrame(self.app, corner_radius=0)
         main_frame.pack(fill="both", expand=True, padx=20, pady=20)
+        
         title_label = ctk.CTkLabel(main_frame, text=f"📤 Entregar: {atividade['titulo']}", font=ctk.CTkFont(size=24, weight="bold"))
         title_label.pack(pady=(20, 10))
-        info_label = ctk.CTkLabel(main_frame, text=f"Prazo: {atividade['prazo']} | Valor: {atividade['valor']} pontos", font=ctk.CTkFont(size=14), text_color="gray")
+        info_label = ctk.CTkLabel(main_frame, text=f"Prazo: {atividade['data_entrega']} | Valor: {atividade['valor']} pontos", font=ctk.CTkFont(size=14), text_color="gray")
         info_label.pack(pady=(0, 20))
         desc_frame = ctk.CTkFrame(main_frame)
         desc_frame.pack(pady=10, padx=50, fill="both", expand=True)
@@ -159,12 +174,12 @@ class TelasAluno:
                 messagebox.showerror("Erro", "Você precisa escrever uma resposta ou anexar um arquivo!")
                 return
             from backend.turmas_backend import entregar_atividade
-            sucesso = entregar_atividade(atividade['id'], self.user_email, resposta, selected_file["path"], datetime.now().strftime("%d/%m/%Y %H:%M"))
+            sucesso, mensagem = entregar_atividade(atividade['id'], self.user_email, selected_file["path"], resposta)
             if sucesso:
-                messagebox.showinfo("Sucesso", "Atividade entregue com sucesso!")
+                messagebox.showinfo("Sucesso", mensagem)
                 self.show_atividades_pendentes()
             else:
-                messagebox.showerror("Erro", "Erro ao entregar atividade!")
+                messagebox.showerror("Erro", mensagem)
         buttons_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
         buttons_frame.pack(pady=20)
         submit_btn = ctk.CTkButton(buttons_frame, text="✓ Entregar", font=ctk.CTkFont(size=16, weight="bold"), width=190, height=50, command=process_entrega, fg_color="#2CC985", hover_color="#25A066")
@@ -185,10 +200,10 @@ class TelasAluno:
         ctk.CTkLabel(content_frame, text="Sua Resposta:", font=ctk.CTkFont(size=14, weight="bold")).pack(anchor="w", padx=20, pady=(20, 5))
         resposta_text = ctk.CTkTextbox(content_frame, height=150, state="normal")
         resposta_text.pack(pady=5, padx=20, fill="both", expand=True)
-        resposta_text.insert("1.0", atividade.get('resposta', 'Nenhuma resposta escrita'))
+        resposta_text.insert("1.0", atividade.get('comentario', 'Nenhuma resposta escrita'))
         resposta_text.configure(state="disabled")
         if atividade.get('arquivo'):
-            ctk.CTkLabel(content_frame, text=f"📎 Arquivo anexado: {atividade['arquivo']}", font=ctk.CTkFont(size=12), text_color="gray").pack(pady=10)
+            ctk.CTkLabel(content_frame, text=f"📎 Arquivo anexado: {atividade.get('arquivo_nome', 'arquivo')}", font=ctk.CTkFont(size=12), text_color="gray").pack(pady=10)
         if atividade.get('nota'):
             nota_frame = ctk.CTkFrame(content_frame, fg_color="#2CC985")
             nota_frame.pack(pady=20, padx=20, fill="x")
@@ -212,8 +227,27 @@ class TelasAluno:
         main_frame.pack(fill="both", expand=True, padx=20, pady=20)
         title_label = ctk.CTkLabel(main_frame, text="📋 Atividades Pendentes", font=ctk.CTkFont(size=28, weight="bold"))
         title_label.pack(pady=(20, 30))
-        from backend.turmas_backend import get_atividades_pendentes_aluno
-        atividades = get_atividades_pendentes_aluno(self.user_email)
+
+        turmas = get_turmas_aluno(self.user_email)
+        from backend.turmas_backend import carregar_json, ENTREGAS_FILE
+        entregas = carregar_json(ENTREGAS_FILE).get('entregas', {})
+
+        atividades = []
+        for turma in turmas:
+            atividades_turma = get_atividades_turma(turma['id'])
+            for atividade in atividades_turma:
+                ja_entregou = False
+                for entrega in entregas.values():
+                    if (entrega.get('atividade_id') == atividade['id'] and 
+                        entrega.get('aluno_email') == self.user_email):
+                        ja_entregou = True
+                        break
+                
+                if not ja_entregou:
+                    ativ_copy = atividade.copy()
+                    ativ_copy['turma_nome'] = turma['nome']
+                    ativ_copy['disciplina'] = turma['disciplina']
+                    atividades.append(ativ_copy)
         if not atividades:
             empty_label = ctk.CTkLabel(main_frame, text="Parabéns! Você não possui atividades pendentes. 🎉", font=ctk.CTkFont(size=16), text_color="gray")
             empty_label.pack(pady=50)
@@ -224,7 +258,7 @@ class TelasAluno:
                 info_frame = ctk.CTkFrame(ativ_frame, fg_color="transparent")
                 info_frame.pack(side="left", fill="x", expand=True, padx=20, pady=15)
                 ctk.CTkLabel(info_frame, text=f"⏰ {atividade['titulo']}", font=ctk.CTkFont(size=16, weight="bold")).pack(anchor="w")
-                ctk.CTkLabel(info_frame, text=f"Turma: {atividade['turma']} | Prazo: {atividade['prazo']}", font=ctk.CTkFont(size=13), text_color="gray").pack(anchor="w", pady=2)
+                ctk.CTkLabel(info_frame, text=f"Turma: {atividade.get('turma_nome', 'N/A')} | Prazo: {atividade['data_entrega']}", font=ctk.CTkFont(size=13), text_color="gray").pack(anchor="w", pady=2)
                 ctk.CTkLabel(info_frame, text=f"Valor: {atividade['valor']} pontos", font=ctk.CTkFont(size=12), text_color="gray").pack(anchor="w", pady=2)
                 ctk.CTkButton(ativ_frame, text="Entregar", width=120, height=35, fg_color="#2CC985", hover_color="#25A066", command=lambda a=atividade: self.show_entregar_atividade(a)).pack(side="right", padx=10, pady=10)
         back_btn = ctk.CTkButton(main_frame, text="← Voltar", font=ctk.CTkFont(size=16), width=200, height=50, command=self.show_aluno_menu, fg_color="gray", hover_color="darkgray")
@@ -276,7 +310,11 @@ class TelasAluno:
         if not boletim:
             ctk.CTkLabel(main_frame, text="Você ainda não possui notas registradas.", font=ctk.CTkFont(size=16), text_color="gray").pack(pady=50)
         else:
-            media_geral = sum([turma['media'] for turma in boletim if turma['media']]) / len([t for t in boletim if t['media']])
+            turmas_com_media = [t for t in boletim if t.get('media')]
+            if turmas_com_media:
+                media_geral = sum([turma['media'] for turma in turmas_com_media]) / len(turmas_com_media)
+            else:
+                media_geral = 0
             resumo_frame = ctk.CTkFrame(main_frame)
             resumo_frame.pack(pady=10, padx=40, fill="x")
             ctk.CTkLabel(resumo_frame, text=f"📊 Média Geral: {media_geral:.2f}", font=ctk.CTkFont(size=20, weight="bold"), text_color="#2CC985" if media_geral >= 7 else "#E74C3C").pack(pady=20)
