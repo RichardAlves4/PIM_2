@@ -69,6 +69,9 @@ class TelasAdmin:
 
         if not hasattr(self, 'filter_var'):
             self.filter_var = ctk.StringVar(value="TODOS")
+        
+        if not hasattr(self, 'search_var'):
+            self.search_var = ctk.StringVar(value="")
 
         self.app.clear_window()
         
@@ -82,6 +85,29 @@ class TelasAdmin:
             font=ctk.CTkFont(size=28, weight="bold")
         )
         title_label.pack(pady=(20, 20))
+
+        # Filtro e Pesquisa
+        controls_frame = ctk.CTkFrame(main_frame)
+        controls_frame.pack(pady=10, padx=40, fill="x")
+        
+        # Campo de Pesquisa (em cima do filtro)
+        search_frame = ctk.CTkFrame(controls_frame, fg_color="transparent")
+        search_frame.pack(pady=(5, 10), padx=5, fill="x")
+        
+        search_entry = ctk.CTkEntry(
+            search_frame,
+            placeholder_text="Buscar por nome ou email...",
+            width=500,
+            textvariable=self.search_var
+        )
+        search_entry.pack(side="left", fill="x", expand=True)
+        
+        ctk.CTkButton(
+            search_frame,
+            text="Buscar",
+            width=80,
+            command=self.show_gerenciar_usuarios  # Chama a função para aplicar o filtro
+        ).pack(side="left", padx=10)
         
         # Filtro compacto
         filter_frame = ctk.CTkFrame(main_frame)
@@ -104,7 +130,10 @@ class TelasAdmin:
             rb.pack(side="left", padx=8)
         
         from backend.turmas_backend import get_todos_usuarios
-        usuarios = get_todos_usuarios(self.filter_var.get())
+
+        search_term = self.search_var.get() if self.search_var.get() else None
+
+        usuarios = get_todos_usuarios(self.filter_var.get(), search_term=search_term)
         
         # Estatísticas compactas
         stats_frame = ctk.CTkFrame(main_frame)

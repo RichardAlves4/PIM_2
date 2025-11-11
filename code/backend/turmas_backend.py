@@ -39,16 +39,36 @@ def get_user_data(email):
         usuario['email'] = email
     return usuario
 
-def get_todos_usuarios(filtro='TODOS'):
+def get_todos_usuarios(filtro='TODOS', search_term=None):
     dados = carregar_json(USERS_FILE)
     usuarios = dados.get('users', {})
     
     lista_usuarios = []
+    
+    # Prepara o termo de pesquisa para comparação (ignora maiúsculas/minúsculas e espaços)
+    search_term_lower = search_term.lower().strip() if search_term else None
+    
     for email, user_data in usuarios.items():
-        user_info = user_data.copy()
-        user_info['email'] = email
-        if filtro == 'TODOS' or user_data.get('role') == filtro:
-            lista_usuarios.append(user_info)
+        # 1. Filtro por 'role' (INSTRUCTOR, USER, ADMIN, TODOS)
+        passou_pelo_filtro_role = (filtro == 'TODOS' or user_data.get('role') == filtro)
+        
+        if passou_pelo_filtro_role:
+            
+            # 2. Filtro por Termo de Busca (Nome ou Email)
+            passou_pelo_filtro_busca = True # Assume que passou se não houver termo de busca
+            
+            if search_term_lower:
+                nome_lower = user_data.get('nome', '').lower()
+                email_lower = email.lower()
+                
+                # Verifica se o termo de busca está no nome OU no email
+                if search_term_lower not in nome_lower and search_term_lower not in email_lower:
+                    passou_pelo_filtro_busca = False
+            
+            if passou_pelo_filtro_busca:
+                user_info = user_data.copy()
+                user_info['email'] = email
+                lista_usuarios.append(user_info)
     
     return lista_usuarios
 
