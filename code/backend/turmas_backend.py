@@ -251,13 +251,35 @@ def get_alunos_turma(turma_id):
     
     return alunos
 
+def get_alunos_disponiveis(turma_id):
+
+    # 1. Obter todos os usuários com role='USER'
+    todos_alunos = get_todos_usuarios(filtro='USER')
+    
+    dados_matriculas = carregar_json(MATRICULAS_FILE)
+    todas_matriculas = dados_matriculas.get('matriculas', {})
+    
+    
+    # Criamos um conjunto (set) de todos os emails que aparecem no arquivo de matrículas
+    emails_matriculados_em_qualquer_turma = {
+        m.get('aluno_email') for m in todas_matriculas.values()
+    }
+    
+    # 3. Filtrar: manter apenas quem NÃO está matriculado em NENHUMA turma
+    alunos_disponiveis = [
+        aluno for aluno in todos_alunos
+        if aluno['email'] not in emails_matriculados_em_qualquer_turma
+    ]
+    
+    return alunos_disponiveis
+
 def adicionar_aluno_turma(turma_id, aluno_email):
     matriculas = carregar_json(MATRICULAS_FILE)
     
-    if 'matriculas' not in matriculas:
-        matriculas['matriculas'] = {}
-    if 'proximo_id' not in matriculas:
-        matriculas['proximo_id'] = 1
+    # if 'matriculas' not in matriculas:
+    #     matriculas['matriculas'] = {}
+    # if 'proximo_id' not in matriculas:
+    #     matriculas['proximo_id'] = 1
     
     # Verificar se já está matriculado
     for matricula in matriculas['matriculas'].values():
@@ -265,11 +287,13 @@ def adicionar_aluno_turma(turma_id, aluno_email):
             matricula.get('aluno_email') == aluno_email):
             return False
     
-    matricula_id = str(matriculas['proximo_id'])
-    matriculas['proximo_id'] += 1
+    # matricula_id = str(matriculas['proximo_id'])
+    # matriculas['proximo_id'] += 1
     
-    matriculas['matriculas'][matricula_id] = {
-        'id': matricula_id,
+    # matriculas['matriculas'][matricula_id] = {
+    #     'id': matricula_id,
+    
+    matriculas['matriculas'][aluno_email] = {
         'turma_id': str(turma_id),
         'aluno_email': aluno_email,
         'data_matricula': datetime.now().strftime("%d/%m/%Y")
@@ -277,6 +301,28 @@ def adicionar_aluno_turma(turma_id, aluno_email):
     
     salvar_json(MATRICULAS_FILE, matriculas)
     return True
+
+def editar_turma(turma_id, nome, disciplina, ano, periodo, descricao):
+    """
+    Atualiza os dados de uma turma existente.
+    """
+    turma_id_str = str(turma_id)
+    dados = carregar_json(TURMAS_FILE)
+    
+    if turma_id_str in dados.get('turmas', {}):
+        turma = dados['turmas'][turma_id_str]
+        
+        # Atualiza os campos
+        turma['nome'] = nome
+        turma['disciplina'] = disciplina
+        turma['ano'] = ano
+        turma['periodo'] = periodo
+        turma['descricao'] = descricao
+        
+        salvar_json(TURMAS_FILE, dados)
+        return True
+    
+    return False
 
 def remover_aluno_turma(turma_id, aluno_email):
     matriculas = carregar_json(MATRICULAS_FILE)
