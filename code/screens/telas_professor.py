@@ -1019,7 +1019,146 @@ class TelasProfessor:
         back_btn.pack(pady=30)
     
     def show_editar_turma(self, turma):
-        messagebox.showinfo("Em desenvolvimento", "Funcionalidade de edição em desenvolvimento!")
+
+        dialog = ctk.CTkToplevel(self.app)
+        dialog.title(f"Editar Turma: {turma['nome']}")
+        dialog.geometry("700x650") 
+        dialog.grab_set()
+        
+        scroll_container = ctk.CTkScrollableFrame(dialog, corner_radius=0)
+        scroll_container.pack(fill="both", expand=True, padx=0, pady=0)
+        
+        main_frame = ctk.CTkFrame(scroll_container, corner_radius=0)
+        main_frame.pack(padx=20, pady=20, fill="x")
+        
+        title_label = ctk.CTkLabel(
+            main_frame,
+            text=f"✏️ Editar Turma: {turma['nome']}",
+            font=ctk.CTkFont(size=28, weight="bold")
+        )
+        title_label.pack(pady=(20, 30))
+        
+        form_frame = ctk.CTkFrame(main_frame)
+        form_frame.pack(pady=10, padx=80)
+        
+        # --- CAMPOS COM DADOS PREENCHIDOS ---
+        
+        # Nome
+        nome_label = ctk.CTkLabel(form_frame, text="Nome da Turma:", font=ctk.CTkFont(size=14, weight="bold"))
+        nome_label.grid(row=0, column=0, pady=(20, 5), padx=(20, 10), sticky="w")
+        nome_entry = ctk.CTkEntry(form_frame, width=400, height=40)
+        nome_entry.insert(0, turma.get('nome', ''))
+        nome_entry.grid(row=0, column=1, pady=(20, 5), padx=(10, 20), sticky="w")
+        
+        # Disciplina
+        disciplina_label = ctk.CTkLabel(form_frame, text="Disciplina:", font=ctk.CTkFont(size=14, weight="bold"))
+        disciplina_label.grid(row=1, column=0, pady=(15, 5), padx=(20, 10), sticky="w")
+        disciplina_entry = ctk.CTkEntry(form_frame, width=400, height=40)
+        disciplina_entry.insert(0, turma.get('disciplina', ''))
+        disciplina_entry.grid(row=1, column=1, pady=(15, 5), padx=(10, 20), sticky="w")
+        
+        # Ano
+        ano_label = ctk.CTkLabel(form_frame, text="Ano Letivo:", font=ctk.CTkFont(size=14, weight="bold"))
+        ano_label.grid(row=2, column=0, pady=(15, 5), padx=(20, 10), sticky="w")
+        ano_entry = ctk.CTkEntry(form_frame, width=400, height=40)
+        ano_entry.insert(0, turma.get('ano', ''))
+        ano_entry.grid(row=2, column=1, pady=(15, 5), padx=(10, 20), sticky="w")
+        
+        # Período (RadioButton)
+        periodo_label = ctk.CTkLabel(form_frame, text="Período:", font=ctk.CTkFont(size=14, weight="bold"))
+        periodo_label.grid(row=3, column=0, pady=(15, 5), padx=(20, 10), sticky="w")
+        
+        periodo_var = ctk.StringVar(value=turma.get('periodo', 'Manhã')) 
+        periodo_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
+        periodo_frame.grid(row=3, column=1, pady=(15, 5), padx=(10, 20), sticky="w")
+        
+        periodos = ["Manhã", "Tarde", "Noite", "Integral"]
+        for i, periodo in enumerate(periodos):
+            rb = ctk.CTkRadioButton(periodo_frame, text=periodo, variable=periodo_var, value=periodo)
+            rb.pack(side="left", padx=10)
+        
+        # Professor (Apenas Leitura - ID da Turma)
+        prof_label = ctk.CTkLabel(form_frame, text="Professor:", font=ctk.CTkFont(size=14, weight="bold"))
+        prof_label.grid(row=4, column=0, pady=(15, 5), padx=(20, 10), sticky="w")
+        prof_value = ctk.CTkLabel(form_frame, text=turma.get('professor_nome', 'N/A'), text_color="gray")
+        prof_value.grid(row=4, column=1, pady=(15, 5), padx=(10, 20), sticky="w")
+
+        # Descrição (TextArea)
+        descricao_label = ctk.CTkLabel(form_frame, text="Descrição:", font=ctk.CTkFont(size=14, weight="bold"))
+        descricao_label.grid(row=5, column=0, pady=(15, 5), padx=(20, 10), sticky="nw")
+        
+        descricao_text = ctk.CTkTextbox(form_frame, width=400, height=100)
+        descricao_text.insert("0.0", turma.get('descricao', ''))
+        descricao_text.grid(row=5, column=1, pady=(15, 20), padx=(10, 20), sticky="w")
+        
+        form_frame.grid_columnconfigure(0, weight=0, minsize=180)
+        form_frame.grid_columnconfigure(1, weight=1)
+        
+        # --- FUNÇÃO DE SALVAR ---
+
+        def salvar_edicao():
+            nome = nome_entry.get().strip()
+            disciplina = disciplina_entry.get().strip()
+            ano = ano_entry.get().strip()
+            periodo = periodo_var.get()
+            descricao = descricao_text.get("1.0", "end-1c").strip()
+            
+            # Validação básica
+            if not all([nome, disciplina, ano]):
+                messagebox.showerror("Erro", "Nome, Disciplina e Ano são obrigatórios!")
+                return
+            
+            # Chama a função de backend
+            from backend.turmas_backend import editar_turma
+            sucesso = editar_turma(
+                turma['id'], # ID da turma sendo editada
+                nome,
+                disciplina,
+                ano,
+                periodo,
+                descricao
+            )
+            
+            from backend.turmas_backend import get_detalhes_completos_turma
+            if sucesso:
+                messagebox.showinfo("Sucesso", "Turma atualizada com sucesso!")
+                dialog.destroy()
+                
+                # Recarrega os detalhes completos para ter a turma atualizada
+                turma_atualizada = get_detalhes_completos_turma(turma['id'])
+                # Assume que você tem um método para mostrar os detalhes da turma
+                self.show_detalhes_turma(turma_atualizada) 
+            else:
+                messagebox.showerror("Erro", "Erro ao salvar edição da turma.")
+        
+        # --- BOTÕES ---
+
+        buttons_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
+        buttons_frame.grid(row=6, column=0, columnspan=2, pady=20)
+        
+        create_btn = ctk.CTkButton(
+            buttons_frame,
+            text="✓ Salvar Alterações",
+            font=ctk.CTkFont(size=16, weight="bold"),
+            width=200,
+            height=50,
+            command=salvar_edicao,
+            fg_color="#3B8EDC",
+            hover_color="#36719F"
+        )
+        create_btn.pack(side="left", padx=10)
+        
+        cancel_btn = ctk.CTkButton(
+            buttons_frame,
+            text="← Cancelar",
+            font=ctk.CTkFont(size=16),
+            width=200,
+            height=50,
+            command=dialog.destroy, 
+            fg_color="gray",
+            hover_color="darkgray"
+        )
+        cancel_btn.pack(side="left", padx=10)
     
     def show_criar_atividade(self, turma=None):
         """Modal para criar uma nova atividade"""

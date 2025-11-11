@@ -4,7 +4,7 @@
                "id": "1",
                "nome": "Analise e Desenvolvimento de Sistemas",
                "disciplina": "Python",
-               "professor_email": "ageu@professor.sge.com.br",
+               "professor_email": "professor123@professor.sge.com.br",
                "professor_nome": "Ageu Alves",
                "ano": "2025",
                "periodo": "Noite",
@@ -13,13 +13,13 @@
           },
           "2": {
                "id": "2",
-               "nome": "Turma 2",
-               "disciplina": "JAVA",
+               "nome": "editado",
+               "disciplina": "editado",
                "professor_email": "professor123@professor.sge.com.br",
                "professor_nome": "professor",
-               "ano": "2025",
-               "periodo": "Manhã",
-               "descricao": "Aula de JAVA",
+               "ano": "2024",
+               "periodo": "Tarde",
+               "descricao": "editado",
                "data_criacao": "09/11/2025"
           }
      },
