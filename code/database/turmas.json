@@ -13,7 +13,7 @@
           },
           "2": {
                "id": "2",
-               "nome": "Turma 2",
+               "nome": "Ciências da computação",
                "disciplina": "JAVA",
                "professor_email": "professor123@professor.sge.com.br",
                "professor_nome": "professor",
