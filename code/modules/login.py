@@ -2,6 +2,7 @@ from database import banco
 from infra import security as infra
 
 def login():
+    banco.carregar_usuarios()
     print("\nLOGIN\n")
 
     # Coleta as credenciais do aluno
