@@ -400,6 +400,10 @@ class TelasAdmin:
             
             if sucesso:
                 messagebox.showinfo("Sucesso", "Usuário editado!")
+
+                from database import banco
+                banco.carregar_usuarios()
+
                 dialog.destroy()
                 self.show_gerenciar_usuarios()
             else:

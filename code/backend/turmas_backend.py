@@ -85,19 +85,22 @@ def get_detalhes_completos_usuario(email):
 def editar_usuario(email, nome, role, senha_criptografada=None):
     dados = carregar_json(USERS_FILE)
 
-    if email in dados.get('users', {}):
+    if email in dados.get('users', {}) and senha_criptografada is None:
         dados['users'][email]['nome'] = nome
         dados['users'][email]['role'] = role
-
-        if senha_criptografada is not None:
-            dados['users'][email]['senha'] = senha_criptografada
-
         salvar_json(USERS_FILE, dados)
         dados = carregar_json(USERS_FILE)
         return True
+    elif email in dados.get('users', {}) and senha_criptografada is not None:
+        dados['users'][email]['nome'] = nome
+        dados['users'][email]['role'] = role
+        dados['users'][email]['senha'] = senha_criptografada
+        salvar_json(USERS_FILE, dados)
+        dados = carregar_json(USERS_FILE)
+        return True
+    else:
+        return False
     
-    return False
-
 def excluir_usuario(email):
     dados = carregar_json(USERS_FILE)
     if email in dados.get('users', {}):
