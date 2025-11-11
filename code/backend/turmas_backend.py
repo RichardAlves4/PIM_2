@@ -154,6 +154,8 @@ def adicionar_usuario(nome, email, senha, role):
     salvar_json(USERS_FILE, dados)
     return True
 
+    # ==================== SISTEMA DE Turmas ====================
+
 def criar_turma(professor_email, nome, disciplina, ano, periodo, descricao):
     dados = carregar_json(TURMAS_FILE)
     
@@ -294,6 +296,91 @@ def remover_aluno_turma(turma_id, aluno_email):
         return True
     
     return False
+
+def limpar_matriculas_turma(turma_id):
+    """Remove todas as matrículas relacionadas a uma turma."""
+    matriculas = carregar_json(MATRICULAS_FILE)
+    
+    matriculas_atualizadas = {
+        mid: m for mid, m in matriculas.get('matriculas', {}).items()
+        if m.get('turma_id') != str(turma_id)
+    }
+    
+    matriculas['matriculas'] = matriculas_atualizadas
+    salvar_json(MATRICULAS_FILE, matriculas)
+    return True
+
+def limpar_aulas_turma(turma_id):
+    """Remove todas as aulas relacionadas a uma turma."""
+    aulas = carregar_json(AULAS_FILE)
+    
+    aulas_atualizadas = {
+        aid: a for aid, a in aulas.get('aulas', {}).items()
+        if a.get('turma_id') != str(turma_id)
+    }
+    
+    aulas['aulas'] = aulas_atualizadas
+    salvar_json(AULAS_FILE, aulas)
+    return True
+
+def limpar_atividades_e_entregas(turma_id):
+    """Remove atividades e, em cascata, as notas relacionadas."""
+    atividades = carregar_json(ATIVIDADES_FILE)
+    entregas = carregar_json(ENTREGAS_FILE) # Supondo que você tenha um arquivo de notas
+    
+    atividades_para_remover = [
+        aid for aid, a in atividades.get('atividades', {}).items()
+        if a.get('turma_id') == str(turma_id)
+    ]
+    
+    # 1. Limpar Entregas (Notas)
+    # Remove as entregas cujo 'atividade_id' está na lista de atividades a serem removidas
+    entregas_atualizadas = {
+        eid: e for eid, e in entregas.get('entregas', {}).items()
+        if e.get('atividade_id') not in atividades_para_remover
+    }
+    
+    entregas['entregas'] = entregas_atualizadas
+    # 🎯 CORRIGIDO: Salvar no ENTREGAS_FILE
+    salvar_json(ENTREGAS_FILE, entregas)
+    
+    # 2. Limpar Atividades
+    atividades_atualizadas = {
+        aid: a for aid, a in atividades.get('atividades', {}).items()
+        if aid not in atividades_para_remover
+    }
+    atividades['atividades'] = atividades_atualizadas
+    salvar_json(ATIVIDADES_FILE, atividades)
+    
+    return True
+
+# ----------------------------------------------------------------------
+
+def excluir_turma(turma_id):
+    """
+    Exclui uma turma pelo ID e todos os dados relacionados (matrículas, aulas, atividades e notas).
+    """
+    turma_id_str = str(turma_id)
+    dados = carregar_json(TURMAS_FILE)
+    
+    if turma_id_str not in dados.get('turmas', {}):
+        return False # Turma não encontrada
+    
+    try:
+        # 1. Limpar dados associados (limpeza em cascata)
+        limpar_matriculas_turma(turma_id_str)
+        limpar_aulas_turma(turma_id_str)
+        limpar_atividades_e_entregas(turma_id_str)
+        
+        # 2. Remover a turma principal
+        del dados['turmas'][turma_id_str]
+        salvar_json(TURMAS_FILE, dados)
+        
+        return True
+    except Exception as e:
+        print(f"Erro ao excluir turma {turma_id}: {e}")
+        # Em um sistema robusto, você poderia implementar um rollback ou logar o erro.
+        return False
 
 # ==================== SISTEMA DE AULAS ====================
 
