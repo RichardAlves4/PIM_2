@@ -2,8 +2,9 @@
 
 pip install bcrypt
 
-pip install reportlab
+pip install customtkinter
 
+pip install reportlab
 
 ##Observações##
 
