@@ -1395,7 +1395,7 @@ def get_aula_by_id(aula_id):
     """Busca uma aula pelo ID"""
     dados = carregar_json(AULAS_FILE)
     return dados.get('aulas', {}).get(aula_id)
-
+    
 # ==================== LIMPEZA DE DADOS ====================
 
 def limpar_turmas_antigas():
@@ -1477,3 +1477,10 @@ def get_atividades_pendentes_aluno(aluno_email):
     atividades_pendentes.sort(key=lambda x: datetime.strptime(x['data_entrega'], "%d/%m/%Y"))
     
     return atividades_pendentes
+
+# ==================== ALIAS PARA COMPATIBILIDADE ====================
+
+# Alias para manter compatibilidade com código que usa get_relatorio_geral
+def get_relatorio_geral():
+    """Alias para get_estatisticas_gerais() - mantém compatibilidade"""
+    return get_estatisticas_gerais()
