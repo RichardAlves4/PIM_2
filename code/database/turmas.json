@@ -21,7 +21,18 @@
                "periodo": "Tarde",
                "descricao": "editado",
                "data_criacao": "09/11/2025"
+          },
+          "3": {
+               "id": "3",
+               "nome": "turma A",
+               "disciplina": "Python",
+               "professor_email": "ageu@professor.sge.com.br",
+               "professor_nome": "Ageu Alves",
+               "ano": "2025",
+               "periodo": "Manhã",
+               "descricao": "Turma",
+               "data_criacao": "12/11/2025"
           }
      },
-     "proximo_id": 3
+     "proximo_id": 4
 }
