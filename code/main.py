@@ -15,7 +15,6 @@ from screens.telas_admin import TelasAdmin
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
-
 class SistemaGestaoEscolar(ctk.CTk):
 
     def __init__(self):

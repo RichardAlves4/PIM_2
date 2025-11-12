@@ -1116,6 +1116,294 @@ class TelasAdmin:
             total = arquivar_usuarios_inativos()
             messagebox.showinfo("Concluído", f"{total} usuário(s) arquivado(s).")
     
+    def show_relatorios_aulas_admin(self):
+        """Tela para visualizar todos os relatórios de aulas (Admin)"""
+        self.app.clear_window()
+        
+        main_frame = ctk.CTkScrollableFrame(self.app, corner_radius=0)
+        main_frame.pack(fill="both", expand=True, padx=20, pady=20)
+        
+        title_label = ctk.CTkLabel(
+            main_frame,
+            text="📄 Relatórios de Aulas",
+            font=ctk.CTkFont(size=28, weight="bold")
+        )
+        title_label.pack(pady=(20, 10))
+        
+        subtitle_label = ctk.CTkLabel(
+            main_frame,
+            text="Visualize todos os relatórios de aulas registrados pelos professores",
+            font=ctk.CTkFont(size=14),
+            text_color="gray"
+        )
+        subtitle_label.pack(pady=(0, 30))
+        
+        # Buscar todos os relatórios
+        from backend.turmas_backend import get_todos_relatorios
+        relatorios = get_todos_relatorios()
+        
+        if not relatorios:
+            empty_label = ctk.CTkLabel(
+                main_frame,
+                text="Nenhum relatório registrado no sistema ainda.",
+                font=ctk.CTkFont(size=16),
+                text_color="gray"
+            )
+            empty_label.pack(pady=50)
+        else:
+            # Filtros
+            filter_frame = ctk.CTkFrame(main_frame)
+            filter_frame.pack(pady=10, padx=40, fill="x")
+            
+            ctk.CTkLabel(
+                filter_frame,
+                text="Filtrar por status:",
+                font=ctk.CTkFont(size=13, weight="bold")
+            ).pack(side="left", padx=(20, 10))
+            
+            filter_var = ctk.StringVar(value="TODOS")
+            
+            def atualizar_listagem():
+                # Limpar listagem atual
+                for widget in content_frame.winfo_children():
+                    widget.destroy()
+                
+                filtro = filter_var.get()
+                relatorios_filtrados = relatorios
+                
+                if filtro == "FINALIZADOS":
+                    relatorios_filtrados = [r for r in relatorios if r.get('finalizado', False)]
+                elif filtro == "RASCUNHOS":
+                    relatorios_filtrados = [r for r in relatorios if not r.get('finalizado', False)]
+                
+                # Ordenar por data de criação (mais recentes primeiro)
+                def safe_date_sort(relatorio):
+                    try:
+                        return datetime.strptime(relatorio.get('data_criacao', '01/01/2000 00:00'), "%d/%m/%Y %H:%M")
+                    except (ValueError, TypeError):
+                        return datetime(2000, 1, 1)
+                
+                relatorios_filtrados.sort(key=safe_date_sort, reverse=True)
+                
+                if not relatorios_filtrados:
+                    empty = ctk.CTkLabel(
+                        content_frame,
+                        text="Nenhum relatório encontrado com este filtro.",
+                        font=ctk.CTkFont(size=14),
+                        text_color="gray"
+                    )
+                    empty.pack(pady=30)
+                else:
+                    for relatorio in relatorios_filtrados:
+                        rel_frame = ctk.CTkFrame(content_frame)
+                        rel_frame.pack(pady=8, padx=20, fill="x")
+                        
+                        # Info do relatório
+                        info_frame = ctk.CTkFrame(rel_frame, fg_color="transparent")
+                        info_frame.pack(side="left", fill="x", expand=True, padx=15, pady=12)
+                        
+                        # Status e Título
+                        header_frame = ctk.CTkFrame(info_frame, fg_color="transparent")
+                        header_frame.pack(anchor="w", fill="x")
+                        
+                        if relatorio.get('finalizado', False):
+                            status_badge = ctk.CTkLabel(
+                                header_frame,
+                                text="✓",
+                                font=ctk.CTkFont(size=12, weight="bold"),
+                                text_color="#2CC985",
+                                width=20
+                            )
+                            status_badge.pack(side="left")
+                        else:
+                            status_badge = ctk.CTkLabel(
+                                header_frame,
+                                text="⚠",
+                                font=ctk.CTkFont(size=12, weight="bold"),
+                                text_color="#F39C12",
+                                width=20
+                            )
+                            status_badge.pack(side="left")
+                        
+                        titulo_label = ctk.CTkLabel(
+                            header_frame,
+                            text=f"{relatorio.get('aula_titulo', 'N/A')}",
+                            font=ctk.CTkFont(size=14, weight="bold")
+                        )
+                        titulo_label.pack(side="left", padx=5)
+                        
+                        # Informações
+                        info_text = (
+                            f"Professor: {relatorio.get('professor_nome', 'N/A')} | "
+                            f"Turma: {relatorio.get('turma_nome', 'N/A')} | "
+                            f"Disciplina: {relatorio.get('disciplina', 'N/A')}"
+                        )
+                        info_label = ctk.CTkLabel(
+                            info_frame,
+                            text=info_text,
+                            font=ctk.CTkFont(size=11),
+                            text_color="gray"
+                        )
+                        info_label.pack(anchor="w", pady=(3, 0))
+                        
+                        data_info = f"Aula: {relatorio.get('aula_data', 'N/A')} | Criado: {relatorio.get('data_criacao', 'N/A')}"
+                        if relatorio.get('finalizado', False):
+                            data_info += f" | Finalizado: {relatorio.get('data_finalizacao', 'N/A')}"
+                        
+                        data_label = ctk.CTkLabel(
+                            info_frame,
+                            text=data_info,
+                            font=ctk.CTkFont(size=10),
+                            text_color="gray"
+                        )
+                        data_label.pack(anchor="w", pady=(2, 0))
+                        
+                        # Botão Ver
+                        view_btn = ctk.CTkButton(
+                            rel_frame,
+                            text="👁 Ver",
+                            width=100,
+                            height=35,
+                            fg_color="#16A085",
+                            hover_color="#138D75",
+                            command=lambda r=relatorio: self.show_visualizar_relatorio_admin(r)
+                        )
+                        view_btn.pack(side="right", padx=10, pady=10)
+            
+            for opcao in ["TODOS", "FINALIZADOS", "RASCUNHOS"]:
+                ctk.CTkRadioButton(
+                    filter_frame,
+                    text=opcao.capitalize(),
+                    variable=filter_var,
+                    value=opcao,
+                    command=atualizar_listagem
+                ).pack(side="left", padx=10)
+            
+            # Frame de conteúdo
+            content_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
+            content_frame.pack(pady=20, padx=20, fill="both", expand=True)
+            
+            # Carregar listagem inicial
+            atualizar_listagem()
+        
+        # Botão Voltar
+        back_btn = ctk.CTkButton(
+            main_frame,
+            text="← Voltar",
+            font=ctk.CTkFont(size=16),
+            width=200,
+            height=50,
+            command=self.show_admin_menu,
+            fg_color="gray",
+            hover_color="darkgray"
+        )
+        back_btn.pack(pady=30)
+    
+    def show_visualizar_relatorio_admin(self, relatorio):
+        """Modal para admin visualizar relatório"""
+        dialog = ctk.CTkToplevel(self.app)
+        dialog.title("Visualizar Relatório - Admin")
+        dialog.geometry("850x750")
+        dialog.grab_set()
+        
+        main_scroll = ctk.CTkScrollableFrame(dialog, width=800, height=680)
+        main_scroll.pack(fill="both", expand=True, padx=10, pady=10)
+        
+        # Título
+        title = ctk.CTkLabel(
+            main_scroll,
+            text="📄 Relatório de Aula",
+            font=ctk.CTkFont(size=24, weight="bold")
+        )
+        title.pack(pady=20)
+        
+        # Badge de Status
+        if relatorio.get('finalizado', False):
+            status_frame = ctk.CTkFrame(main_scroll, fg_color="#2CC985", corner_radius=10)
+            status_text = "✓ RELATÓRIO FINALIZADO"
+        else:
+            status_frame = ctk.CTkFrame(main_scroll, fg_color="#F39C12", corner_radius=10)
+            status_text = "⚠ RASCUNHO"
+        
+        status_frame.pack(pady=10)
+        ctk.CTkLabel(
+            status_frame,
+            text=status_text,
+            font=ctk.CTkFont(size=13, weight="bold"),
+            text_color="white"
+        ).pack(padx=25, pady=8)
+        
+        # Informações Completas
+        info_frame = ctk.CTkFrame(main_scroll)
+        info_frame.pack(pady=15, padx=40, fill="x")
+        
+        info_data = [
+            ("Professor", relatorio.get('professor_nome', 'N/A')),
+            ("Email do Professor", relatorio.get('professor_email', 'N/A')),
+            ("Turma", relatorio.get('turma_nome', 'N/A')),
+            ("Disciplina", relatorio.get('disciplina', 'N/A')),
+            ("Aula", relatorio.get('aula_titulo', 'N/A')),
+            ("Data da Aula", relatorio.get('aula_data', 'N/A')),
+            ("Criado em", relatorio.get('data_criacao', 'N/A'))
+        ]
+        
+        if relatorio.get('finalizado', False):
+            info_data.append(("Finalizado em", relatorio.get('data_finalizacao', 'N/A')))
+        
+        for label, value in info_data:
+            row_frame = ctk.CTkFrame(info_frame, fg_color="transparent")
+            row_frame.pack(fill="x", pady=3, padx=15)
+            
+            ctk.CTkLabel(
+                row_frame,
+                text=f"{label}:",
+                font=ctk.CTkFont(size=12, weight="bold"),
+                width=150,
+                anchor="w"
+            ).pack(side="left")
+            
+            ctk.CTkLabel(
+                row_frame,
+                text=value,
+                font=ctk.CTkFont(size=12),
+                text_color="gray",
+                anchor="w"
+            ).pack(side="left", padx=10)
+        
+        # Separador
+        separator = ctk.CTkFrame(main_scroll, height=2, fg_color="gray")
+        separator.pack(fill="x", padx=40, pady=20)
+        
+        # Conteúdo do Relatório
+        ctk.CTkLabel(
+            main_scroll,
+            text="Conteúdo do Relatório:",
+            font=ctk.CTkFont(size=15, weight="bold")
+        ).pack(pady=(10, 5), padx=40, anchor="w")
+        
+        relatorio_text = ctk.CTkTextbox(
+            main_scroll,
+            width=750,
+            height=300,
+            font=ctk.CTkFont(size=13),
+            wrap="word"
+        )
+        relatorio_text.pack(padx=40, pady=(0, 20))
+        relatorio_text.insert("1.0", relatorio.get('texto', ''))
+        relatorio_text.configure(state="disabled")
+        
+        # Botão Fechar
+        close_btn = ctk.CTkButton(
+            main_scroll,
+            text="Fechar",
+            command=dialog.destroy,
+            width=200,
+            height=45,
+            fg_color="gray",
+            hover_color="darkgray"
+        )
+        close_btn.pack(pady=20)
+    
     def darken_color(self, hex_color):
         """Escurecer cor"""
         hex_color = hex_color.lstrip('#')

@@ -5,6 +5,20 @@ from pathlib import Path
 import shutil
 import base64
 
+# Função helper para conversão segura de datas
+def safe_parse_date(date_string, date_format, default_date=None):
+    """Converte string para datetime de forma segura, retornando data padrão em caso de erro"""
+    if default_date is None:
+        default_date = datetime(2000, 1, 1)
+    
+    if not date_string or not isinstance(date_string, str):
+        return default_date
+    
+    try:
+        return datetime.strptime(date_string, date_format)
+    except (ValueError, TypeError):
+        return default_date
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATABASE_DIR = BASE_DIR / "database"
 
@@ -15,6 +29,7 @@ ENTREGAS_FILE = DATABASE_DIR / "entregas.json"
 MATRICULAS_FILE = DATABASE_DIR / "matriculas.json"
 USERS_FILE = DATABASE_DIR / "users.json"
 FREQUENCIA_FILE = DATABASE_DIR / "frequencia.json"
+RELATORIOS_FILE = DATABASE_DIR / "relatorios.json"
 ARQUIVOS_DIR = DATABASE_DIR / "arquivos"
 
 ARQUIVOS_DIR.mkdir(exist_ok=True)
@@ -400,8 +415,6 @@ def limpar_atividades_e_entregas(turma_id):
     
     return True
 
-# ----------------------------------------------------------------------
-
 def excluir_turma(turma_id):
     """
     Exclui uma turma pelo ID e todos os dados relacionados (matrículas, aulas, atividades e notas).
@@ -466,8 +479,8 @@ def get_aulas_turma(turma_id):
             aulas.append(aula)
     
     # Ordenar por data
-    aulas.sort(key=lambda x: datetime.strptime(x['data'], "%d/%m/%Y"), reverse=True)
-    return aulas
+    aulas.sort(key=lambda x: safe_parse_date(x.get('data', ''), "%d/%m/%Y"), reverse=True)
+    return aulas    
 
 def get_todas_aulas_professor(professor_email):
     dados = carregar_json(AULAS_FILE)
@@ -525,6 +538,33 @@ def registrar_frequencia(aula_id, aluno_email, presente):
     
     salvar_json(FREQUENCIA_FILE, dados)
     return True
+
+def registrar_chamada(aula_id, presencas_dict):
+    """Registra a chamada completa de uma aula
+    
+    Args:
+        aula_id: ID da aula
+        presencas_dict: Dicionário {email_aluno: True/False}
+    """
+    try:
+        for aluno_email, presente in presencas_dict.items():
+            registrar_frequencia(aula_id, aluno_email, presente)
+        return True
+    except Exception as e:
+        print(f"Erro ao registrar chamada: {e}")
+        return False
+
+def get_frequencia_aula(aula_id):
+    """Obtém a frequência de todos os alunos em uma aula específica"""
+    dados = carregar_json(FREQUENCIA_FILE)
+    frequencias = {}
+    
+    for freq_id, freq in dados.get('frequencias', {}).items():
+        if freq.get('aula_id') == str(aula_id):
+            aluno_email = freq.get('aluno_email')
+            frequencias[aluno_email] = freq.get('presente', False)
+    
+    return frequencias
 
 def calcular_frequencia_aluno_turma(aluno_email, turma_id):
     """Calcula a frequência percentual de um aluno em uma turma"""
@@ -1213,6 +1253,149 @@ def exportar_relatorio_txt(relatorio, save_path):
         print(f"Erro ao exportar relatório: {e}")
         return False
 
+# ==================== RELATÓRIOS DE AULAS ====================
+
+def criar_relatorio_aula(turma_id, aula_id, professor_email, texto):
+    """Cria um novo relatório de aula (rascunho)"""
+    dados = carregar_json(RELATORIOS_FILE)
+    
+    if 'relatorios' not in dados:
+        dados['relatorios'] = {}
+    if 'proximo_id' not in dados:
+        dados['proximo_id'] = 1
+    
+    relatorio_id = str(dados['proximo_id'])
+    dados['proximo_id'] += 1
+    
+    dados['relatorios'][relatorio_id] = {
+        'id': relatorio_id,
+        'turma_id': turma_id,
+        'aula_id': aula_id,
+        'professor_email': professor_email,
+        'texto': texto,
+        'data_criacao': datetime.now().strftime("%d/%m/%Y %H:%M"),
+        'data_finalizacao': None,
+        'finalizado': False
+    }
+    
+    salvar_json(RELATORIOS_FILE, dados)
+    return relatorio_id
+
+def editar_relatorio_aula(relatorio_id, novo_texto):
+    """Edita um relatório de aula (somente se não estiver finalizado)"""
+    dados = carregar_json(RELATORIOS_FILE)
+    
+    if relatorio_id not in dados.get('relatorios', {}):
+        return False
+    
+    relatorio = dados['relatorios'][relatorio_id]
+    
+    if relatorio.get('finalizado', False):
+        return False  # Não pode editar relatório finalizado
+    
+    dados['relatorios'][relatorio_id]['texto'] = novo_texto
+    salvar_json(RELATORIOS_FILE, dados)
+    return True
+
+def finalizar_relatorio_aula(relatorio_id):
+    """Finaliza um relatório de aula (após isso não pode mais ser editado)"""
+    dados = carregar_json(RELATORIOS_FILE)
+    
+    if relatorio_id not in dados.get('relatorios', {}):
+        return False
+    
+    dados['relatorios'][relatorio_id]['finalizado'] = True
+    dados['relatorios'][relatorio_id]['data_finalizacao'] = datetime.now().strftime("%d/%m/%Y %H:%M")
+    
+    salvar_json(RELATORIOS_FILE, dados)
+    return True
+
+def get_relatorio_por_aula(aula_id):
+    """Busca relatório de uma aula específica"""
+    dados = carregar_json(RELATORIOS_FILE)
+    
+    for relatorio in dados.get('relatorios', {}).values():
+        if relatorio.get('aula_id') == aula_id:
+            return relatorio
+    
+    return None
+
+def get_relatorios_professor(professor_email):
+    """Retorna todos os relatórios de um professor"""
+    dados = carregar_json(RELATORIOS_FILE)
+    relatorios = []
+    
+    for relatorio in dados.get('relatorios', {}).values():
+        if relatorio.get('professor_email') == professor_email:
+            # Adicionar informações da turma e aula
+            relatorio_copy = relatorio.copy()
+            
+            turma = carregar_json(TURMAS_FILE).get('turmas', {}).get(relatorio['turma_id'])
+            if turma:
+                relatorio_copy['turma_nome'] = turma.get('nome', 'N/A')
+                relatorio_copy['disciplina'] = turma.get('disciplina', 'N/A')
+            
+            aula = get_aula_by_id(relatorio['aula_id'])
+            if aula:
+                relatorio_copy['aula_titulo'] = aula.get('titulo', 'N/A')
+                relatorio_copy['aula_data'] = aula.get('data', 'N/A')
+            
+            relatorios.append(relatorio_copy)
+    
+    return relatorios
+
+def get_relatorios_turma(turma_id):
+    """Retorna todos os relatórios de uma turma"""
+    dados = carregar_json(RELATORIOS_FILE)
+    relatorios = []
+    
+    for relatorio in dados.get('relatorios', {}).values():
+        if relatorio.get('turma_id') == turma_id:
+            relatorio_copy = relatorio.copy()
+            
+            aula = get_aula_by_id(relatorio['aula_id'])
+            if aula:
+                relatorio_copy['aula_titulo'] = aula.get('titulo', 'N/A')
+                relatorio_copy['aula_data'] = aula.get('data', 'N/A')
+            
+            relatorios.append(relatorio_copy)
+    
+    return relatorios
+
+def get_todos_relatorios():
+    """Retorna todos os relatórios do sistema (para admin)"""
+    dados = carregar_json(RELATORIOS_FILE)
+    relatorios = []
+    
+    for relatorio in dados.get('relatorios', {}).values():
+        relatorio_copy = relatorio.copy()
+        
+        # Adicionar informações do professor
+        professor = get_user_data(relatorio['professor_email'])
+        if professor:
+            relatorio_copy['professor_nome'] = professor.get('nome', 'N/A')
+        
+        # Adicionar informações da turma
+        turma = carregar_json(TURMAS_FILE).get('turmas', {}).get(relatorio['turma_id'])
+        if turma:
+            relatorio_copy['turma_nome'] = turma.get('nome', 'N/A')
+            relatorio_copy['disciplina'] = turma.get('disciplina', 'N/A')
+        
+        # Adicionar informações da aula
+        aula = get_aula_by_id(relatorio['aula_id'])
+        if aula:
+            relatorio_copy['aula_titulo'] = aula.get('titulo', 'N/A')
+            relatorio_copy['aula_data'] = aula.get('data', 'N/A')
+        
+        relatorios.append(relatorio_copy)
+    
+    return relatorios
+
+def get_aula_by_id(aula_id):
+    """Busca uma aula pelo ID"""
+    dados = carregar_json(AULAS_FILE)
+    return dados.get('aulas', {}).get(aula_id)
+
 # ==================== LIMPEZA DE DADOS ====================
 
 def limpar_turmas_antigas():
@@ -1264,6 +1447,7 @@ def arquivar_usuarios_inativos():
     return 0
 
 def get_atividades_pendentes_aluno(aluno_email):
+    
     """Obtém todas as atividades que o aluno ainda não entregou"""
     turmas = get_turmas_aluno(aluno_email)
     entregas = carregar_json(ENTREGAS_FILE).get('entregas', {})
