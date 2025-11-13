@@ -114,6 +114,7 @@ class SistemaGestaoEscolar(ctk.CTk):
                 user_data['rm'] = gerar_rm()
             users_db[email_validado] = user_data
             salvar_usuarios()
+            carregar_usuarios()
             if role == "USER":
                 messagebox.showinfo("Sucesso", f"Conta criada com sucesso!\nBem-vindo, {nome}!\n\nSeu RM: {user_data['rm']}")
             else:
