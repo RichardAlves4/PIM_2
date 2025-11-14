@@ -183,7 +183,7 @@ class TelaRegistroAulas:
         data_entry.pack(padx=20, pady=(0, 15))
         
         # Título da aula
-        limite_titulo = 100
+        limite_titulo = 46
         titulo_var = ctk.StringVar()
         ctk.CTkLabel(
             form_frame,
@@ -204,7 +204,7 @@ class TelaRegistroAulas:
         # Conteúdo/descrição
         ctk.CTkLabel(
             form_frame,
-            text="Conteúdo da Aula:(máximo 500 caracteres)",
+            text="Conteúdo da Aula:(máximo 1000 caracteres)",
             font=ctk.CTkFont(size=14, weight="bold")
         ).pack(anchor="w", padx=20, pady=(10, 5))
         
@@ -216,7 +216,7 @@ class TelaRegistroAulas:
         conteudo_text.pack(padx=20, pady=(0, 15))
         
         # Observações
-        limite_texto_curto = 200
+        limite_texto_curto = 65
         observacoes_var = ctk.StringVar()
         ctk.CTkLabel(
             form_frame,
@@ -240,7 +240,7 @@ class TelaRegistroAulas:
                 messagebox.showerror("Erro", "Selecione uma turma!")
                 return
             
-            limite_texto = 500
+            limite_texto = 1000
             
             data = data_entry.get().strip()
             titulo = titulo_var.get().strip().title()
@@ -257,9 +257,9 @@ class TelaRegistroAulas:
             from backend.turmas_backend import registrar_aula
             aula_id = registrar_aula(
                 turma_selecionada['id'],
+                data,
                 titulo,
                 conteudo,
-                data,
                 observacoes
             )
             
@@ -335,24 +335,29 @@ class TelaRegistroAulas:
                 ctk.CTkLabel(
                     info_frame,
                     text=f"📅 {aula['data']} - {aula['titulo']}",
-                    font=ctk.CTkFont(size=16, weight="bold")
+                    font=ctk.CTkFont(size=16, weight="bold"),
+                    wraplength=500
                 ).pack(anchor="w")
                 
-                ctk.CTkLabel(
+                conteudo_aula = ctk.CTkTextbox(
                     info_frame,
-                    text=aula['conteudo'][:100] + "..." if len(aula['conteudo']) > 100 else aula['conteudo'],
                     font=ctk.CTkFont(size=13),
                     text_color="gray",
-                    wraplength=600,
-                    justify="left"
-                ).pack(anchor="w", pady=(5, 2))
+                    wrap="word",
+                    height=120,
+                    
+                )
+                conteudo_aula.pack(anchor="w", pady=(5, 2),fill="x", expand=True)
+                conteudo_aula.insert("0.0", aula['conteudo'])
+                conteudo_aula.configure(state="disabled")
                 
                 if aula.get('observacoes'):
                     ctk.CTkLabel(
                         info_frame,
                         text=f"Obs: {aula['observacoes']}",
                         font=ctk.CTkFont(size=12),
-                        text_color="#E67E22"
+                        text_color="#E67E22",
+                        wraplength=500
                     ).pack(anchor="w", pady=2)
                 
                 # Verificar se tem chamada

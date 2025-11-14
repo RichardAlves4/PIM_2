@@ -1,94 +1,16 @@
 {
      "frequencias": {
-          "1_alan@aluno.sge.com.br": {
-               "aula_id": "1",
-               "aluno_email": "alan@aluno.sge.com.br",
-               "presente": false,
-               "data_registro": "07/11/2025 00:22"
-          },
-          "1_lucas@aluno.sge.com.br": {
-               "aula_id": "1",
-               "aluno_email": "lucas@aluno.sge.com.br",
-               "presente": false,
-               "data_registro": "07/11/2025 00:22"
-          },
-          "1_demetrio@aluno.sge.com.br": {
-               "aula_id": "1",
-               "aluno_email": "demetrio@aluno.sge.com.br",
-               "presente": true,
-               "data_registro": "07/11/2025 00:22"
-          },
-          "1_richard@aluno.sge.com.br": {
-               "aula_id": "1",
-               "aluno_email": "richard@aluno.sge.com.br",
-               "presente": true,
-               "data_registro": "07/11/2025 00:22"
-          },
-          "1_izabelly@aluno.sge.com.br": {
-               "aula_id": "1",
-               "aluno_email": "izabelly@aluno.sge.com.br",
-               "presente": true,
-               "data_registro": "07/11/2025 00:22"
-          },
-          "3_alan@aluno.sge.com.br": {
-               "aula_id": "3",
-               "aluno_email": "alan@aluno.sge.com.br",
-               "presente": true,
-               "data_registro": "12/11/2025 07:21"
-          },
-          "3_lucas@aluno.sge.com.br": {
-               "aula_id": "3",
-               "aluno_email": "lucas@aluno.sge.com.br",
-               "presente": true,
-               "data_registro": "12/11/2025 07:21"
-          },
-          "3_demetrio@aluno.sge.com.br": {
-               "aula_id": "3",
-               "aluno_email": "demetrio@aluno.sge.com.br",
-               "presente": true,
-               "data_registro": "12/11/2025 07:21"
-          },
-          "3_richard@aluno.sge.com.br": {
-               "aula_id": "3",
-               "aluno_email": "richard@aluno.sge.com.br",
-               "presente": true,
-               "data_registro": "12/11/2025 07:21"
-          },
-          "3_izabelly@aluno.sge.com.br": {
-               "aula_id": "3",
-               "aluno_email": "izabelly@aluno.sge.com.br",
-               "presente": true,
-               "data_registro": "12/11/2025 07:21"
-          },
-          "3_pedro@aluno.sge.com.br": {
-               "aula_id": "3",
-               "aluno_email": "pedro@aluno.sge.com.br",
-               "presente": true,
-               "data_registro": "12/11/2025 07:21"
-          },
-          "3_vinicius@aluno.sge.com.br": {
-               "aula_id": "3",
-               "aluno_email": "vinicius@aluno.sge.com.br",
-               "presente": true,
-               "data_registro": "12/11/2025 07:21"
-          },
-          "3_kimberly@aluno.sge.com.br": {
-               "aula_id": "3",
-               "aluno_email": "kimberly@aluno.sge.com.br",
-               "presente": true,
-               "data_registro": "12/11/2025 07:21"
-          },
           "4_aluno123@aluno.sge.com.br": {
                "aula_id": "4",
                "aluno_email": "aluno123@aluno.sge.com.br",
                "presente": true,
-               "data_registro": "12/11/2025 07:53"
+               "data_registro": "14/11/2025 19:40"
           },
           "4_marcio@aluno.sge.com.br": {
                "aula_id": "4",
                "aluno_email": "marcio@aluno.sge.com.br",
                "presente": true,
-               "data_registro": "12/11/2025 07:53"
+               "data_registro": "14/11/2025 19:40"
           }
      }
 }
