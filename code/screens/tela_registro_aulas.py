@@ -9,6 +9,14 @@ class TelaRegistroAulas:
         self.app = app
         self.user_email = user_email
     
+    def limitar_caracteres(self, var, limite):
+        def callback(*args):
+            conteudo = var.get()
+            if len(conteudo) > limite:
+                # Corta o conteúdo no tamanho máximo
+                var.set(conteudo[:limite])
+        return callback
+
     def show_registro_aulas(self):
         """Exibe a tela principal de registro de aulas"""
         self.app.clear_window()
@@ -175,6 +183,8 @@ class TelaRegistroAulas:
         data_entry.pack(padx=20, pady=(0, 15))
         
         # Título da aula
+        limite_titulo = 100
+        titulo_var = ctk.StringVar()
         ctk.CTkLabel(
             form_frame,
             text="Título da Aula:",
@@ -185,14 +195,16 @@ class TelaRegistroAulas:
             form_frame,
             placeholder_text="Ex: Introdução à Álgebra Linear",
             width=600,
-            height=40
+            height=40,
+            textvariable=titulo_var
         )
         titulo_entry.pack(padx=20, pady=(0, 15))
+        titulo_var.trace_add("write", self.limitar_caracteres(titulo_var, limite_titulo))
         
         # Conteúdo/descrição
         ctk.CTkLabel(
             form_frame,
-            text="Conteúdo da Aula:",
+            text="Conteúdo da Aula:(máximo 500 caracteres)",
             font=ctk.CTkFont(size=14, weight="bold")
         ).pack(anchor="w", padx=20, pady=(10, 5))
         
@@ -204,6 +216,8 @@ class TelaRegistroAulas:
         conteudo_text.pack(padx=20, pady=(0, 15))
         
         # Observações
+        limite_texto_curto = 200
+        observacoes_var = ctk.StringVar()
         ctk.CTkLabel(
             form_frame,
             text="Observações (opcional):",
@@ -214,9 +228,11 @@ class TelaRegistroAulas:
             form_frame,
             placeholder_text="Ex: Prova na próxima aula",
             width=600,
-            height=40
+            height=40,
+            textvariable=observacoes_var
         )
         observacoes_entry.pack(padx=20, pady=(0, 15))
+        observacoes_var.trace_add("write", self.limitar_caracteres(observacoes_var, limite_texto_curto))
         
         def salvar_aula():
             turma_selecionada = turma_map.get(turma_var.get())
@@ -224,14 +240,19 @@ class TelaRegistroAulas:
                 messagebox.showerror("Erro", "Selecione uma turma!")
                 return
             
+            limite_texto = 500
+            
             data = data_entry.get().strip()
-            titulo = titulo_entry.get().strip()
+            titulo = titulo_var.get().strip().title()
             conteudo = conteudo_text.get("1.0", "end-1c").strip()
-            observacoes = observacoes_entry.get().strip()
+            observacoes = observacoes_var.get().strip()
             
             if not all([data, titulo, conteudo]):
                 messagebox.showerror("Erro", "Preencha todos os campos obrigatórios!")
                 return
+            if len(conteudo) > limite_texto:
+                messagebox.showerror("Erro", f"O conteúdo não pode ter mais de {limite_texto} caracteres.")
+                return 
             
             from backend.turmas_backend import registrar_aula
             aula_id = registrar_aula(
