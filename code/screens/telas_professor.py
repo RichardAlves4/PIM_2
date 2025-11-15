@@ -473,7 +473,7 @@ class TelasProfessor:
                     aulas_por_turma[turma_id] = {
                         'turma_nome': nome,
                         'disciplina': disciplina,
-                        'aulas': []
+                        'aulas': [] 
                     }
                 aulas_por_turma[turma_id]['aulas'].append(aula)
             
@@ -538,7 +538,7 @@ class TelasProfessor:
                                 height=35,
                                 fg_color="#16A085",
                                 hover_color="#138D75",
-                                command=lambda r=relatorio: self.show_visualizar_relatorio(r)
+                                command=lambda a=aula, r=relatorio: self.show_visualizar_relatorio(a, r)
                             )
                             view_btn.pack(pady=3)
                         else:
@@ -588,11 +588,13 @@ class TelasProfessor:
         """Modal para criar ou editar relatório de aula"""
         dialog = ctk.CTkToplevel(self.app)
         dialog.title("Relatório de Aula")
-        dialog.geometry("800x700")
+        dialog.geometry("700x600")
         dialog.grab_set()
-        
-        main_scroll = ctk.CTkScrollableFrame(dialog, width=750, height=630)
-        main_scroll.pack(fill="both", expand=True, padx=10, pady=10)
+        dialog.resizable(height=False, width=False)
+
+        main_scroll = ctk.CTkScrollableFrame(dialog, corner_radius=0)
+        main_scroll.pack(fill="both", expand=True, padx=20, pady=20)
+
         
         # Título
         title_text = "✏️ Editar Relatório" if relatorio_existente else "➕ Criar Relatório"
@@ -605,7 +607,7 @@ class TelasProfessor:
         
         # Informações da aula
         info_frame = ctk.CTkFrame(main_scroll)
-        info_frame.pack(pady=10, padx=40, fill="x")
+        info_frame.pack(pady=10, padx=20, fill="x")
         
         ctk.CTkLabel(
             info_frame,
@@ -613,9 +615,14 @@ class TelasProfessor:
             font=ctk.CTkFont(size=14, weight="bold")
         ).pack(pady=(15, 5), padx=20, anchor="w")
         
+        from backend.turmas_backend import get_detalhes_completos_turma
+        turma_id = aula['turma_id']
+        turma_detalhes = get_detalhes_completos_turma(turma_id)
+        nome = turma_detalhes.get('nome', 'N/A')
+                
         ctk.CTkLabel(
             info_frame,
-            text=f"Data: {aula['data']} | Turma: {aula.get('turma_nome', 'N/A')}",
+            text=f"Data: {aula['data']} | Turma: {nome}",
             font=ctk.CTkFont(size=12),
             text_color="gray"
         ).pack(pady=(0, 15), padx=20, anchor="w")
@@ -623,17 +630,17 @@ class TelasProfessor:
         # Campo de texto para o relatório
         ctk.CTkLabel(
             main_scroll,
-            text="Conteúdo do Relatório:",
+            text="Conteúdo do Relatório(máximo 2000 caracteres):",
             font=ctk.CTkFont(size=14, weight="bold")
-        ).pack(pady=(20, 5), padx=40, anchor="w")
+        ).pack(pady=(20, 5), padx=20, anchor="w")
         
         relatorio_text = ctk.CTkTextbox(
             main_scroll,
-            width=700,
             height=300,
+            wrap="word",
             font=ctk.CTkFont(size=13)
         )
-        relatorio_text.pack(padx=40, pady=(0, 20))
+        relatorio_text.pack(padx=20, pady=(0, 15), fill="x")
         
         # Se existe relatório, preencher o texto
         if relatorio_existente:
@@ -658,6 +665,11 @@ class TelasProfessor:
             
             if not texto:
                 messagebox.showerror("Erro", "O relatório não pode estar vazio!")
+                return
+            
+            limite_texto = 2000
+            if len(texto) > limite_texto:
+                messagebox.showerror("Erro", f"O conteúdo não pode ter mais de {limite_texto} caracteres.")
                 return
             
             from backend.turmas_backend import criar_relatorio_aula, editar_relatorio_aula
@@ -694,6 +706,11 @@ class TelasProfessor:
             
             if not texto:
                 messagebox.showerror("Erro", "O relatório não pode estar vazio!")
+                return
+            
+            limite_texto = 2000
+            if len(texto) > limite_texto:
+                messagebox.showerror("Erro", f"O conteúdo não pode ter mais de {limite_texto} caracteres.")
                 return
             
             resposta = messagebox.askyesno(
@@ -761,8 +778,20 @@ class TelasProfessor:
             hover_color="#25A066"
         )
         finalize_btn.pack(side="left", padx=10)
+
+        back_btn = ctk.CTkButton(
+            dialog,
+            text="fechar",
+            font=ctk.CTkFont(size=16),
+            width=200,
+            height=50,
+            command=self.show_relatorios_aulas,
+            fg_color="gray",
+            hover_color="darkgray"
+        )
+        back_btn.pack(pady=30)
     
-    def show_visualizar_relatorio(self, relatorio):
+    def show_visualizar_relatorio(self, aula, relatorio):
         """Modal para visualizar relatório finalizado"""
         dialog = ctk.CTkToplevel(self.app)
         dialog.title("Visualizar Relatório")
@@ -795,10 +824,19 @@ class TelasProfessor:
         info_frame = ctk.CTkFrame(main_scroll)
         info_frame.pack(pady=15, padx=40, fill="x")
         
+        from backend.turmas_backend import get_detalhes_completos_turma
+        turma_id = relatorio['turma_id']
+        titulo = aula.get('titulo', 'N/A')
+        data = aula.get('data_registro', 'N/A')
+
+        turma_detalhes = get_detalhes_completos_turma(turma_id)
+        nome = turma_detalhes.get('nome', 'N/A')
+        disciplina = turma_detalhes.get('disciplina', 'N/A')
+
         info_lines = [
-            f"Aula: {relatorio.get('aula_titulo', 'N/A')}",
-            f"Data da Aula: {relatorio.get('aula_data', 'N/A')}",
-            f"Turma: {relatorio.get('turma_nome', 'N/A')} - {relatorio.get('disciplina', 'N/A')}",
+            f"Aula: {titulo}",
+            f"Data da Aula: {data}",
+            f"Turma: {nome} - {disciplina}",
             f"Criado em: {relatorio.get('data_criacao', 'N/A')}",
             f"Finalizado em: {relatorio.get('data_finalizacao', 'N/A')}"
         ]

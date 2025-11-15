@@ -30,3 +30,6 @@ janela.minsize(width=500, height=300)
 
 #dita qual dimensão o usuário pode manipular
 janela.resizable(width=False, height=True)
+
+scrollbar_height=8
+
