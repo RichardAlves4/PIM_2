@@ -93,8 +93,7 @@ def get_detalhes_completos_usuario(email):
         return None
     
     detalhes = user_data.copy()
-    detalhes['data_cadastro'] = "N/A"
-    
+    detalhes['data_cadastro'] = "N/A"   
     if user_data.get('role') == 'INSTRUCTOR':
         turmas = get_turmas_professor(email)
         detalhes['total_turmas'] = len(turmas)
@@ -114,7 +113,13 @@ def get_detalhes_completos_usuario(email):
         detalhes['media_geral'] = sum(medias) / len(medias) if medias else 0
         frequencia_media = calcular_frequencia_media_aluno(email)
         detalhes['frequencia_media'] = frequencia_media
-    
+        
+        dados_matriculas = carregar_json(MATRICULAS_FILE)
+
+        if email in dados_matriculas.get('matriculas', {}):
+            data_matricula = dados_matriculas['matriculas'][email].get('data_matricula', 'N/A')
+            detalhes['data_matricula'] = data_matricula
+  
     return detalhes
 
 def editar_usuario(email, nome, role, senha_criptografada=None):
