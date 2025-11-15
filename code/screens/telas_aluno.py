@@ -17,6 +17,14 @@ class TelasAluno:
     def __init__(self, app, user_email):
         self.app = app
         self.user_email = user_email
+
+    def limitar_caracteres(self, var, limite):
+        def callback(*args):
+            conteudo = var.get()
+            if len(conteudo) > limite:
+                # Corta o conteúdo no tamanho máximo
+                var.set(conteudo[:limite])
+        return callback
     
     def show_aluno_menu(self):
         self.app.clear_window()
@@ -99,10 +107,29 @@ class TelasAluno:
             ctk.CTkLabel(tabs.tab("📝 Aulas Ministradas"), text="Nenhuma aula registrada ainda.", text_color="gray").pack(pady=20)
         else:
             for aula in aulas:
+
                 aula_frame = ctk.CTkFrame(tabs.tab("📝 Aulas Ministradas"))
                 aula_frame.pack(pady=5, padx=10, fill="x")
-                ctk.CTkLabel(aula_frame, text=f"📅 {aula['data']} - {aula['titulo']}", font=ctk.CTkFont(size=14, weight="bold")).pack(anchor="w", padx=20, pady=(10, 5))
-                ctk.CTkLabel(aula_frame, text=aula['conteudo'], font=ctk.CTkFont(size=12), text_color="gray", wraplength=700, justify="left").pack(anchor="w", padx=20, pady=(2, 10))
+
+                ctk.CTkLabel(
+                    aula_frame, 
+                    text=f"📅 {aula['data']} - {aula['titulo']}", 
+                    font=ctk.CTkFont(size=14, weight="bold"),
+                    wraplength=500
+                ).pack(anchor="w", padx=20, pady=(10, 5))
+                
+                conteudo_aula = ctk.CTkTextbox(
+                    aula_frame,
+                    font=ctk.CTkFont(size=13),
+                    text_color="gray",
+                    wrap="word",
+                    height=120,
+                    
+                )
+                conteudo_aula.pack(anchor="w", pady=(5, 2),fill="x", expand=True)
+                conteudo_aula.insert("0.0", aula['conteudo'])
+                conteudo_aula.configure(state="disabled")
+
         atividades = get_atividades_turma_aluno(turma['id'], self.user_email)
         if not atividades:
             ctk.CTkLabel(tabs.tab("📋 Atividades"), text="Nenhuma atividade disponível.", text_color="gray").pack(pady=20)
@@ -113,8 +140,20 @@ class TelasAluno:
                 info_frame = ctk.CTkFrame(ativ_frame, fg_color="transparent")
                 info_frame.pack(side="left", fill="x", expand=True, padx=20, pady=10)
                 status_icon = "✅" if atividade['entregue'] else "⏰"
-                ctk.CTkLabel(info_frame, text=f"{status_icon} {atividade['titulo']}", font=ctk.CTkFont(size=14, weight="bold")).pack(anchor="w")
-                ctk.CTkLabel(info_frame, text=f"Prazo: {atividade['data_entrega']} | Valor: {atividade['valor']} pontos", font=ctk.CTkFont(size=12), text_color="gray").pack(anchor="w", pady=2)
+
+                ctk.CTkLabel(
+                    info_frame, 
+                    text=f"{status_icon} {atividade['titulo']}", 
+                    font=ctk.CTkFont(size=14, weight="bold"),
+                    wraplength=400
+                ).pack(anchor="w")
+
+                ctk.CTkLabel(
+                    info_frame, 
+                    text=f"Prazo: {atividade['data_entrega']} | Valor: {atividade['valor']} pontos", 
+                    font=ctk.CTkFont(size=12), text_color="gray"
+                ).pack(anchor="w", pady=2)
+
                 if atividade['entregue']:
                     if atividade.get('nota'):
                         ctk.CTkLabel(info_frame, text=f"Nota: {atividade['nota']}/{atividade['valor']}", font=ctk.CTkFont(size=12, weight="bold"), text_color="#2CC985").pack(anchor="w", pady=2)
@@ -144,21 +183,60 @@ class TelasAluno:
         main_frame = ctk.CTkScrollableFrame(self.app, corner_radius=0)
         main_frame.pack(fill="both", expand=True, padx=20, pady=20)
         
-        title_label = ctk.CTkLabel(main_frame, text=f"📤 Entregar: {atividade['titulo']}", font=ctk.CTkFont(size=24, weight="bold"))
+        title_label = ctk.CTkLabel(
+            main_frame, 
+            text=f"📤 Entregar: {atividade['titulo']}", 
+            font=ctk.CTkFont(size=24, weight="bold"),
+            wraplength=400
+        )
         title_label.pack(pady=(20, 10))
-        info_label = ctk.CTkLabel(main_frame, text=f"Prazo: {atividade['data_entrega']} | Valor: {atividade['valor']} pontos", font=ctk.CTkFont(size=14), text_color="gray")
+
+        info_label = ctk.CTkLabel(
+            main_frame, text=f"Prazo: {atividade['data_entrega']} | Valor: {atividade['valor']} pontos", 
+            font=ctk.CTkFont(size=14), 
+            text_color="gray"
+        )
         info_label.pack(pady=(0, 20))
+
         desc_frame = ctk.CTkFrame(main_frame)
         desc_frame.pack(pady=10, padx=50, fill="both", expand=True)
-        ctk.CTkLabel(desc_frame, text="Descrição da Atividade:", font=ctk.CTkFont(size=14, weight="bold")).pack(anchor="w", padx=20, pady=(20, 5))
-        desc_text = ctk.CTkTextbox(desc_frame, height=100, state="normal")
-        desc_text.pack(pady=5, padx=20, fill="x")
-        desc_text.insert("1.0", atividade['descricao'])
+
+        ctk.CTkLabel(
+            desc_frame, 
+            text="Descrição da Atividade:", 
+            font=ctk.CTkFont(size=14, weight="bold")
+        ).pack(anchor="w", padx=20, pady=(20, 5))
+
+        desc_text = ctk.CTkTextbox(
+            desc_frame, 
+            height=150,
+            font=ctk.CTkFont(size=13),
+            text_color="gray",
+            wrap="word",
+        )
+        desc_text.pack(anchor="w", pady=(5, 2), fill="x", expand=True)
+        desc_text.insert("0.0", atividade['descricao'])
         desc_text.configure(state="disabled")
-        ctk.CTkLabel(desc_frame, text="Sua Resposta:", font=ctk.CTkFont(size=14, weight="bold")).pack(anchor="w", padx=20, pady=(20, 5))
-        resposta_text = ctk.CTkTextbox(desc_frame, height=150)
+
+        ctk.CTkLabel(
+            desc_frame, 
+            text="Sua Resposta(máximo 2000 caracteres): ", 
+            font=ctk.CTkFont(size=14, weight="bold")
+        ).pack(anchor="w", padx=20, pady=(20, 5))
+
+        resposta_text = ctk.CTkTextbox(
+            desc_frame,
+            height=150,
+            wrap="word",
+        )
         resposta_text.pack(pady=5, padx=20, fill="both", expand=True)
-        file_label = ctk.CTkLabel(desc_frame, text="Nenhum arquivo selecionado", font=ctk.CTkFont(size=12), text_color="gray")
+
+        file_label = ctk.CTkLabel(
+            desc_frame, 
+            text="Nenhum arquivo selecionado", 
+            font=ctk.CTkFont(size=12), text_color="gray"
+        )
+
         file_label.pack(pady=10)
         selected_file = {"path": None}
         def select_file():
@@ -166,13 +244,27 @@ class TelasAluno:
             if filepath:
                 selected_file["path"] = filepath
                 file_label.configure(text=f"Arquivo: {filepath.split('/')[-1]}")
-        file_btn = ctk.CTkButton(desc_frame, text="📎 Anexar Arquivo (Opcional)", width=200, command=select_file)
+
+        file_btn = ctk.CTkButton(
+            desc_frame, 
+            text="📎 Anexar Arquivo (Opcional)", 
+            width=200, 
+            command=select_file
+        )
         file_btn.pack(pady=10)
+
         def process_entrega():
             resposta = resposta_text.get("1.0", "end-1c").strip()
+            limite_texto = 2000
+
             if not resposta and not selected_file["path"]:
                 messagebox.showerror("Erro", "Você precisa escrever uma resposta ou anexar um arquivo!")
                 return
+            
+            if len(resposta) > limite_texto:
+                messagebox.showerror("Erro", f"O conteúdo não pode ter mais de {limite_texto} caracteres.")
+                return
+            
             from backend.turmas_backend import entregar_atividade
             sucesso, mensagem = entregar_atividade(atividade['id'], self.user_email, selected_file["path"], resposta)
             if sucesso:
@@ -189,14 +281,23 @@ class TelasAluno:
     
     def show_ver_entrega(self, atividade):
         self.app.clear_window()
+
         main_frame = ctk.CTkScrollableFrame(self.app, corner_radius=0)
         main_frame.pack(fill="both", expand=True, padx=20, pady=20)
-        title_label = ctk.CTkLabel(main_frame, text=f"📄 {atividade['titulo']}", font=ctk.CTkFont(size=24, weight="bold"))
+
+        title_label = ctk.CTkLabel(
+            main_frame, text=f"📄 {atividade['titulo']}", 
+            font=ctk.CTkFont(size=24, weight="bold"),
+            wraplength=400
+        )
         title_label.pack(pady=(20, 10))
+
         info_label = ctk.CTkLabel(main_frame, text=f"Entregue em: {atividade['data_entrega']}", font=ctk.CTkFont(size=14), text_color="gray")
         info_label.pack(pady=(0, 20))
+
         content_frame = ctk.CTkFrame(main_frame)
         content_frame.pack(pady=10, padx=50, fill="both", expand=True)
+
         ctk.CTkLabel(content_frame, text="Sua Resposta:", font=ctk.CTkFont(size=14, weight="bold")).pack(anchor="w", padx=20, pady=(20, 5))
         resposta_text = ctk.CTkTextbox(content_frame, height=150, state="normal")
         resposta_text.pack(pady=5, padx=20, fill="both", expand=True)
@@ -257,19 +358,56 @@ class TelasAluno:
                 ativ_frame.pack(pady=10, padx=40, fill="x")
                 info_frame = ctk.CTkFrame(ativ_frame, fg_color="transparent")
                 info_frame.pack(side="left", fill="x", expand=True, padx=20, pady=15)
-                ctk.CTkLabel(info_frame, text=f"⏰ {atividade['titulo']}", font=ctk.CTkFont(size=16, weight="bold")).pack(anchor="w")
-                ctk.CTkLabel(info_frame, text=f"Turma: {atividade.get('turma_nome', 'N/A')} | Prazo: {atividade['data_entrega']}", font=ctk.CTkFont(size=13), text_color="gray").pack(anchor="w", pady=2)
-                ctk.CTkLabel(info_frame, text=f"Valor: {atividade['valor']} pontos", font=ctk.CTkFont(size=12), text_color="gray").pack(anchor="w", pady=2)
-                ctk.CTkButton(ativ_frame, text="Entregar", width=120, height=35, fg_color="#2CC985", hover_color="#25A066", command=lambda a=atividade: self.show_entregar_atividade(a)).pack(side="right", padx=10, pady=10)
-        back_btn = ctk.CTkButton(main_frame, text="← Voltar", font=ctk.CTkFont(size=16), width=200, height=50, command=self.show_aluno_menu, fg_color="gray", hover_color="darkgray")
+
+                ctk.CTkLabel(
+                    info_frame, text=f"⏰ {atividade['titulo']}", 
+                    font=ctk.CTkFont(size=16, weight="bold"),
+                    wraplength=400
+                ).pack(anchor="w")
+
+                ctk.CTkLabel(
+                    info_frame, 
+                    text=f"Turma: {atividade.get('turma_nome', 'N/A')} | Prazo: {atividade['data_entrega']}", 
+                    font=ctk.CTkFont(size=13), text_color="gray"
+                ).pack(anchor="w", pady=2)
+
+                ctk.CTkLabel(
+                    info_frame, 
+                    text=f"Valor: {atividade['valor']} pontos", 
+                    font=ctk.CTkFont(size=12), text_color="gray"
+                ).pack(anchor="w", pady=2)
+
+                ctk.CTkButton(
+                    ativ_frame, 
+                    text="Entregar", 
+                    width=120, 
+                    height=35, 
+                    fg_color="#2CC985", 
+                    hover_color="#25A066", 
+                    command=lambda a=atividade: self.show_entregar_atividade(a)
+                ).pack(side="right", padx=10, pady=10)
+
+        back_btn = ctk.CTkButton(
+            main_frame, text="← Voltar", 
+            font=ctk.CTkFont(size=16), 
+            width=200, 
+            height=50, 
+            command=self.show_aluno_menu, fg_color="gray", hover_color="darkgray")
         back_btn.pack(pady=30)
     
     def show_atividades_entregues(self):
         self.app.clear_window()
+
         main_frame = ctk.CTkScrollableFrame(self.app, corner_radius=0)
         main_frame.pack(fill="both", expand=True, padx=20, pady=20)
-        title_label = ctk.CTkLabel(main_frame, text="✅ Atividades Concluídas", font=ctk.CTkFont(size=28, weight="bold"))
+
+        title_label = ctk.CTkLabel(
+            main_frame, 
+            text="✅ Atividades Concluídas", 
+            font=ctk.CTkFont(size=28, weight="bold")
+        )
         title_label.pack(pady=(20, 30))
+
         from backend.turmas_backend import get_atividades_entregues_aluno
         atividades = get_atividades_entregues_aluno(self.user_email)
         if not atividades:
@@ -281,8 +419,20 @@ class TelasAluno:
                 ativ_frame.pack(pady=10, padx=40, fill="x")
                 info_frame = ctk.CTkFrame(ativ_frame, fg_color="transparent")
                 info_frame.pack(side="left", fill="x", expand=True, padx=20, pady=15)
-                ctk.CTkLabel(info_frame, text=f"✅ {atividade['titulo']}", font=ctk.CTkFont(size=16, weight="bold")).pack(anchor="w")
-                ctk.CTkLabel(info_frame, text=f"Turma: {atividade['turma']} | Entregue em: {atividade['data_entrega']}", font=ctk.CTkFont(size=13), text_color="gray").pack(anchor="w", pady=2)
+
+                ctk.CTkLabel(
+                    info_frame, 
+                    text=f"✅ {atividade['titulo']}", 
+                    font=ctk.CTkFont(size=16, weight="bold"),
+                    wraplength=400
+                ).pack(anchor="w")
+
+                ctk.CTkLabel(
+                    info_frame, 
+                    text=f"Turma: {atividade['turma']} | Entregue em: {atividade['data_entrega']}", 
+                    font=ctk.CTkFont(size=13), 
+                    text_color="gray").pack(anchor="w", pady=2)
+                
                 if atividade.get('nota'):
                     ctk.CTkLabel(info_frame, text=f"Nota: {atividade['nota']}/{atividade['valor']}", font=ctk.CTkFont(size=13, weight="bold"), text_color="#2CC985").pack(anchor="w", pady=2)
                 else:
@@ -327,12 +477,25 @@ class TelasAluno:
                 status = "Aprovado ✓" if media >= 7 else "Reprovado ✗" if media > 0 else "Sem notas"
                 status_color = "#2CC985" if media >= 7 else "#E74C3C" if media > 0 else "gray"
                 ctk.CTkLabel(turma_frame, text=f"Média: {media:.2f} | Frequência: {turma_data['frequencia']}% | Status: {status}", font=ctk.CTkFont(size=14, weight="bold"), text_color=status_color).pack(anchor="w", padx=20, pady=(5, 10))
+                
                 if turma_data['notas']:
-                    notas_header = ctk.CTkLabel(turma_frame, text="Notas por atividade:", font=ctk.CTkFont(size=13, weight="bold"))
+                    notas_header = ctk.CTkLabel(
+                        turma_frame, 
+                        text="Notas por atividade:", 
+                        font=ctk.CTkFont(size=13, weight="bold"),
+                        
+                    )
                     notas_header.pack(anchor="w", padx=20, pady=(5, 5))
+
                     for nota in turma_data['notas']:
-                        nota_line = ctk.CTkLabel(turma_frame, text=f"  • {nota['atividade']}: {nota['nota']}/{nota['valor']}", font=ctk.CTkFont(size=12), text_color="gray")
+                        nota_line = ctk.CTkLabel(
+                            turma_frame, 
+                            text=f"  • {nota['atividade']}: {nota['nota']}/{nota['valor']}", 
+                            font=ctk.CTkFont(size=12), text_color="gray",
+                            wraplength=500
+                        )
                         nota_line.pack(anchor="w", padx=40, pady=2)
+
                 turma_frame.pack_configure(pady=(10, 15))
             if REPORTLAB_AVAILABLE:
                 export_btn = ctk.CTkButton(main_frame, text="📥 Exportar Boletim (PDF)", font=ctk.CTkFont(size=16, weight="bold"), width=250, height=50, command=lambda: self.exportar_boletim_pdf(user_data, boletim), fg_color="#3498DB", hover_color="#2874A6")
@@ -380,10 +543,30 @@ class TelasAluno:
                     if turma_data['notas']:
                         story.append(Spacer(1, 0.3*cm))
                         notas_data = [["Atividade", "Nota", "Valor"]]
+
+                        body_style = styles['Normal']
+                        body_style.fontSize = 8
+                        body_style.leading = 10
+
                         for nota in turma_data['notas']:
-                            notas_data.append([nota['atividade'], str(nota['nota']), str(nota['valor'])])
+                            titulo_atividade = Paragraph(nota['atividade'], body_style)
+
+                            notas_data.append([
+                                titulo_atividade, 
+                                str(nota['nota']), 
+                                str(nota['valor'])
+                            ])
+
                         notas_table = Table(notas_data, colWidths=[10*cm, 3*cm, 3*cm])
-                        notas_table.setStyle(TableStyle([('FONT', (0, 0), (-1, 0), 'Helvetica-Bold', 9), ('FONT', (0, 1), (-1, -1), 'Helvetica', 8), ('ALIGN', (0, 0), (-1, -1), 'LEFT'), ('ALIGN', (1, 0), (-1, -1), 'CENTER'), ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'), ('GRID', (0, 0), (-1, -1), 0.5, colors.grey), ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#ECF0F1'))]))
+                        notas_table.setStyle(TableStyle([
+                            ('FONT', (0, 0), (-1, 0), 'Helvetica-Bold', 9), 
+                            ('FONT', (0, 1), (-1, -1), 'Helvetica', 8), 
+                            ('ALIGN', (0, 0), (-1, -1), 'LEFT'), 
+                            ('ALIGN', (1, 0), (-1, -1), 'CENTER'), 
+                            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'), 
+                            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey), 
+                            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#ECF0F1'))
+                        ]))
                         story.append(notas_table)
                     story.append(Spacer(1, 0.7*cm))
             doc.build(story)

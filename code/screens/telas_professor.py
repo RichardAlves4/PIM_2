@@ -9,6 +9,14 @@ class TelasProfessor:
     def __init__(self, app, user_email):
         self.app = app
         self.user_email = user_email
+
+    def limitar_caracteres(self, var, limite):
+        def callback(*args):
+            conteudo = var.get()
+            if len(conteudo) > limite:
+                # Corta o conteúdo no tamanho máximo
+                var.set(conteudo[:limite])
+        return callback
     
     def show_professor_menu(self):
         self.app.clear_window()
@@ -157,6 +165,7 @@ class TelasProfessor:
         back_btn.pack(pady=30)
     
     def show_criar_turma(self):
+ 
         self.app.clear_window()
 
         scroll_container = ctk.CTkScrollableFrame(self.app, corner_radius=0)
@@ -165,6 +174,7 @@ class TelasProfessor:
         main_frame = ctk.CTkFrame(scroll_container, corner_radius=0)
         main_frame.pack(padx=20, pady=20, fill="x")
         
+        # Título
         title_label = ctk.CTkLabel(
             main_frame,
             text="➕ Criar Nova Turma",
@@ -173,46 +183,51 @@ class TelasProfessor:
         title_label.pack(pady=(20, 30))
         
         form_frame = ctk.CTkFrame(main_frame)
-        form_frame.pack(pady=10, padx=80)
+        form_frame.pack(pady=10, padx=80, fill="x") 
         
+        # 1. Nome
         nome_label = ctk.CTkLabel(form_frame, text="Nome da Turma:", font=ctk.CTkFont(size=14, weight="bold"))
-        nome_label.grid(row=0, column=0, pady=(20, 5), padx=(20, 10), sticky="w")
+        nome_label.pack(pady=(20, 5), padx=20, anchor="w") 
         
-        nome_entry = ctk.CTkEntry(form_frame, placeholder_text="Ex: Turma A - 2024", width=400, height=40)
-        nome_entry.grid(row=0, column=1, pady=(20, 5), padx=(10, 20), sticky="w")
+        nome_entry = ctk.CTkEntry(form_frame, placeholder_text="Ex: Turma A - 2024", height=40)
+        nome_entry.pack(pady=(0, 15), padx=20, fill="x") 
         
+        # 2. Disciplina
         disciplina_label = ctk.CTkLabel(form_frame, text="Disciplina:", font=ctk.CTkFont(size=14, weight="bold"))
-        disciplina_label.grid(row=1, column=0, pady=(15, 5), padx=(20, 10), sticky="w")
+        disciplina_label.pack(pady=(15, 5), padx=20, anchor="w") 
         
-        disciplina_entry = ctk.CTkEntry(form_frame, placeholder_text="Ex: Matemática", width=400, height=40)
-        disciplina_entry.grid(row=1, column=1, pady=(15, 5), padx=(10, 20), sticky="w")
+        disciplina_entry = ctk.CTkEntry(form_frame, placeholder_text="Ex: Matemática", height=40)
+        disciplina_entry.pack(pady=(0, 15), padx=20, fill="x") 
         
+        # 3. Ano
         ano_label = ctk.CTkLabel(form_frame, text="Ano Letivo:", font=ctk.CTkFont(size=14, weight="bold"))
-        ano_label.grid(row=2, column=0, pady=(15, 5), padx=(20, 10), sticky="w")
+        ano_label.pack(pady=(15, 5), padx=20, anchor="w") 
         
-        ano_entry = ctk.CTkEntry(form_frame, placeholder_text="Ex: 2024", width=400, height=40)
-        ano_entry.grid(row=2, column=1, pady=(15, 5), padx=(10, 20), sticky="w")
+        ano_entry = ctk.CTkEntry(form_frame, placeholder_text="Ex: 2024", height=40)
+        ano_entry.pack(pady=(0, 15), padx=20, fill="x") 
         
+        # 4. Período (RadioButton)
         periodo_label = ctk.CTkLabel(form_frame, text="Período:", font=ctk.CTkFont(size=14, weight="bold"))
-        periodo_label.grid(row=3, column=0, pady=(15, 5), padx=(20, 10), sticky="w")
+        periodo_label.pack(pady=(15, 5), padx=20, anchor="w")
         
         periodo_var = ctk.StringVar(value="Manhã")
         periodo_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
-        periodo_frame.grid(row=3, column=1, pady=(15, 5), padx=(10, 20), sticky="w")
+        
+        periodo_frame.pack(pady=(0, 15), padx=20, anchor="w") 
         
         periodos = ["Manhã", "Tarde", "Noite", "Integral"]
         for periodo in periodos:
             rb = ctk.CTkRadioButton(periodo_frame, text=periodo, variable=periodo_var, value=periodo)
-            rb.pack(side="left", padx=10)
+            rb.pack(side="left", padx=5) 
         
+        # 5. Descrição (TextArea)
         descricao_label = ctk.CTkLabel(form_frame, text="Descrição:", font=ctk.CTkFont(size=14, weight="bold"))
-        descricao_label.grid(row=4, column=0, pady=(15, 5), padx=(20, 10), sticky="nw")
+        descricao_label.pack(pady=(15, 5), padx=20, anchor="w") 
         
-        descricao_text = ctk.CTkTextbox(form_frame, width=400, height=100)
-        descricao_text.grid(row=4, column=1, pady=(15, 20), padx=(10, 20), sticky="w")
+        descricao_text = ctk.CTkTextbox(form_frame, height=100)
+        descricao_text.pack(pady=(0, 20), padx=20, fill="x")
         
-        form_frame.grid_columnconfigure(0, weight=0, minsize=180)
-        form_frame.grid_columnconfigure(1, weight=1)
+        # --- FUNÇÃO DE CRIAÇÃO ---
         
         def process_criar():
             nome = nome_entry.get().strip()
@@ -234,8 +249,11 @@ class TelasProfessor:
             else:
                 messagebox.showerror("Erro", "Erro ao criar turma!")
         
+        # --- BOTÕES ---
+        
         buttons_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
-        buttons_frame.grid(row=5, column=0, columnspan=2, pady=20)
+        
+        buttons_frame.pack(pady=20) 
         
         create_btn = ctk.CTkButton(
             buttons_frame,
@@ -333,7 +351,7 @@ class TelasProfessor:
                     height=120,
                     
                 )
-                conteudo_aula.pack(anchor="w", pady=(5, 2),fill="x", expand=True)
+                conteudo_aula.pack(anchor="w", pady=(5, 2), fill="x", expand=True)
                 conteudo_aula.insert("0.0", aula['conteudo'])
                 conteudo_aula.configure(state="disabled")
         
@@ -348,7 +366,8 @@ class TelasProfessor:
                 ctk.CTkLabel(
                     ativ_frame,
                     text=f"📄 {atividade['titulo']} | Criado em: {atividade['data_criacao']} | Entrega: {atividade['data_entrega']} | Valor: {atividade['valor']} pts",
-                    font=ctk.CTkFont(size=13)
+                    font=ctk.CTkFont(size=13),
+                    wraplength=500
                 ).pack(side="left", padx=20, pady=10)
         
         add_ativ_btn = ctk.CTkButton(
@@ -919,7 +938,8 @@ class TelasProfessor:
                 ctk.CTkLabel(
                     info_frame,
                     text=f"📄 {atividade['titulo']}",
-                    font=ctk.CTkFont(size=16, weight="bold")
+                    font=ctk.CTkFont(size=16, weight="bold"),
+                    wraplength=380
                 ).pack(anchor="w")
                 
                 # Informações da turma
@@ -1007,7 +1027,8 @@ class TelasProfessor:
         title_label = ctk.CTkLabel(
             main_frame,
             text=f"📝 Entregas: {atividade['titulo']}",
-            font=ctk.CTkFont(size=24, weight="bold")
+            font=ctk.CTkFont(size=24, weight="bold"),
+            wraplength=420
         )
         title_label.pack(pady=(20, 10))
         
@@ -1091,7 +1112,7 @@ class TelasProfessor:
                         command=lambda e=entrega: self.baixar_entrega(e)
                     ).pack(pady=3)
                 
-                btn_text = "✏️ Reavалiar" if entrega.get('nota') is not None else "✓ Avaliar"
+                btn_text = "✏️ Reavaliar" if entrega.get('nota') is not None else "✓ Avaliar"
                 ctk.CTkButton(
                     btn_frame,
                     text=btn_text,
@@ -1138,8 +1159,9 @@ class TelasProfessor:
         """Modal COM SCROLL para avaliar uma entrega e ver o que foi entregue"""
         dialog = ctk.CTkToplevel(self.app)
         dialog.title("Avaliar Entrega")
-        dialog.geometry("700x700")  # Maior para caber tudo com scroll
+        dialog.geometry("700x600")  # Maior para caber tudo com scroll
         dialog.grab_set()
+        dialog.resizable(height=False, width=False)
         
         # ===== SCROLLABLE FRAME PRINCIPAL =====
         main_scroll = ctk.CTkScrollableFrame(dialog, width=650, height=630)
@@ -1168,7 +1190,8 @@ class TelasProfessor:
         ctk.CTkLabel(
             info_frame,
             text=f"📄 Atividade: {atividade['titulo']}",
-            font=ctk.CTkFont(size=14, weight="bold")
+            font=ctk.CTkFont(size=14, weight="bold"),
+            wraplength=550
         ).pack(anchor="w", padx=15, pady=(10, 5))
         
         ctk.CTkLabel(
@@ -1264,14 +1287,15 @@ class TelasProfessor:
         # Campo de feedback
         ctk.CTkLabel(
             avaliacao_frame,
-            text="💬 Feedback para o aluno:",
+            text="💬 Feedback para o aluno(máximo 1000 caracteres):",
             font=ctk.CTkFont(size=14, weight="bold")
         ).pack(anchor="w", padx=15, pady=(10, 5))
         
         feedback_text = ctk.CTkTextbox(
             avaliacao_frame,
             width=600,
-            height=120
+            height=120,
+            wrap="word"
         )
         
         # Preencher feedback existente se houver
@@ -1285,6 +1309,8 @@ class TelasProfessor:
             nota = nota_entry.get().strip()
             feedback = feedback_text.get("1.0", "end-1c").strip()
             
+            limite_texto = 1000
+
             if not nota:
                 messagebox.showerror("Erro", "A nota é obrigatória!")
                 return
@@ -1297,6 +1323,10 @@ class TelasProfessor:
             except ValueError:
                 messagebox.showerror("Erro", "Nota inválida! Use apenas números.")
                 return
+            
+            if len(feedback) > limite_texto:
+                messagebox.showerror("Erro", f"O conteúdo não pode ter mais de {limite_texto} caracteres.")
+                return 
             
             from backend.turmas_backend import avaliar_entrega
             sucesso = avaliar_entrega(entrega['id'], nota_float, feedback)
@@ -1313,7 +1343,7 @@ class TelasProfessor:
             main_scroll,
             text="💾 Salvar Avaliação",
             command=salvar_avaliacao,
-            width=250,
+            width=200,
             height=50,
             fg_color="#2CC985",
             hover_color="#25A066",
@@ -1347,13 +1377,17 @@ class TelasProfessor:
             else:
                 messagebox.showerror("Erro", "Erro ao salvar avaliação!")
         
-        ctk.CTkButton(
-            dialog, 
-            text="💾 Salvar Avaliação", 
-            command=salvar_avaliacao, 
-            width=200, 
-            fg_color="#2CC985"
-        ).pack(pady=10)
+        back_btn = ctk.CTkButton(
+            main_scroll,
+            text="fechar",
+            font=ctk.CTkFont(size=16),
+            width=200,
+            height=50,
+            command=dialog.destroy,
+            fg_color="gray",
+            hover_color="darkgray"
+        )
+        back_btn.pack(pady=30)
     
     def baixar_entrega(self, entrega):
         """Baixa o arquivo da entrega"""
@@ -1480,84 +1514,83 @@ class TelasProfessor:
             hover_color="darkgray"
         )
         back_btn.pack(pady=30)
-    
+
     def show_editar_turma(self, turma):
 
         dialog = ctk.CTkToplevel(self.app)
         dialog.title(f"Editar Turma: {turma['nome']}")
-        dialog.geometry("700x650") 
+        dialog.geometry("700x650") # Aumentei um pouco a altura para acomodar o novo layout
         dialog.grab_set()
-        
-        scroll_container = ctk.CTkScrollableFrame(dialog, corner_radius=0)
-        scroll_container.pack(fill="both", expand=True, padx=0, pady=0)
-        
-        main_frame = ctk.CTkFrame(scroll_container, corner_radius=0)
-        main_frame.pack(padx=20, pady=20, fill="x")
-        
+        dialog.resizable(height=False, width=False)
+
+        main_frame = ctk.CTkScrollableFrame(dialog, corner_radius=0)
+        main_frame.pack(fill="both", expand=True, padx=20, pady=20)
+
+        # Título
         title_label = ctk.CTkLabel(
             main_frame,
             text=f"✏️ Editar Turma: {turma['nome']}",
-            font=ctk.CTkFont(size=28, weight="bold")
+            font=ctk.CTkFont(size=24, weight="bold"),
+            wraplength=400
         )
         title_label.pack(pady=(20, 30))
         
+        # O form_frame agora usa FILL="X" e PADX menor para se centralizar no main_frame
         form_frame = ctk.CTkFrame(main_frame)
-        form_frame.pack(pady=10, padx=80)
+        form_frame.pack(pady=10, padx=80, fill="x")
         
-        # --- CAMPOS COM DADOS PREENCHIDOS ---
+        # --- CAMPOS COM DADOS PREENCHIDOS USANDO PACK ---
         
-        # Nome
+        # 1. Nome
         nome_label = ctk.CTkLabel(form_frame, text="Nome da Turma:", font=ctk.CTkFont(size=14, weight="bold"))
-        nome_label.grid(row=0, column=0, pady=(20, 5), padx=(20, 10), sticky="w")
-        nome_entry = ctk.CTkEntry(form_frame, width=400, height=40)
+        nome_label.pack(pady=(20, 5), padx=20, anchor="w")
+        nome_entry = ctk.CTkEntry(form_frame, height=40)
         nome_entry.insert(0, turma.get('nome', ''))
-        nome_entry.grid(row=0, column=1, pady=(20, 5), padx=(10, 20), sticky="w")
+        nome_entry.pack(pady=(0, 15), padx=20, fill="x") # 🎯 fill="x" para expandir
         
-        # Disciplina
+        # 2. Disciplina
         disciplina_label = ctk.CTkLabel(form_frame, text="Disciplina:", font=ctk.CTkFont(size=14, weight="bold"))
-        disciplina_label.grid(row=1, column=0, pady=(15, 5), padx=(20, 10), sticky="w")
-        disciplina_entry = ctk.CTkEntry(form_frame, width=400, height=40)
+        disciplina_label.pack(pady=(15, 5), padx=20, anchor="w")
+        disciplina_entry = ctk.CTkEntry(form_frame, height=40)
         disciplina_entry.insert(0, turma.get('disciplina', ''))
-        disciplina_entry.grid(row=1, column=1, pady=(15, 5), padx=(10, 20), sticky="w")
+        disciplina_entry.pack(pady=(0, 15), padx=20, fill="x") # 🎯 fill="x" para expandir
         
-        # Ano
+        # 3. Ano
         ano_label = ctk.CTkLabel(form_frame, text="Ano Letivo:", font=ctk.CTkFont(size=14, weight="bold"))
-        ano_label.grid(row=2, column=0, pady=(15, 5), padx=(20, 10), sticky="w")
-        ano_entry = ctk.CTkEntry(form_frame, width=400, height=40)
+        ano_label.pack(pady=(15, 5), padx=20, anchor="w")
+        ano_entry = ctk.CTkEntry(form_frame, height=40)
         ano_entry.insert(0, turma.get('ano', ''))
-        ano_entry.grid(row=2, column=1, pady=(15, 5), padx=(10, 20), sticky="w")
+        ano_entry.pack(pady=(0, 15), padx=20, fill="x") # 🎯 fill="x" para expandir
         
-        # Período (RadioButton)
+        # 4. Período (RadioButton)
         periodo_label = ctk.CTkLabel(form_frame, text="Período:", font=ctk.CTkFont(size=14, weight="bold"))
-        periodo_label.grid(row=3, column=0, pady=(15, 5), padx=(20, 10), sticky="w")
+        periodo_label.pack(pady=(15, 5), padx=20, anchor="w")
         
         periodo_var = ctk.StringVar(value=turma.get('periodo', 'Manhã')) 
         periodo_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
-        periodo_frame.grid(row=3, column=1, pady=(15, 5), padx=(10, 20), sticky="w")
+        # Usa anchor="w" e padx para alinhar o grupo de botões
+        periodo_frame.pack(pady=(0, 15), padx=20, anchor="w") 
         
         periodos = ["Manhã", "Tarde", "Noite", "Integral"]
         for i, periodo in enumerate(periodos):
             rb = ctk.CTkRadioButton(periodo_frame, text=periodo, variable=periodo_var, value=periodo)
-            rb.pack(side="left", padx=10)
+            rb.pack(side="left", padx=5)
         
-        # Professor (Apenas Leitura - ID da Turma)
+        # 5. Professor (Apenas Leitura)
         prof_label = ctk.CTkLabel(form_frame, text="Professor:", font=ctk.CTkFont(size=14, weight="bold"))
-        prof_label.grid(row=4, column=0, pady=(15, 5), padx=(20, 10), sticky="w")
+        prof_label.pack(pady=(15, 5), padx=20, anchor="w")
         prof_value = ctk.CTkLabel(form_frame, text=turma.get('professor_nome', 'N/A'), text_color="gray")
-        prof_value.grid(row=4, column=1, pady=(15, 5), padx=(10, 20), sticky="w")
+        prof_value.pack(pady=(0, 15), padx=20, anchor="w") # Não usa fill="x" pois é apenas um label
 
-        # Descrição (TextArea)
+        # 6. Descrição (TextArea)
         descricao_label = ctk.CTkLabel(form_frame, text="Descrição:", font=ctk.CTkFont(size=14, weight="bold"))
-        descricao_label.grid(row=5, column=0, pady=(15, 5), padx=(20, 10), sticky="nw")
+        descricao_label.pack(pady=(15, 5), padx=20, anchor="w")
         
-        descricao_text = ctk.CTkTextbox(form_frame, width=400, height=100)
+        descricao_text = ctk.CTkTextbox(form_frame, height=100)
         descricao_text.insert("0.0", turma.get('descricao', ''))
-        descricao_text.grid(row=5, column=1, pady=(15, 20), padx=(10, 20), sticky="w")
+        descricao_text.pack(pady=(0, 20), padx=20, fill="x") # 🎯 fill="x" para expandir
         
-        form_frame.grid_columnconfigure(0, weight=0, minsize=180)
-        form_frame.grid_columnconfigure(1, weight=1)
-        
-        # --- FUNÇÃO DE SALVAR ---
+        # --- FUNÇÃO DE SALVAR (mantida) ---
 
         def salvar_edicao():
             nome = nome_entry.get().strip()
@@ -1572,7 +1605,7 @@ class TelasProfessor:
                 return
             
             # Chama a função de backend
-            from backend.turmas_backend import editar_turma
+            from backend.turmas_backend import editar_turma, get_detalhes_completos_turma
             sucesso = editar_turma(
                 turma['id'], # ID da turma sendo editada
                 nome,
@@ -1582,25 +1615,23 @@ class TelasProfessor:
                 descricao
             )
             
-            from backend.turmas_backend import get_detalhes_completos_turma
             if sucesso:
                 messagebox.showinfo("Sucesso", "Turma atualizada com sucesso!")
                 dialog.destroy()
                 
-                # Recarrega os detalhes completos para ter a turma atualizada
                 turma_atualizada = get_detalhes_completos_turma(turma['id'])
                 # Assume que você tem um método para mostrar os detalhes da turma
                 self.show_detalhes_turma(turma_atualizada) 
             else:
                 messagebox.showerror("Erro", "Erro ao salvar edição da turma.")
         
-        # --- BOTÕES ---
-
-        buttons_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
-        buttons_frame.grid(row=6, column=0, columnspan=2, pady=20)
+        # --- BOTÕES (Refatorados em um frame para centralizar) ---
         
+        button_wrapper_frame = ctk.CTkFrame(dialog, fg_color="transparent")
+        button_wrapper_frame.pack(pady=(10, 20)) # Empacotado no 'dialog' após 'main_frame'
+
         create_btn = ctk.CTkButton(
-            buttons_frame,
+            button_wrapper_frame,
             text="✓ Salvar Alterações",
             font=ctk.CTkFont(size=16, weight="bold"),
             width=200,
@@ -1609,10 +1640,11 @@ class TelasProfessor:
             fg_color="#3B8EDC",
             hover_color="#36719F"
         )
-        create_btn.pack(side="left", padx=10)
+        # Empacotado no frame de botões
+        create_btn.pack(side="left", padx=10) 
         
         cancel_btn = ctk.CTkButton(
-            buttons_frame,
+            button_wrapper_frame,
             text="← Cancelar",
             font=ctk.CTkFont(size=16),
             width=200,
@@ -1621,17 +1653,19 @@ class TelasProfessor:
             fg_color="gray",
             hover_color="darkgray"
         )
+        # Empacotado no frame de botões
         cancel_btn.pack(side="left", padx=10)
     
     def show_criar_atividade(self, turma=None):
         """Modal para criar uma nova atividade"""
         dialog = ctk.CTkToplevel(self.app)
         dialog.title("Criar Nova Atividade")
-        dialog.geometry("750x650")
+        dialog.geometry("700x600")
         dialog.grab_set()
-        
-        main_scroll = ctk.CTkScrollableFrame(dialog, width=700, height=580)
-        main_scroll.pack(fill="both", expand=True, padx=10, pady=10)
+        dialog.resizable(height=False, width=False)
+       
+        main_scroll = ctk.CTkScrollableFrame(dialog, corner_radius=0)
+        main_scroll.pack(fill="both", expand=True, padx=20, pady=20)
         
         title = ctk.CTkLabel(
             main_scroll,
@@ -1672,6 +1706,8 @@ class TelasProfessor:
         turma_menu.pack(padx=20, pady=(0, 15))
         
         # Título
+        limite_titulo = 46
+        titulo_var = ctk.StringVar()
         ctk.CTkLabel(
             form_frame,
             text="Título da Atividade:",
@@ -1682,21 +1718,24 @@ class TelasProfessor:
             form_frame,
             placeholder_text="Ex: Trabalho sobre Funções Quadráticas",
             width=600,
-            height=40
+            height=40,
+            textvariable=titulo_var
         )
         titulo_entry.pack(padx=20, pady=(0, 15))
+        titulo_var.trace_add("write", self.limitar_caracteres(titulo_var, limite_titulo))
         
         # Descrição
         ctk.CTkLabel(
             form_frame,
-            text="Descrição:",
+            text="Descrição(máximo 1000 caracteres):",
             font=ctk.CTkFont(size=14, weight="bold")
         ).pack(anchor="w", padx=20, pady=(10, 5))
         
         descricao_text = ctk.CTkTextbox(
             form_frame,
             width=600,
-            height=120
+            height=150,
+            wrap="word",
         )
         descricao_text.pack(padx=20, pady=(0, 15))
         
@@ -1720,6 +1759,8 @@ class TelasProfessor:
         data_entry.pack(padx=20, pady=(0, 15))
         
         # Valor (pontuação)
+        limite_valor = 3
+        valor_var = ctk.StringVar()
         ctk.CTkLabel(
             form_frame,
             text="Valor (pontos):",
@@ -1730,9 +1771,11 @@ class TelasProfessor:
             form_frame,
             placeholder_text="Ex: 10",
             width=600,
-            height=40
+            height=40,
+            textvariable=valor_var
         )
         valor_entry.pack(padx=20, pady=(0, 15))
+        valor_var.trace_add("write", self.limitar_caracteres(valor_var, limite_valor))
         
         # Arquivo opcional
         arquivo_path = None
@@ -1777,14 +1820,19 @@ class TelasProfessor:
                 messagebox.showerror("Erro", "Selecione uma turma!")
                 return
             
-            titulo = titulo_entry.get().strip()
+            titulo = titulo_var.get().strip().title()
             descricao = descricao_text.get("1.0", "end-1c").strip()
             data_entrega = data_entry.get().strip()
-            valor = valor_entry.get().strip()
+            valor = valor_var.get().strip()
             
             if not all([titulo, descricao, data_entrega, valor]):
                 messagebox.showerror("Erro", "Preencha todos os campos obrigatórios!")
                 return
+
+            limite_texto = 1000
+            if len(descricao) > limite_texto:
+                messagebox.showerror("Erro", f"O conteúdo não pode ter mais de {limite_texto} caracteres.")
+                return 
             
             try:
                 valor_float = float(valor)
