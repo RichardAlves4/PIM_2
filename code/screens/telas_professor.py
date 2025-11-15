@@ -448,7 +448,7 @@ class TelasProfessor:
         subtitle_label.pack(pady=(0, 30))
         
         # Buscar todas as aulas do professor
-        from backend.turmas_backend import get_todas_aulas_professor, get_relatorio_por_aula
+        from backend.turmas_backend import get_todas_aulas_professor, get_relatorio_por_aula, get_detalhes_completos_turma
         aulas = get_todas_aulas_professor(self.user_email)
         
         if not aulas:
@@ -464,10 +464,15 @@ class TelasProfessor:
             aulas_por_turma = {}
             for aula in aulas:
                 turma_id = aula['turma_id']
+
                 if turma_id not in aulas_por_turma:
+                    turma_detalhes = get_detalhes_completos_turma(turma_id)
+                    nome = turma_detalhes.get('nome', 'N/A')
+                    disciplina = turma_detalhes.get('disciplina', 'N/A')
+
                     aulas_por_turma[turma_id] = {
-                        'turma_nome': aula.get('turma_nome', 'N/A'),
-                        'disciplina': aula.get('disciplina', 'N/A'),
+                        'turma_nome': nome,
+                        'disciplina': disciplina,
                         'aulas': []
                     }
                 aulas_por_turma[turma_id]['aulas'].append(aula)
