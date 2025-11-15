@@ -321,15 +321,21 @@ class TelasProfessor:
                 ctk.CTkLabel(
                     aula_frame,
                     text=f"📅 {aula['data']} - {aula['titulo']}",
-                    font=ctk.CTkFont(size=13, weight="bold")
+                    font=ctk.CTkFont(size=13, weight="bold"),
+                    wraplength=550
                 ).pack(anchor="w", padx=20, pady=(10, 5))
                 
-                ctk.CTkLabel(
+                conteudo_aula = ctk.CTkTextbox(
                     aula_frame,
-                    text=aula['conteudo'][:100] + "..." if len(aula['conteudo']) > 100 else aula['conteudo'],
-                    font=ctk.CTkFont(size=12),
-                    text_color="gray"
-                ).pack(anchor="w", padx=20, pady=(0, 10))
+                    font=ctk.CTkFont(size=13),
+                    text_color="gray",
+                    wrap="word",
+                    height=120,
+                    
+                )
+                conteudo_aula.pack(anchor="w", pady=(5, 2),fill="x", expand=True)
+                conteudo_aula.insert("0.0", aula['conteudo'])
+                conteudo_aula.configure(state="disabled")
         
         atividades = get_atividades_turma(turma['id'])
         if not atividades:
@@ -341,7 +347,7 @@ class TelasProfessor:
                 
                 ctk.CTkLabel(
                     ativ_frame,
-                    text=f"📄 {atividade['titulo']} - Entrega: {atividade['data_entrega']} - Valor: {atividade['valor']} pts",
+                    text=f"📄 {atividade['titulo']} | Criado em: {atividade['data_criacao']} | Entrega: {atividade['data_entrega']} | Valor: {atividade['valor']} pts",
                     font=ctk.CTkFont(size=13)
                 ).pack(side="left", padx=20, pady=10)
         
@@ -370,6 +376,7 @@ class TelasProfessor:
         dialog.title("Adicionar Aluno")
         dialog.geometry("550x500")
         dialog.grab_set()
+        dialog.resizable(height=False, width=False)
         
         main_scroll = ctk.CTkScrollableFrame(dialog, width=500, height=420)
         main_scroll.pack(fill="both", expand=True, padx=10, pady=10)
@@ -502,7 +509,8 @@ class TelasProfessor:
                     titulo_label = ctk.CTkLabel(
                         info_frame,
                         text=f"📝 {aula['titulo']}",
-                        font=ctk.CTkFont(size=14, weight="bold")
+                        font=ctk.CTkFont(size=14, weight="bold"),
+                        wraplength=380
                     )
                     titulo_label.pack(anchor="w")
                     
@@ -797,6 +805,7 @@ class TelasProfessor:
         dialog.title("Visualizar Relatório")
         dialog.geometry("800x700")
         dialog.grab_set()
+        dialog.resizable(height=False, width=False)
         
         main_scroll = ctk.CTkScrollableFrame(dialog, width=750, height=630)
         main_scroll.pack(fill="both", expand=True, padx=10, pady=10)
