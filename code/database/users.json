@@ -77,8 +77,9 @@
           },
           "aluno123@aluno.sge.com.br": {
                "nome": "Aluno123",
-               "senha": "$2b$12$n8EwrgsF7c67i/wFZ4uIDOa0pJTElqITYzDcrZlcLnVl5ta82kGUK",
+               "email": "aluno123@aluno.sge.com.br",
                "role": "USER",
+               "senha": "$2b$12$n8EwrgsF7c67i/wFZ4uIDOa0pJTElqITYzDcrZlcLnVl5ta82kGUK",
                "rm": "202400010"
           },
           "professor123@professor.sge.com.br": {
