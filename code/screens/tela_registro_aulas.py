@@ -127,16 +127,17 @@ class TelaRegistroAulas:
         dialog.title("Registrar Nova Aula")
         dialog.geometry("700x600")
         dialog.grab_set()
+        dialog.resizable(height=False, width=False)
+
+        form_frame = ctk.CTkScrollableFrame(dialog, corner_radius=0)
+        form_frame.pack(fill="both", expand=True, padx=20, pady=20)
         
         title = ctk.CTkLabel(
-            dialog,
+            form_frame,
             text="📝 Registrar Nova Aula",
             font=ctk.CTkFont(size=20, weight="bold")
         )
         title.pack(pady=20)
-        
-        form_frame = ctk.CTkFrame(dialog)
-        form_frame.pack(pady=20, padx=40, fill="both", expand=True)
         
         # Seleção de turma
         ctk.CTkLabel(
@@ -282,7 +283,7 @@ class TelaRegistroAulas:
                 messagebox.showerror("Erro", "Erro ao registrar aula!")
         
         ctk.CTkButton(
-            dialog,
+            form_frame,
             text="✓ Salvar Aula",
             command=salvar_aula,
             width=200,
@@ -290,6 +291,18 @@ class TelaRegistroAulas:
             fg_color="#2CC985",
             hover_color="#25A066"
         ).pack(pady=20)
+
+        back_btn = ctk.CTkButton(
+            dialog,
+            text="← Voltar",
+            font=ctk.CTkFont(size=16),
+            width=200,
+            height=50,
+            command=self.voltar_menu,
+            fg_color="gray",
+            hover_color="darkgray"
+        )
+        back_btn.pack(pady=30)
     
     def show_aulas_turma(self, turma):
         """Exibe todas as aulas de uma turma"""
@@ -442,19 +455,20 @@ class TelaRegistroAulas:
         """Tela para fazer chamada"""
         dialog = ctk.CTkToplevel(self.app)
         dialog.title("Fazer Chamada")
-        dialog.geometry("600x700")
-        dialog.grab_set()
+        dialog.geometry("700x600")
+        dialog.grab_set() 
+        dialog.resizable(height=False, width=False)
         
+        # Frame scrollable para lista de alunos
+        scroll_frame = ctk.CTkScrollableFrame(dialog, width=550, height=450)
+        scroll_frame.pack(fill="both", expand=True, padx=20, pady=20)
+
         title = ctk.CTkLabel(
-            dialog,
+            scroll_frame,
             text=f"✓ Chamada - {turma['nome']}",
             font=ctk.CTkFont(size=20, weight="bold")
         )
         title.pack(pady=20)
-        
-        # Frame scrollable para lista de alunos
-        scroll_frame = ctk.CTkScrollableFrame(dialog, width=550, height=500)
-        scroll_frame.pack(pady=10, padx=20)
         
         from backend.turmas_backend import get_alunos_turma
         alunos = get_alunos_turma(turma['id'])
@@ -525,7 +539,7 @@ class TelaRegistroAulas:
                 messagebox.showerror("Erro", "Erro ao registrar chamada!")
         
         ctk.CTkButton(
-            dialog,
+            scroll_frame,
             text="✓ Salvar Chamada",
             command=salvar_chamada,
             width=200,
@@ -533,23 +547,39 @@ class TelaRegistroAulas:
             fg_color="#2CC985",
             hover_color="#25A066"
         ).pack(pady=20)
+
+        ctk.CTkButton(
+            dialog,
+            text="Fechar",
+            command=dialog.destroy,
+            width=200,
+            height=45,
+            fg_color="gray",
+            hover_color="darkgray"
+        ).pack(pady=20)
     
     def show_ver_chamada(self, aula, turma):
         """Visualiza a chamada de uma aula"""
+
         dialog = ctk.CTkToplevel(self.app)
         dialog.title("Visualizar Chamada")
-        dialog.geometry("600x700")
-        dialog.grab_set()
-        
+        dialog.geometry("700x600")
+        dialog.grab_set() 
+        #dialog.resizable(height=False, width=False)
+
+        form_frame = ctk.CTkScrollableFrame(dialog, corner_radius=0)
+        form_frame.pack(fill="both", expand=True, padx=20, pady=20)
+
         title = ctk.CTkLabel(
-            dialog,
+            form_frame,
             text=f"📋 Chamada - {aula['titulo']}",
-            font=ctk.CTkFont(size=20, weight="bold")
+            font=ctk.CTkFont(size=20, weight="bold"),
+            wraplength=500
         )
         title.pack(pady=20)
         
         ctk.CTkLabel(
-            dialog,
+            form_frame,
             text=f"Data: {aula['data']}",
             font=ctk.CTkFont(size=14),
             text_color="gray"
@@ -565,30 +595,27 @@ class TelaRegistroAulas:
         ausentes = total - presentes
         percentual = (presentes / total * 100) if total > 0 else 0
         
-        stats_frame = ctk.CTkFrame(dialog)
-        stats_frame.pack(pady=20, padx=40, fill="x")
-        
         ctk.CTkLabel(
-            stats_frame,
+            form_frame,
             text=f"Presentes: {presentes} | Ausentes: {ausentes} | Total: {total}",
             font=ctk.CTkFont(size=14, weight="bold")
         ).pack(pady=10)
         
         ctk.CTkLabel(
-            stats_frame,
+            form_frame,
             text=f"Frequência: {percentual:.1f}%",
             font=ctk.CTkFont(size=16, weight="bold"),
             text_color="#2CC985" if percentual >= 75 else "#E74C3C"
         ).pack(pady=5)
         
         # Lista de alunos
-        scroll_frame = ctk.CTkScrollableFrame(dialog, width=550, height=400)
-        scroll_frame.pack(pady=10, padx=20)
+        # scroll_frame = ctk.CTkScrollableFrame(form_frame, width=550, height=400)
+        # scroll_frame.pack(pady=10, padx=20)
         
         for aluno in alunos:
             presente = frequencia.get(aluno['email'], False)
             
-            aluno_frame = ctk.CTkFrame(scroll_frame)
+            aluno_frame = ctk.CTkFrame(form_frame)
             aluno_frame.pack(pady=5, padx=10, fill="x")
             
             info_frame = ctk.CTkFrame(aluno_frame, fg_color="transparent")
