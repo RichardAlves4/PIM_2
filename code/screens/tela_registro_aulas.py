@@ -205,14 +205,15 @@ class TelaRegistroAulas:
         # Conteúdo/descrição
         ctk.CTkLabel(
             form_frame,
-            text="Conteúdo da Aula:(máximo 1000 caracteres)",
+            text="Conteúdo da Aula(máximo 1000 caracteres):",
             font=ctk.CTkFont(size=14, weight="bold")
         ).pack(anchor="w", padx=20, pady=(10, 5))
         
         conteudo_text = ctk.CTkTextbox(
             form_frame,
             width=600,
-            height=150
+            height=150,
+            wrap="word",
         )
         conteudo_text.pack(padx=20, pady=(0, 15))
         
@@ -349,7 +350,7 @@ class TelaRegistroAulas:
                     info_frame,
                     text=f"📅 {aula['data']} - {aula['titulo']}",
                     font=ctk.CTkFont(size=16, weight="bold"),
-                    wraplength=500
+                    wraplength=400
                 ).pack(anchor="w")
                 
                 conteudo_aula = ctk.CTkTextbox(
@@ -564,8 +565,8 @@ class TelaRegistroAulas:
         dialog = ctk.CTkToplevel(self.app)
         dialog.title("Visualizar Chamada")
         dialog.geometry("700x600")
-        dialog.grab_set() 
-        #dialog.resizable(height=False, width=False)
+        dialog.grab_set()
+        dialog.resizable(height=False, width=False)
 
         form_frame = ctk.CTkScrollableFrame(dialog, corner_radius=0)
         form_frame.pack(fill="both", expand=True, padx=20, pady=20)
