@@ -23,6 +23,12 @@
                "aluno_email": "aluno2@aluno.sge.com.br",
                "presente": true,
                "data_registro": "16/11/2025 01:45"
+          },
+          "3_aluno123@aluno.sge.com.br": {
+               "aula_id": "3",
+               "aluno_email": "aluno123@aluno.sge.com.br",
+               "presente": true,
+               "data_registro": "17/11/2025 14:17"
           }
      }
 }

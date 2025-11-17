@@ -1,7 +1,7 @@
 {
      "turmas": {
-          "2": {
-               "id": "2",
+          "1": {
+               "id": "1",
                "nome": "TURMA A",
                "disciplina": "Python",
                "professor_email": "ageu@professor.sge.com.br",
@@ -11,8 +11,8 @@
                "descricao": "TURMA A",
                "data_criacao": "16/11/2025"
           },
-          "3": {
-               "id": "3",
+          "2": {
+               "id": "2",
                "nome": "TURMA B",
                "disciplina": "C",
                "professor_email": "ageu@professor.sge.com.br",
@@ -21,6 +21,17 @@
                "periodo": "Tarde",
                "descricao": "TURMA B",
                "data_criacao": "16/11/2025"
+          },
+          "3": {
+               "id": "3",
+               "nome": "Turma C",
+               "disciplina": "A Arte da Guerra",
+               "professor_email": "professor123@professor.sge.com.br",
+               "professor_nome": "professor",
+               "ano": "2025",
+               "periodo": "Integral",
+               "descricao": "A Arte da Guerra é um antigo tratado militar chinês que data do fim do período das Primaveras e Outonos. A obra, que é atribuída ao antigo estrategista militar chinês Sun Tzu, é composta por treze capítulos.",
+               "data_criacao": "17/11/2025"
           }
      },
      "proximo_id": 4

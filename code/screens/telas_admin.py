@@ -150,8 +150,8 @@ class TelasAdmin:
             width=200,
             height=50,
             command=salvar_edicao,
-            fg_color="#3B8EDC",
-            hover_color="#36719F"
+            fg_color="#2CC985",
+            hover_color="#25A066"
         )
         create_btn.pack(side="left", padx=10)
         
@@ -274,7 +274,8 @@ class TelasAdmin:
         title_label.pack(pady=(20, 30))
         
         # Adicionar ANTES dos campos de nome, após o form_frame:
-
+        form_frame = ctk.CTkFrame(main_frame)
+        form_frame.pack(pady=10, padx=80, fill="x") 
         # Seleção de Professor
         prof_label = ctk.CTkLabel(form_frame, text="Professor Responsável:", font=ctk.CTkFont(size=14, weight="bold"))
         prof_label.pack(pady=(20, 5), padx=20, anchor="w")
@@ -305,9 +306,6 @@ class TelasAdmin:
             professor_menu.pack(pady=(0, 15), padx=20)
 
         # ... resto dos campos (nome, disciplina, etc)
-        
-        form_frame = ctk.CTkFrame(main_frame)
-        form_frame.pack(pady=10, padx=80, fill="x") 
         
         nome_label = ctk.CTkLabel(form_frame, text="Nome da Turma:", font=ctk.CTkFont(size=14, weight="bold"))
         nome_label.pack(pady=(20, 5), padx=20, anchor="w") 
@@ -738,8 +736,8 @@ class TelasAdmin:
         buttons_data = [
             ("👥 Gerenciar Usuários", self.show_gerenciar_usuarios, "#3498DB"),
             ("📚 Gerenciar Turmas", self.show_gerenciar_turmas, "#9B59B6"),
-            ("➕ Criar Turmas", self.show_criar_turma, "#E74C3C"),
-            ("📄 Relatórios de Aulas", self.show_relatorios_aulas_admin, "#16A085"),
+            ("➕ Criar Turmas", self.show_criar_turma, "#16A085"),
+            ("📄 Relatórios de Aulas", self.show_relatorios_aulas_admin, "#D4AA2C"),
             ("📊 Relatórios Gerais", self.show_relatorios_gerais, "#2CC985"),
             ("📈 Estatísticas do Sistema", self.show_estatisticas, "#E67E22"),
             ("🗑️ Limpeza de Dados", self.show_limpeza_dados, "#E74C3C"),
@@ -750,11 +748,12 @@ class TelasAdmin:
             btn = ctk.CTkButton(
                 buttons_frame,
                 text=text,
-                font=ctk.CTkFont(size=16, weight="bold"),
+                font=ctk.CTkFont(size=16, weight="bold", ),
                 width=450,
                 height=55,
                 command=command,
                 fg_color=color,
+                text_color="#dfdfdf",
                 hover_color=self.darken_color(color)
             )
             btn.pack(pady=8)
@@ -1341,8 +1340,8 @@ class TelasAdmin:
                     text="✏",
                     width=45,
                     height=32,
-                    fg_color="#E74C3C",
-                    hover_color="#C0392B",
+                    fg_color="#9B59B6",
+                    hover_color="#7D3C98",
                     command=lambda t=turma: self.show_editar_turma(t)
                 ).pack(side="left", padx=2)
                 

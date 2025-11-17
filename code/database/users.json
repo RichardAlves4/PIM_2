@@ -38,7 +38,20 @@
                "nome": "Ageu Alves",
                "email": "ageu@professor.sge.com.br",
                "role": "INSTRUCTOR",
-               "senha": "$2b$12$9pUdpaBXutryWrwH.Rk2dO.aZdLHNtvzEab17NHeJ9ii14ybUY86S"
+               "senha": "$2b$12$.T5A.Z2ovSIeLE6Z8S.vNuGYKKdlfxZvqsU3GOmjp4EYRT2fTDNfS"
+          },
+          "aluno123@aluno.sge.com.br": {
+               "nome": "Aluno123",
+               "email": "aluno123@aluno.sge.com.br",
+               "role": "USER",
+               "senha": "$2b$12$n8EwrgsF7c67i/wFZ4uIDOa0pJTElqITYzDcrZlcLnVl5ta82kGUK",
+               "rm": "202400010"
+          },
+          "professor123@professor.sge.com.br": {
+               "nome": "professor",
+               "email": "professor123@professor.sge.com.br",
+               "role": "INSTRUCTOR",
+               "senha": "$2b$12$.T5A.Z2ovSIeLE6Z8S.vNuGYKKdlfxZvqsU3GOmjp4EYRT2fTDNfS"
           }
      }
 }

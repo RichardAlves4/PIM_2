@@ -1,24 +1,29 @@
 {
      "matriculas": {
           "aluno1@aluno.sge.com.br": {
-               "turma_id": "2",
+               "turma_id": "1",
                "aluno_email": "aluno1@aluno.sge.com.br",
                "data_matricula": "16/11/2025"
           },
           "aluno2@aluno.sge.com.br": {
-               "turma_id": "2",
+               "turma_id": "1",
                "aluno_email": "aluno2@aluno.sge.com.br",
                "data_matricula": "16/11/2025"
           },
           "aluno3@aluno.sge.com.br": {
-               "turma_id": "3",
+               "turma_id": "2",
                "aluno_email": "aluno3@aluno.sge.com.br",
                "data_matricula": "16/11/2025"
           },
           "aluno4@aluno.sge.com.br": {
-               "turma_id": "3",
+               "turma_id": "2",
                "aluno_email": "aluno4@aluno.sge.com.br",
                "data_matricula": "16/11/2025"
+          },
+          "aluno123@aluno.sge.com.br": {
+               "turma_id": "3",
+               "aluno_email": "aluno123@aluno.sge.com.br",
+               "data_matricula": "17/11/2025"
           }
      }
 }

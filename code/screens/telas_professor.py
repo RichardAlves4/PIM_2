@@ -237,14 +237,6 @@ class TelasProfessor:
                     wraplength=500
                 ).pack(side="left", padx=20, pady=10)
         
-        add_ativ_btn = ctk.CTkButton(
-            tabs.tab("📋 Atividades"),
-            text="➕ Criar Atividade",
-            width=200,
-            command=lambda: self.show_criar_atividade(turma)
-        )
-        add_ativ_btn.pack(pady=10)
-        
         back_btn = ctk.CTkButton(
             main_frame,
             text="← Voltar",
@@ -1431,10 +1423,22 @@ class TelasProfessor:
             text="✓ Criar Atividade",
             command=salvar_atividade,
             width=200,
-            height=45,
+            height=50,
             fg_color="#2CC985",
             hover_color="#25A066"
         ).pack(pady=20)
+
+        back_btn = ctk.CTkButton(
+            dialog,
+            text="← Voltar",
+            font=ctk.CTkFont(size=16),
+            width=200,
+            height=50,
+            command=self.show_atividades_professor,
+            fg_color="gray",
+            hover_color="darkgray"
+        )
+        back_btn.pack(pady=30)
     
     def darken_color(self, hex_color):
         hex_color = hex_color.lstrip('#')

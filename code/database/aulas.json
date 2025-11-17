@@ -2,7 +2,7 @@
      "aulas": {
           "1": {
                "id": "1",
-               "turma_id": "2",
+               "turma_id": "1",
                "data": "16/11/2025",
                "titulo": "Aula 2",
                "conteudo": "AULA 2",
@@ -12,14 +12,24 @@
           },
           "2": {
                "id": "2",
-               "turma_id": "2",
+               "turma_id": "1",
                "data": "17/11/2025",
                "titulo": "Aula 2",
                "conteudo": "AULA 2",
                "observacoes": "AULA 2",
                "professor_email": "ageu@professor.sge.com.br",
                "data_registro": "16/11/2025 01:45"
+          },
+          "3": {
+               "id": "3",
+               "turma_id": "3",
+               "data": "17/11/2025",
+               "titulo": "Aula 1",
+               "conteudo": "Como dormir acordado",
+               "observacoes": "Ensinando a arte de dormir sem piscar desenvolvida pelo antigo estrategista militar chinês Sun Tzu",
+               "professor_email": "professor123@professor.sge.com.br",
+               "data_registro": "17/11/2025 14:16"
           }
      },
-     "proximo_id": 3
+     "proximo_id": 4
 }
