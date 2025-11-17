@@ -17,7 +17,6 @@ class TelaRegistroAulas:
         return callback
 
     def show_registro_aulas(self):
-        
         self.app.clear_window()
         
         main_frame = ctk.CTkScrollableFrame(self.app, corner_radius=0)
@@ -42,7 +41,6 @@ class TelaRegistroAulas:
             hover_color="#25A066"
         )
         new_btn.pack(pady=20)
-        
         
         from backend.turmas_backend import get_turmas_professor
         turmas = get_turmas_professor(self.user_email)
@@ -120,7 +118,6 @@ class TelaRegistroAulas:
         back_btn.pack(pady=30)
     
     def show_nova_aula(self, turma=None):
-        
         dialog = ctk.CTkToplevel(self.app)
         dialog.title("Registrar Nova Aula")
         dialog.geometry("700x600")
@@ -181,6 +178,7 @@ class TelaRegistroAulas:
         
         limite_titulo = 46
         titulo_var = ctk.StringVar()
+
         ctk.CTkLabel(
             form_frame,
             text="Título da Aula:",
@@ -196,7 +194,6 @@ class TelaRegistroAulas:
         )
         titulo_entry.pack(padx=20, pady=(0, 15))
         titulo_var.trace_add("write", self.limitar_caracteres(titulo_var, limite_titulo))
-        
         
         ctk.CTkLabel(
             form_frame,
@@ -214,6 +211,7 @@ class TelaRegistroAulas:
         
         limite_texto_curto = 65
         observacoes_var = ctk.StringVar()
+
         ctk.CTkLabel(
             form_frame,
             text="Observações (opcional):",
@@ -232,6 +230,7 @@ class TelaRegistroAulas:
         
         def salvar_aula():
             turma_selecionada = turma_map.get(turma_var.get())
+
             if not turma_selecionada:
                 messagebox.showerror("Erro", "Selecione uma turma!")
                 return
@@ -246,6 +245,7 @@ class TelaRegistroAulas:
             if not all([data, titulo, conteudo]):
                 messagebox.showerror("Erro", "Preencha todos os campos obrigatórios!")
                 return
+            
             if len(conteudo) > limite_texto:
                 messagebox.showerror("Erro", f"O conteúdo não pode ter mais de {limite_texto} caracteres.")
                 return 
@@ -260,7 +260,6 @@ class TelaRegistroAulas:
             )
             
             if aula_id:
-                
                 fazer_chamada = messagebox.askyesno(
                     "Aula Registrada",
                     "Aula registrada com sucesso!\n\nDeseja fazer a chamada agora?",
@@ -447,7 +446,6 @@ class TelaRegistroAulas:
         back_btn.pack(pady=10)
     
     def show_chamada(self, aula_id, turma):
-        
         dialog = ctk.CTkToplevel(self.app)
         dialog.title("Fazer Chamada")
         dialog.geometry("700x600")
@@ -553,8 +551,6 @@ class TelaRegistroAulas:
         ).pack(pady=20)
     
     def show_ver_chamada(self, aula, turma):
-        
-
         dialog = ctk.CTkToplevel(self.app)
         dialog.title("Visualizar Chamada")
         dialog.geometry("700x600")
@@ -582,7 +578,6 @@ class TelaRegistroAulas:
         from backend.turmas_backend import get_frequencia_aula, get_alunos_turma
         frequencia = get_frequencia_aula(aula['id'])
         alunos = get_alunos_turma(turma['id'])
-        
         total = len(alunos)
         presentes = sum(1 for p in frequencia.values() if p)
         ausentes = total - presentes
@@ -656,7 +651,6 @@ class TelaRegistroAulas:
         ).pack(pady=20)
     
     def show_editar_aula(self, aula, turma):
-        
         dialog = ctk.CTkToplevel(self.app)
         dialog.title("Editar Aula")
         dialog.geometry("700x600")
@@ -881,7 +875,6 @@ class TelaRegistroAulas:
         
         def salvar_edicao_chamada():
             presencas_dict = {email: var.get() for email, var in presencas.items()}
-            
             sucesso = registrar_chamada(aula_id, presencas_dict)
             
             if sucesso:

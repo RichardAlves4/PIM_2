@@ -8,11 +8,11 @@ arquivo_usuarios = os.path.join(diretorio_bd, "users.json")
 users_db = {}
 
 def gerar_rm():
-    
     ano_atual = "2024"
     dados = carregar_usuarios_raw()
     usuarios = dados.get("users", {})
     rms_existentes = [u.get('rm', '') for u in usuarios.values() if u.get('rm')]
+
     if not rms_existentes:
         return f"{ano_atual}00001"
     ultimo_numero = max([int(rm[4:]) for rm in rms_existentes if rm.startswith(ano_atual) and rm[4:].isdigit()] + [0])
@@ -24,18 +24,22 @@ def carregar_usuarios_raw():
     try:
         with open(arquivo_usuarios, "r") as json_aberto:
             return json.load(json_aberto)
+        
     except FileNotFoundError:
         return {"users": {}}
+    
     except json.JSONDecodeError:
         return {"users": {}}
 
 def carregar_usuarios():
     global users_db
+
     try:
         with open(arquivo_usuarios, "r") as json_aberto:
             dados = json.load(json_aberto)
             users_db.clear()
             users_db.update(dados.get("users", {}))
+
     except FileNotFoundError:
         print('Arquivo "usuarios.json" não encontrado. Um novo será criado quando salvar.')
 
@@ -47,14 +51,18 @@ def update_user(email):
     if email not in users_db:
         print("Usuário não encontrado.\n")
         return
+    
     usuario = users_db[email]
     print("\nEditar conta\n(aperte Enter para manter o atual)")
     novo_nome = input(f"Nome atual ({usuario['nome']}): ")
     nova_senha = input("Nova senha (deixe vazio para não mudar): ")
+
     if novo_nome:
         usuario['nome'] = novo_nome
+
     if nova_senha:
         usuario['senha'] = bcrypt.hashpw(nova_senha.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
     users_db[email] = usuario
     salvar_usuarios()
     print("DADOS ATUALIZADOS COM SUCESSO!\n")

@@ -22,13 +22,16 @@ int main(int argc, char *argv[]) {
     char *senha = argv[4];
     char nome_formatado[MAX_STR_LEN];
     strcpy(nome_formatado, nome_original);
+
     if (!is_valid_name(nome_formatado)) {
         fprintf(stderr, "ERRO_VALIDACAO: Nome invalido. Use apenas letras e espacos.\n");
         return 2;
     }
+
     if (strlen(nome_formatado) > 0) {
         nome_formatado[0] = toupper(nome_formatado[0]);
     }
+
     if (!is_valid_email_format(email, role_final)) {
         if (strcmp(role_final, "USER") == 0) {
             fprintf(stderr, "ERRO_VALIDACAO: Email invalido. Alunos devem usar: @aluno.sge.com.br\n");
@@ -37,15 +40,19 @@ int main(int argc, char *argv[]) {
         }
         return 3;
     }
+
     if (strlen(senha) < 4) {
         fprintf(stderr, "ERRO_VALIDACAO: Senha deve ter no minimo 4 caracteres.\n");
         return 4;
     }
+
     FILE *fp = fopen(TEMP_FILE, "w");
+
     if (fp == NULL) {
         fprintf(stderr, "ERRO: Erro ao abrir arquivo temporario para escrita!\n");
         return 5;
     }
+
     fprintf(fp, "{\n");
     fprintf(fp, "    \"nome\": \"%s\",\n", nome_formatado);
     fprintf(fp, "    \"email\": \"%s\",\n", email);
@@ -60,7 +67,9 @@ int is_valid_name(const char *name) {
     if (name == NULL || *name == '\0') {
         return 0;
     }
+
     int has_letter = 0;
+
     for (size_t i = 0; i < strlen(name); i++) {
         char c = name[i];
         if (!isalpha(c) && !isspace(c)) {
@@ -77,6 +86,7 @@ int is_valid_email_format(const char *email, const char *role) {
     const char *suffix_aluno = "@aluno.sge.com.br";
     const char *suffix_professor = "@professor.sge.com.br";
     size_t len_email = strlen(email);
+
     if (strcmp(role, "USER") == 0) {
         size_t len_suffix = strlen(suffix_aluno);
         if (len_email <= len_suffix) {
