@@ -14,7 +14,6 @@ class TelasProfessor:
         def callback(*args):
             conteudo = var.get()
             if len(conteudo) > limite:
-                # Corta o conteúdo no tamanho máximo
                 var.set(conteudo[:limite])
         return callback
     
@@ -53,7 +52,6 @@ class TelasProfessor:
         
         buttons_data = [
             ("📚 Minhas Turmas", self.show_turmas_professor, "#3498DB"),
-            ("➕ Criar Nova Turma", self.show_criar_turma, "#2CC985"),
             ("📝 Registro de Aulas", self.show_registro_aulas, "#9B59B6"),
             ("📄 Relatórios de Aulas", self.show_relatorios_aulas, "#16A085"),
             ("📋 Atividades", self.show_atividades_professor, "#E67E22"),
@@ -93,7 +91,7 @@ class TelasProfessor:
         if not turmas:
             empty_label = ctk.CTkLabel(
                 main_frame,
-                text="Você ainda não possui turmas cadastradas.\nClique em 'Criar Nova Turma' para começar!",
+                text="Você ainda não possui turmas atribuídas.\nContate o administrador para receber turmas!",
                 font=ctk.CTkFont(size=16),
                 text_color="gray"
             )
@@ -140,17 +138,6 @@ class TelasProfessor:
                     command=lambda t=turma: self.show_detalhes_turma(t)
                 )
                 view_btn.pack(pady=3)
-                
-                edit_btn = ctk.CTkButton(
-                    buttons_frame,
-                    text="Editar",
-                    width=120,
-                    height=35,
-                    fg_color="#9B59B6",
-                    hover_color="#7D3C98",
-                    command=lambda t=turma: self.show_editar_turma(t)
-                )
-                edit_btn.pack(pady=3)
         
         back_btn = ctk.CTkButton(
             main_frame,
@@ -163,121 +150,6 @@ class TelasProfessor:
             hover_color="darkgray"
         )
         back_btn.pack(pady=30)
-    
-    def show_criar_turma(self):
- 
-        self.app.clear_window()
-
-        scroll_container = ctk.CTkScrollableFrame(self.app, corner_radius=0)
-        scroll_container.pack(fill="both", expand=True, padx=0, pady=0)
-        
-        main_frame = ctk.CTkFrame(scroll_container, corner_radius=0)
-        main_frame.pack(padx=20, pady=20, fill="x")
-        
-        # Título
-        title_label = ctk.CTkLabel(
-            main_frame,
-            text="➕ Criar Nova Turma",
-            font=ctk.CTkFont(size=28, weight="bold")
-        )
-        title_label.pack(pady=(20, 30))
-        
-        form_frame = ctk.CTkFrame(main_frame)
-        form_frame.pack(pady=10, padx=80, fill="x") 
-        
-        # 1. Nome
-        nome_label = ctk.CTkLabel(form_frame, text="Nome da Turma:", font=ctk.CTkFont(size=14, weight="bold"))
-        nome_label.pack(pady=(20, 5), padx=20, anchor="w") 
-        
-        nome_entry = ctk.CTkEntry(form_frame, placeholder_text="Ex: Turma A - 2024", height=40)
-        nome_entry.pack(pady=(0, 15), padx=20, fill="x") 
-        
-        # 2. Disciplina
-        disciplina_label = ctk.CTkLabel(form_frame, text="Disciplina:", font=ctk.CTkFont(size=14, weight="bold"))
-        disciplina_label.pack(pady=(15, 5), padx=20, anchor="w") 
-        
-        disciplina_entry = ctk.CTkEntry(form_frame, placeholder_text="Ex: Matemática", height=40)
-        disciplina_entry.pack(pady=(0, 15), padx=20, fill="x") 
-        
-        # 3. Ano
-        ano_label = ctk.CTkLabel(form_frame, text="Ano Letivo:", font=ctk.CTkFont(size=14, weight="bold"))
-        ano_label.pack(pady=(15, 5), padx=20, anchor="w") 
-        
-        ano_entry = ctk.CTkEntry(form_frame, placeholder_text="Ex: 2024", height=40)
-        ano_entry.pack(pady=(0, 15), padx=20, fill="x") 
-        
-        # 4. Período (RadioButton)
-        periodo_label = ctk.CTkLabel(form_frame, text="Período:", font=ctk.CTkFont(size=14, weight="bold"))
-        periodo_label.pack(pady=(15, 5), padx=20, anchor="w")
-        
-        periodo_var = ctk.StringVar(value="Manhã")
-        periodo_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
-        
-        periodo_frame.pack(pady=(0, 15), padx=20, anchor="w") 
-        
-        periodos = ["Manhã", "Tarde", "Noite", "Integral"]
-        for periodo in periodos:
-            rb = ctk.CTkRadioButton(periodo_frame, text=periodo, variable=periodo_var, value=periodo)
-            rb.pack(side="left", padx=5) 
-        
-        # 5. Descrição (TextArea)
-        descricao_label = ctk.CTkLabel(form_frame, text="Descrição:", font=ctk.CTkFont(size=14, weight="bold"))
-        descricao_label.pack(pady=(15, 5), padx=20, anchor="w") 
-        
-        descricao_text = ctk.CTkTextbox(form_frame, height=100)
-        descricao_text.pack(pady=(0, 20), padx=20, fill="x")
-        
-        # --- FUNÇÃO DE CRIAÇÃO ---
-        
-        def process_criar():
-            nome = nome_entry.get().strip()
-            disciplina = disciplina_entry.get().strip()
-            ano = ano_entry.get().strip()
-            periodo = periodo_var.get()
-            descricao = descricao_text.get("1.0", "end-1c").strip()
-            
-            if not all([nome, disciplina, ano]):
-                messagebox.showerror("Erro", "Nome, Disciplina e Ano são obrigatórios!")
-                return
-            
-            from backend.turmas_backend import criar_turma
-            sucesso = criar_turma(self.user_email, nome, disciplina, ano, periodo, descricao)
-            
-            if sucesso:
-                messagebox.showinfo("Sucesso", "Turma criada com sucesso!")
-                self.show_turmas_professor()
-            else:
-                messagebox.showerror("Erro", "Erro ao criar turma!")
-        
-        # --- BOTÕES ---
-        
-        buttons_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
-        
-        buttons_frame.pack(pady=20) 
-        
-        create_btn = ctk.CTkButton(
-            buttons_frame,
-            text="✓ Criar Turma",
-            font=ctk.CTkFont(size=16, weight="bold"),
-            width=200,
-            height=50,
-            command=process_criar,
-            fg_color="#2CC985",
-            hover_color="#25A066"
-        )
-        create_btn.pack(side="left", padx=10)
-        
-        cancel_btn = ctk.CTkButton(
-            buttons_frame,
-            text="← Cancelar",
-            font=ctk.CTkFont(size=16),
-            width=200,
-            height=50,
-            command=self.show_professor_menu,
-            fg_color="gray",
-            hover_color="darkgray"
-        )
-        cancel_btn.pack(side="left", padx=10)
     
     def show_detalhes_turma(self, turma):
         self.app.clear_window()
@@ -310,23 +182,18 @@ class TelasProfessor:
         from backend.turmas_backend import get_alunos_turma, get_aulas_turma, get_atividades_turma
         
         alunos = get_alunos_turma(turma['id'])
-        for aluno in alunos:
-            aluno_frame = ctk.CTkFrame(tabs.tab("👥 Alunos"))
-            aluno_frame.pack(pady=5, padx=10, fill="x")
-            
-            ctk.CTkLabel(
-                aluno_frame,
-                text=f"👤 {aluno['nome']} - {aluno['email']}",
-                font=ctk.CTkFont(size=14)
-            ).pack(side="left", padx=20, pady=10)
-        
-        add_aluno_btn = ctk.CTkButton(
-            tabs.tab("👥 Alunos"),
-            text="➕ Adicionar Aluno",
-            width=200,
-            command=lambda: self.show_adicionar_aluno(turma)
-        )
-        add_aluno_btn.pack(pady=10)
+        if not alunos:
+            ctk.CTkLabel(tabs.tab("👥 Alunos"), text="Nenhum aluno matriculado ainda.", text_color="gray").pack(pady=20)
+        else:
+            for aluno in alunos:
+                aluno_frame = ctk.CTkFrame(tabs.tab("👥 Alunos"))
+                aluno_frame.pack(pady=5, padx=10, fill="x")
+                
+                ctk.CTkLabel(
+                    aluno_frame,
+                    text=f"👤 {aluno['nome']} - {aluno['email']}",
+                    font=ctk.CTkFont(size=14)
+                ).pack(side="left", padx=20, pady=10)
         
         aulas = get_aulas_turma(turma['id'])
         if not aulas:
@@ -390,69 +257,11 @@ class TelasProfessor:
         )
         back_btn.pack(pady=30)
     
-    def show_adicionar_aluno(self, turma):
-        dialog = ctk.CTkToplevel(self.app)
-        dialog.title("Adicionar Aluno")
-        dialog.geometry("550x500")
-        dialog.grab_set()
-        dialog.resizable(height=False, width=False)
-        
-        main_scroll = ctk.CTkScrollableFrame(dialog, width=500, height=420)
-        main_scroll.pack(fill="both", expand=True, padx=10, pady=10)
-        
-        title = ctk.CTkLabel(
-            main_scroll,
-            text="Adicionar Aluno à Turma",
-            font=ctk.CTkFont(size=18, weight="bold")
-        )
-        title.pack(pady=20)
-        
-        from backend.turmas_backend import get_alunos_disponiveis
-        alunos_disponiveis = get_alunos_disponiveis(turma['id'])
-        
-        if not alunos_disponiveis:
-            ctk.CTkLabel(
-                main_scroll,
-                text="Não há alunos disponíveis",
-                text_color="gray"
-            ).pack(pady=20)
-            return
-        
-        selected_aluno = ctk.StringVar(value=alunos_disponiveis[0]['email'])
-        
-        for aluno in alunos_disponiveis:
-            rb = ctk.CTkRadioButton(
-                main_scroll,
-                text=f"{aluno['nome']} - {aluno['email']}",
-                variable=selected_aluno,
-                value=aluno['email']
-            )
-            rb.pack(pady=5, padx=20, anchor="w")
-        
-        def add_aluno():
-            from backend.turmas_backend import adicionar_aluno_turma
-            sucesso = adicionar_aluno_turma(turma['id'], selected_aluno.get())
-            if sucesso:
-                messagebox.showinfo("Sucesso", "Aluno adicionado com sucesso!")
-                dialog.destroy()
-                self.show_detalhes_turma(turma)
-            else:
-                messagebox.showerror("Erro", "Erro ao adicionar aluno!")
-        
-        ctk.CTkButton(
-            main_scroll,
-            text="Adicionar",
-            command=add_aluno,
-            width=200,
-            fg_color="#2CC985"
-        ).pack(pady=20)
-    
     def show_registro_aulas(self):
         tela_aulas = TelaRegistroAulas(self.app, self.user_email)
         tela_aulas.show_registro_aulas()
     
     def show_relatorios_aulas(self):
-        """Tela de relatórios de aulas do professor"""
         self.app.clear_window()
         
         main_frame = ctk.CTkScrollableFrame(self.app, corner_radius=0)
@@ -473,7 +282,6 @@ class TelasProfessor:
         )
         subtitle_label.pack(pady=(0, 30))
         
-        # Buscar todas as aulas do professor
         from backend.turmas_backend import get_todas_aulas_professor, get_relatorio_por_aula, get_detalhes_completos_turma
         aulas = get_todas_aulas_professor(self.user_email)
         
@@ -486,7 +294,6 @@ class TelasProfessor:
             )
             empty_label.pack(pady=50)
         else:
-            # Agrupar aulas por turma
             aulas_por_turma = {}
             for aula in aulas:
                 turma_id = aula['turma_id']
@@ -503,12 +310,10 @@ class TelasProfessor:
                     }
                 aulas_por_turma[turma_id]['aulas'].append(aula)
             
-            # Exibir aulas por turma
             for turma_id, dados_turma in aulas_por_turma.items():
                 turma_frame = ctk.CTkFrame(main_frame)
                 turma_frame.pack(pady=10, padx=40, fill="x")
                 
-                # Cabeçalho da turma
                 turma_header = ctk.CTkLabel(
                     turma_frame,
                     text=f"📚 {dados_turma['turma_nome']} - {dados_turma['disciplina']}",
@@ -516,12 +321,10 @@ class TelasProfessor:
                 )
                 turma_header.pack(pady=15, padx=20, anchor="w")
                 
-                # Listar aulas da turma
                 for aula in dados_turma['aulas']:
                     aula_frame = ctk.CTkFrame(turma_frame)
                     aula_frame.pack(pady=5, padx=20, fill="x")
                     
-                    # Info da aula
                     info_frame = ctk.CTkFrame(aula_frame, fg_color="transparent")
                     info_frame.pack(side="left", fill="x", expand=True, padx=15, pady=10)
                     
@@ -541,10 +344,8 @@ class TelasProfessor:
                     )
                     data_label.pack(anchor="w", pady=2)
                     
-                    # Verificar se já existe relatório
                     relatorio = get_relatorio_por_aula(aula['id'])
                     
-                    # Botões
                     buttons_frame = ctk.CTkFrame(aula_frame, fg_color="transparent")
                     buttons_frame.pack(side="right", padx=10, pady=10)
                     
@@ -612,7 +413,6 @@ class TelasProfessor:
         back_btn.pack(pady=30)
     
     def show_criar_editar_relatorio(self, aula, relatorio_existente=None):
-        """Modal para criar ou editar relatório de aula"""
         dialog = ctk.CTkToplevel(self.app)
         dialog.title("Relatório de Aula")
         dialog.geometry("700x600")
@@ -622,8 +422,6 @@ class TelasProfessor:
         main_scroll = ctk.CTkScrollableFrame(dialog, corner_radius=0)
         main_scroll.pack(fill="both", expand=True, padx=20, pady=20)
 
-        
-        # Título
         title_text = "✏️ Editar Relatório" if relatorio_existente else "➕ Criar Relatório"
         title = ctk.CTkLabel(
             main_scroll,
@@ -632,7 +430,6 @@ class TelasProfessor:
         )
         title.pack(pady=20)
         
-        # Informações da aula
         info_frame = ctk.CTkFrame(main_scroll)
         info_frame.pack(pady=10, padx=20, fill="x")
         
@@ -654,7 +451,6 @@ class TelasProfessor:
             text_color="gray"
         ).pack(pady=(0, 15), padx=20, anchor="w")
         
-        # Campo de texto para o relatório
         ctk.CTkLabel(
             main_scroll,
             text="Conteúdo do Relatório(máximo 2000 caracteres):",
@@ -669,11 +465,9 @@ class TelasProfessor:
         )
         relatorio_text.pack(padx=20, pady=(0, 15), fill="x")
         
-        # Se existe relatório, preencher o texto
         if relatorio_existente:
             relatorio_text.insert("1.0", relatorio_existente.get('texto', ''))
         
-        # Data de criação
         if relatorio_existente:
             data_label = ctk.CTkLabel(
                 main_scroll,
@@ -683,7 +477,6 @@ class TelasProfessor:
             )
             data_label.pack(pady=(0, 10))
         
-        # Botões
         buttons_frame = ctk.CTkFrame(main_scroll, fg_color="transparent")
         buttons_frame.pack(pady=20)
         
@@ -703,7 +496,6 @@ class TelasProfessor:
             
             try:
                 if relatorio_existente:
-                    # Editar relatório existente
                     sucesso = editar_relatorio_aula(relatorio_existente['id'], texto)
                     if sucesso:
                         messagebox.showinfo("Sucesso", "Relatório atualizado com sucesso!")
@@ -712,7 +504,6 @@ class TelasProfessor:
                     else:
                         messagebox.showerror("Erro", "Erro ao atualizar relatório!")
                 else:
-                    # Criar novo relatório
                     relatorio_id = criar_relatorio_aula(
                         aula['turma_id'],
                         aula['id'],
@@ -754,11 +545,9 @@ class TelasProfessor:
                 relatorio_id = None
                 
                 if relatorio_existente:
-                    # Salvar alterações antes de finalizar
                     editar_relatorio_aula(relatorio_existente['id'], texto)
                     relatorio_id = relatorio_existente['id']
                 else:
-                    # Criar novo relatório
                     relatorio_id = criar_relatorio_aula(
                         aula['turma_id'],
                         aula['id'],
@@ -782,7 +571,6 @@ class TelasProfessor:
             except Exception as e:
                 messagebox.showerror("Erro", f"Erro ao finalizar relatório: {str(e)}")
         
-        # Botão Salvar Rascunho
         save_btn = ctk.CTkButton(
             buttons_frame,
             text="💾 Salvar Rascunho",
@@ -794,7 +582,6 @@ class TelasProfessor:
         )
         save_btn.pack(side="left", padx=10)
         
-        # Botão Finalizar
         finalize_btn = ctk.CTkButton(
             buttons_frame,
             text="✓ Finalizar Relatório",
@@ -819,7 +606,6 @@ class TelasProfessor:
         back_btn.pack(pady=30)
     
     def show_visualizar_relatorio(self, aula, relatorio):
-        """Modal para visualizar relatório finalizado"""
         dialog = ctk.CTkToplevel(self.app)
         dialog.title("Visualizar Relatório")
         dialog.geometry("800x700")
@@ -829,7 +615,6 @@ class TelasProfessor:
         main_scroll = ctk.CTkScrollableFrame(dialog, width=750, height=630)
         main_scroll.pack(fill="both", expand=True, padx=10, pady=10)
         
-        # Título
         title = ctk.CTkLabel(
             main_scroll,
             text="📄 Relatório de Aula",
@@ -837,7 +622,6 @@ class TelasProfessor:
         )
         title.pack(pady=20)
         
-        # Status
         status_frame = ctk.CTkFrame(main_scroll, fg_color="#2CC985", corner_radius=10)
         status_frame.pack(pady=10)
         
@@ -848,7 +632,6 @@ class TelasProfessor:
             text_color="white"
         ).pack(padx=20, pady=8)
         
-        # Informações
         info_frame = ctk.CTkFrame(main_scroll)
         info_frame.pack(pady=15, padx=40, fill="x")
         
@@ -877,7 +660,6 @@ class TelasProfessor:
                 text_color="gray"
             ).pack(pady=3, padx=20, anchor="w")
         
-        # Conteúdo do relatório
         ctk.CTkLabel(
             main_scroll,
             text="Conteúdo:",
@@ -892,9 +674,8 @@ class TelasProfessor:
         )
         relatorio_text.pack(padx=40, pady=(0, 20))
         relatorio_text.insert("1.0", relatorio.get('texto', ''))
-        relatorio_text.configure(state="disabled")  # Somente leitura
+        relatorio_text.configure(state="disabled")
         
-        # Botão Fechar
         close_btn = ctk.CTkButton(
             main_scroll,
             text="Fechar",
@@ -907,7 +688,6 @@ class TelasProfessor:
         close_btn.pack(pady=20)
     
     def show_atividades_professor(self):
-        """Mostra todas as atividades do professor com informação de entregas"""
         self.app.clear_window()
         
         main_frame = ctk.CTkScrollableFrame(self.app, corner_radius=0)
@@ -920,7 +700,6 @@ class TelasProfessor:
         )
         title_label.pack(pady=(20, 30))
         
-        # NOVA FUNÇÃO: Obtém atividades com informações de entregas
         from backend.turmas_backend import get_atividades_com_entregas
         atividades = get_atividades_com_entregas(self.user_email)
         
@@ -934,7 +713,6 @@ class TelasProfessor:
                 info_frame = ctk.CTkFrame(ativ_frame, fg_color="transparent")
                 info_frame.pack(side="left", fill="x", expand=True, padx=20, pady=15)
                 
-                # Título da atividade
                 ctk.CTkLabel(
                     info_frame,
                     text=f"📄 {atividade['titulo']}",
@@ -942,7 +720,6 @@ class TelasProfessor:
                     wraplength=380
                 ).pack(anchor="w")
                 
-                # Informações da turma
                 ctk.CTkLabel(
                     info_frame,
                     text=f"Turma: {atividade['turma_nome']} - {atividade['disciplina']}",
@@ -950,7 +727,6 @@ class TelasProfessor:
                     text_color="gray"
                 ).pack(anchor="w", pady=2)
                 
-                # Informações da atividade
                 ctk.CTkLabel(
                     info_frame,
                     text=f"Entrega: {atividade['data_entrega']} | Valor: {atividade['valor']} pts",
@@ -958,14 +734,12 @@ class TelasProfessor:
                     text_color="gray"
                 ).pack(anchor="w", pady=2)
                 
-                # STATUS DAS ENTREGAS - INFORMAÇÃO CRUCIAL
                 total_alunos = atividade['total_alunos']
                 entregas = atividade['total_entregas']
                 corrigidas = atividade['entregas_corrigidas']
                 pendentes = atividade['entregas_pendentes']
                 nao_entregaram = total_alunos - entregas
                 
-                # Texto de status com cores
                 if entregas == 0:
                     status_text = f"⚠️  Nenhuma entrega ainda ({total_alunos} alunos na turma)"
                     status_color = "#E74C3C"
@@ -983,7 +757,6 @@ class TelasProfessor:
                     text_color=status_color
                 ).pack(anchor="w", pady=5)
                 
-                # Botão para ver entregas
                 ctk.CTkButton(
                     ativ_frame,
                     text="Ver Entregas",
@@ -992,7 +765,6 @@ class TelasProfessor:
                     command=lambda a=atividade: self.show_entregas_atividade(a)
                 ).pack(side="right", padx=10, pady=10)
         
-        # Botão para criar nova atividade
         create_btn = ctk.CTkButton(
             main_frame,
             text="➕ Criar Nova Atividade",
@@ -1018,7 +790,6 @@ class TelasProfessor:
         back_btn.pack(pady=30)
     
     def show_entregas_atividade(self, atividade):
-        """Mostra todas as entregas de uma atividade com status detalhado"""
         self.app.clear_window()
         
         main_frame = ctk.CTkScrollableFrame(self.app, corner_radius=0)
@@ -1040,7 +811,6 @@ class TelasProfessor:
         )
         info_label.pack(pady=(0, 20))
         
-        # USAR NOVA FUNÇÃO PARA OBTER DETALHES COMPLETOS
         from backend.turmas_backend import get_detalhes_atividade_professor
         detalhes = get_detalhes_atividade_professor(atividade['id'])
         
@@ -1048,7 +818,6 @@ class TelasProfessor:
             ctk.CTkLabel(main_frame, text="Erro ao carregar detalhes da atividade.", text_color="red").pack(pady=50)
             return
         
-        # Resumo de entregas
         resumo_frame = ctk.CTkFrame(main_frame)
         resumo_frame.pack(pady=10, padx=40, fill="x")
         
@@ -1058,14 +827,12 @@ class TelasProfessor:
             font=ctk.CTkFont(size=16, weight="bold")
         ).pack(pady=15)
         
-        # Tabs para organizar
         tabs = ctk.CTkTabview(main_frame, width=900, height=400)
         tabs.pack(pady=20, padx=40)
         
         tabs.add("✅ Entregas Recebidas")
         tabs.add("⚠️ Não Entregaram")
         
-        # TAB 1: Entregas recebidas
         entregas = detalhes['entregas']
         if not entregas:
             ctk.CTkLabel(tabs.tab("✅ Entregas Recebidas"), text="Nenhuma entrega ainda.", text_color="gray").pack(pady=20)
@@ -1077,14 +844,12 @@ class TelasProfessor:
                 info_frame = ctk.CTkFrame(entrega_frame, fg_color="transparent")
                 info_frame.pack(side="left", fill="x", expand=True, padx=20, pady=15)
                 
-                # Nome e RM do aluno
                 ctk.CTkLabel(
                     info_frame,
                     text=f"👤 {entrega['aluno_nome']} (RM: {entrega['aluno_rm']})",
                     font=ctk.CTkFont(size=15, weight="bold")
                 ).pack(anchor="w")
                 
-                # Status da correção
                 if entrega.get('nota') is not None:
                     status_text = f"✅ Nota: {entrega['nota']:.1f}/{atividade['valor']}"
                     status_color = "#2CC985"
@@ -1099,7 +864,6 @@ class TelasProfessor:
                     text_color=status_color
                 ).pack(anchor="w", pady=2)
                 
-                # Botões de ação
                 btn_frame = ctk.CTkFrame(entrega_frame, fg_color="transparent")
                 btn_frame.pack(side="right", padx=10, pady=10)
                 
@@ -1122,7 +886,6 @@ class TelasProfessor:
                     command=lambda e=entrega: self.avaliar_entrega(e, atividade)
                 ).pack(pady=3)
         
-        # TAB 2: Alunos que não entregaram
         nao_entregaram = detalhes['alunos_nao_entregaram']
         if not nao_entregaram:
             ctk.CTkLabel(
@@ -1156,18 +919,15 @@ class TelasProfessor:
         back_btn.pack(pady=30)
     
     def avaliar_entrega(self, entrega, atividade):
-        """Modal COM SCROLL para avaliar uma entrega e ver o que foi entregue"""
         dialog = ctk.CTkToplevel(self.app)
         dialog.title("Avaliar Entrega")
-        dialog.geometry("700x600")  # Maior para caber tudo com scroll
+        dialog.geometry("700x600")
         dialog.grab_set()
         dialog.resizable(height=False, width=False)
         
-        # ===== SCROLLABLE FRAME PRINCIPAL =====
         main_scroll = ctk.CTkScrollableFrame(dialog, width=650, height=630)
         main_scroll.pack(fill="both", expand=True, padx=10, pady=10)
         
-        # Título
         title = ctk.CTkLabel(
             main_scroll,
             text=f"📝 Avaliar Entrega",
@@ -1175,7 +935,6 @@ class TelasProfessor:
         )
         title.pack(pady=(10, 5))
         
-        # Informações do aluno
         aluno_label = ctk.CTkLabel(
             main_scroll,
             text=f"👤 {entrega['aluno_nome']} (RM: {entrega['aluno_rm']})",
@@ -1183,7 +942,6 @@ class TelasProfessor:
         )
         aluno_label.pack(pady=(0, 20))
         
-        # Frame de informações gerais
         info_frame = ctk.CTkFrame(main_scroll)
         info_frame.pack(pady=10, padx=20, fill="x")
         
@@ -1208,7 +966,6 @@ class TelasProfessor:
             text_color="gray"
         ).pack(anchor="w", padx=15, pady=(0, 10))
         
-        # ===== VISUALIZAÇÃO DO QUE FOI ENTREGUE =====
         entrega_frame = ctk.CTkFrame(main_scroll)
         entrega_frame.pack(pady=15, padx=20, fill="both", expand=True)
         
@@ -1218,7 +975,6 @@ class TelasProfessor:
             font=ctk.CTkFont(size=14, weight="bold")
         ).pack(anchor="w", padx=15, pady=(15, 5))
         
-        # Textbox para mostrar a resposta (somente leitura)
         resposta_text = ctk.CTkTextbox(
             entrega_frame,
             width=600,
@@ -1227,15 +983,13 @@ class TelasProfessor:
         )
         resposta_text.pack(padx=15, pady=(0, 15))
         
-        # Inserir resposta do aluno
         comentario = entrega.get('comentario', '')
         if comentario:
             resposta_text.insert("1.0", comentario)
         else:
             resposta_text.insert("1.0", "Sem resposta escrita.")
-        resposta_text.configure(state="disabled")  # Somente leitura
+        resposta_text.configure(state="disabled")
         
-        # Arquivo anexado
         if entrega.get('arquivo'):
             arquivo_label = ctk.CTkLabel(
                 entrega_frame,
@@ -1260,11 +1014,9 @@ class TelasProfessor:
                 text_color="gray"
             ).pack(anchor="w", padx=15, pady=(0, 15))
         
-        # ===== FORMULÁRIO DE AVALIAÇÃO =====
         avaliacao_frame = ctk.CTkFrame(main_scroll)
         avaliacao_frame.pack(pady=15, padx=20, fill="x")
         
-        # Campo de nota
         ctk.CTkLabel(
             avaliacao_frame,
             text="✏️ Nota:",
@@ -1278,13 +1030,11 @@ class TelasProfessor:
             height=40
         )
         
-        # Preencher nota existente se houver
         if entrega.get('nota') is not None:
             nota_entry.insert(0, str(entrega['nota']))
         
         nota_entry.pack(anchor="w", padx=15, pady=(0, 15))
         
-        # Campo de feedback
         ctk.CTkLabel(
             avaliacao_frame,
             text="💬 Feedback para o aluno(máximo 1000 caracteres):",
@@ -1298,13 +1048,11 @@ class TelasProfessor:
             wrap="word"
         )
         
-        # Preencher feedback existente se houver
         if entrega.get('feedback'):
             feedback_text.insert("1.0", entrega['feedback'])
         
         feedback_text.pack(padx=15, pady=(0, 20))
         
-        # Função para salvar avaliação
         def salvar_avaliacao():
             nota = nota_entry.get().strip()
             feedback = feedback_text.get("1.0", "end-1c").strip()
@@ -1338,7 +1086,6 @@ class TelasProfessor:
             else:
                 messagebox.showerror("Erro", "Erro ao salvar avaliação!")
         
-        # Botão de salvar
         ctk.CTkButton(
             main_scroll,
             text="💾 Salvar Avaliação",
@@ -1350,33 +1097,6 @@ class TelasProfessor:
             font=ctk.CTkFont(size=16, weight="bold")
         ).pack(pady=25)
     
-        def salvar_avaliacao():
-            nota = nota_entry.get().strip()
-            feedback = feedback_text.get("1.0", "end-1c").strip()
-            
-            if not nota:
-                messagebox.showerror("Erro", "A nota é obrigatória!")
-                return
-            
-            try:
-                nota_float = float(nota)
-                if nota_float < 0 or nota_float > float(atividade['valor']):
-                    messagebox.showerror("Erro", f"Nota deve estar entre 0 e {atividade['valor']}!")
-                    return
-            except ValueError:
-                messagebox.showerror("Erro", "Nota inválida!")
-                return
-            
-            from backend.turmas_backend import avaliar_entrega
-            sucesso = avaliar_entrega(entrega['id'], nota_float, feedback)
-            
-            if sucesso:
-                messagebox.showinfo("Sucesso", "Avaliação salva com sucesso!")
-                dialog.destroy()
-                self.show_entregas_atividade(atividade)
-            else:
-                messagebox.showerror("Erro", "Erro ao salvar avaliação!")
-        
         back_btn = ctk.CTkButton(
             main_scroll,
             text="fechar",
@@ -1390,7 +1110,6 @@ class TelasProfessor:
         back_btn.pack(pady=30)
     
     def baixar_entrega(self, entrega):
-        """Baixa o arquivo da entrega"""
         if entrega.get('arquivo'):
             save_path = filedialog.asksaveasfilename(
                 defaultextension=".pdf",
@@ -1453,7 +1172,6 @@ class TelasProfessor:
         back_btn.pack(pady=30)
     
     def show_boletim_turma(self, turma):
-        """Mostra o boletim completo da turma com status de aprovação"""
         self.app.clear_window()
         
         main_frame = ctk.CTkScrollableFrame(self.app, corner_radius=0)
@@ -1473,19 +1191,16 @@ class TelasProfessor:
             aluno_frame = ctk.CTkFrame(main_frame)
             aluno_frame.pack(pady=8, padx=40, fill="x")
             
-            # Nome e RM
             ctk.CTkLabel(
                 aluno_frame,
                 text=f"👤 {aluno_data['nome']} (RM: {aluno_data['rm']})",
                 font=ctk.CTkFont(size=16, weight="bold")
             ).pack(anchor="w", padx=20, pady=(10, 5))
             
-            # Média, frequência e status
             media = aluno_data['media'] if aluno_data['media'] else 0
             frequencia = aluno_data['frequencia']
             status = aluno_data.get('status', 'Sem notas')
             
-            # Cores baseadas no status
             if status == 'Aprovado':
                 status_color = "#2CC985"
                 status_icon = "✅"
@@ -1514,150 +1229,8 @@ class TelasProfessor:
             hover_color="darkgray"
         )
         back_btn.pack(pady=30)
-
-    def show_editar_turma(self, turma):
-
-        dialog = ctk.CTkToplevel(self.app)
-        dialog.title(f"Editar Turma: {turma['nome']}")
-        dialog.geometry("700x650") # Aumentei um pouco a altura para acomodar o novo layout
-        dialog.grab_set()
-        dialog.resizable(height=False, width=False)
-
-        main_frame = ctk.CTkScrollableFrame(dialog, corner_radius=0)
-        main_frame.pack(fill="both", expand=True, padx=20, pady=20)
-
-        # Título
-        title_label = ctk.CTkLabel(
-            main_frame,
-            text=f"✏️ Editar Turma: {turma['nome']}",
-            font=ctk.CTkFont(size=24, weight="bold"),
-            wraplength=400
-        )
-        title_label.pack(pady=(20, 30))
-        
-        # O form_frame agora usa FILL="X" e PADX menor para se centralizar no main_frame
-        form_frame = ctk.CTkFrame(main_frame)
-        form_frame.pack(pady=10, padx=80, fill="x")
-        
-        # --- CAMPOS COM DADOS PREENCHIDOS USANDO PACK ---
-        
-        # 1. Nome
-        nome_label = ctk.CTkLabel(form_frame, text="Nome da Turma:", font=ctk.CTkFont(size=14, weight="bold"))
-        nome_label.pack(pady=(20, 5), padx=20, anchor="w")
-        nome_entry = ctk.CTkEntry(form_frame, height=40)
-        nome_entry.insert(0, turma.get('nome', ''))
-        nome_entry.pack(pady=(0, 15), padx=20, fill="x") # 🎯 fill="x" para expandir
-        
-        # 2. Disciplina
-        disciplina_label = ctk.CTkLabel(form_frame, text="Disciplina:", font=ctk.CTkFont(size=14, weight="bold"))
-        disciplina_label.pack(pady=(15, 5), padx=20, anchor="w")
-        disciplina_entry = ctk.CTkEntry(form_frame, height=40)
-        disciplina_entry.insert(0, turma.get('disciplina', ''))
-        disciplina_entry.pack(pady=(0, 15), padx=20, fill="x") # 🎯 fill="x" para expandir
-        
-        # 3. Ano
-        ano_label = ctk.CTkLabel(form_frame, text="Ano Letivo:", font=ctk.CTkFont(size=14, weight="bold"))
-        ano_label.pack(pady=(15, 5), padx=20, anchor="w")
-        ano_entry = ctk.CTkEntry(form_frame, height=40)
-        ano_entry.insert(0, turma.get('ano', ''))
-        ano_entry.pack(pady=(0, 15), padx=20, fill="x") # 🎯 fill="x" para expandir
-        
-        # 4. Período (RadioButton)
-        periodo_label = ctk.CTkLabel(form_frame, text="Período:", font=ctk.CTkFont(size=14, weight="bold"))
-        periodo_label.pack(pady=(15, 5), padx=20, anchor="w")
-        
-        periodo_var = ctk.StringVar(value=turma.get('periodo', 'Manhã')) 
-        periodo_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
-        # Usa anchor="w" e padx para alinhar o grupo de botões
-        periodo_frame.pack(pady=(0, 15), padx=20, anchor="w") 
-        
-        periodos = ["Manhã", "Tarde", "Noite", "Integral"]
-        for i, periodo in enumerate(periodos):
-            rb = ctk.CTkRadioButton(periodo_frame, text=periodo, variable=periodo_var, value=periodo)
-            rb.pack(side="left", padx=5)
-        
-        # 5. Professor (Apenas Leitura)
-        prof_label = ctk.CTkLabel(form_frame, text="Professor:", font=ctk.CTkFont(size=14, weight="bold"))
-        prof_label.pack(pady=(15, 5), padx=20, anchor="w")
-        prof_value = ctk.CTkLabel(form_frame, text=turma.get('professor_nome', 'N/A'), text_color="gray")
-        prof_value.pack(pady=(0, 15), padx=20, anchor="w") # Não usa fill="x" pois é apenas um label
-
-        # 6. Descrição (TextArea)
-        descricao_label = ctk.CTkLabel(form_frame, text="Descrição:", font=ctk.CTkFont(size=14, weight="bold"))
-        descricao_label.pack(pady=(15, 5), padx=20, anchor="w")
-        
-        descricao_text = ctk.CTkTextbox(form_frame, height=100)
-        descricao_text.insert("0.0", turma.get('descricao', ''))
-        descricao_text.pack(pady=(0, 20), padx=20, fill="x") # 🎯 fill="x" para expandir
-        
-        # --- FUNÇÃO DE SALVAR (mantida) ---
-
-        def salvar_edicao():
-            nome = nome_entry.get().strip()
-            disciplina = disciplina_entry.get().strip()
-            ano = ano_entry.get().strip()
-            periodo = periodo_var.get()
-            descricao = descricao_text.get("1.0", "end-1c").strip()
-            
-            # Validação básica
-            if not all([nome, disciplina, ano]):
-                messagebox.showerror("Erro", "Nome, Disciplina e Ano são obrigatórios!")
-                return
-            
-            # Chama a função de backend
-            from backend.turmas_backend import editar_turma, get_detalhes_completos_turma
-            sucesso = editar_turma(
-                turma['id'], # ID da turma sendo editada
-                nome,
-                disciplina,
-                ano,
-                periodo,
-                descricao
-            )
-            
-            if sucesso:
-                messagebox.showinfo("Sucesso", "Turma atualizada com sucesso!")
-                dialog.destroy()
-                
-                turma_atualizada = get_detalhes_completos_turma(turma['id'])
-                # Assume que você tem um método para mostrar os detalhes da turma
-                self.show_detalhes_turma(turma_atualizada) 
-            else:
-                messagebox.showerror("Erro", "Erro ao salvar edição da turma.")
-        
-        # --- BOTÕES (Refatorados em um frame para centralizar) ---
-        
-        button_wrapper_frame = ctk.CTkFrame(dialog, fg_color="transparent")
-        button_wrapper_frame.pack(pady=(10, 20)) # Empacotado no 'dialog' após 'main_frame'
-
-        create_btn = ctk.CTkButton(
-            button_wrapper_frame,
-            text="✓ Salvar Alterações",
-            font=ctk.CTkFont(size=16, weight="bold"),
-            width=200,
-            height=50,
-            command=salvar_edicao,
-            fg_color="#3B8EDC",
-            hover_color="#36719F"
-        )
-        # Empacotado no frame de botões
-        create_btn.pack(side="left", padx=10) 
-        
-        cancel_btn = ctk.CTkButton(
-            button_wrapper_frame,
-            text="← Cancelar",
-            font=ctk.CTkFont(size=16),
-            width=200,
-            height=50,
-            command=dialog.destroy, 
-            fg_color="gray",
-            hover_color="darkgray"
-        )
-        # Empacotado no frame de botões
-        cancel_btn.pack(side="left", padx=10)
     
     def show_criar_atividade(self, turma=None):
-        """Modal para criar uma nova atividade"""
         dialog = ctk.CTkToplevel(self.app)
         dialog.title("Criar Nova Atividade")
         dialog.geometry("700x600")
@@ -1677,7 +1250,6 @@ class TelasProfessor:
         form_frame = ctk.CTkFrame(main_scroll)
         form_frame.pack(pady=20, padx=40, fill="both", expand=True)
         
-        # Seleção de turma
         ctk.CTkLabel(
             form_frame,
             text="Turma:",
@@ -1705,7 +1277,6 @@ class TelasProfessor:
         )
         turma_menu.pack(padx=20, pady=(0, 15))
         
-        # Título
         limite_titulo = 46
         titulo_var = ctk.StringVar()
         ctk.CTkLabel(
@@ -1724,7 +1295,6 @@ class TelasProfessor:
         titulo_entry.pack(padx=20, pady=(0, 15))
         titulo_var.trace_add("write", self.limitar_caracteres(titulo_var, limite_titulo))
         
-        # Descrição
         ctk.CTkLabel(
             form_frame,
             text="Descrição(máximo 1000 caracteres):",
@@ -1739,7 +1309,6 @@ class TelasProfessor:
         )
         descricao_text.pack(padx=20, pady=(0, 15))
         
-        # Data de entrega
         ctk.CTkLabel(
             form_frame,
             text="Data de Entrega:",
@@ -1758,7 +1327,6 @@ class TelasProfessor:
         data_entry.insert(0, data_sugerida)
         data_entry.pack(padx=20, pady=(0, 15))
         
-        # Valor (pontuação)
         limite_valor = 3
         valor_var = ctk.StringVar()
         ctk.CTkLabel(
@@ -1777,7 +1345,6 @@ class TelasProfessor:
         valor_entry.pack(padx=20, pady=(0, 15))
         valor_var.trace_add("write", self.limitar_caracteres(valor_var, limite_valor))
         
-        # Arquivo opcional
         arquivo_path = None
         arquivo_label = ctk.CTkLabel(
             form_frame,
@@ -1813,7 +1380,6 @@ class TelasProfessor:
         
         arquivo_label.pack(pady=(0, 15))
         
-        # Função para salvar
         def salvar_atividade():
             turma_selecionada = turma_map.get(turma_var.get())
             if not turma_selecionada:
@@ -1860,7 +1426,6 @@ class TelasProfessor:
             else:
                 messagebox.showerror("Erro", "Erro ao criar atividade!")
         
-        # Botão de criar
         ctk.CTkButton(
             main_scroll,
             text="✓ Criar Atividade",
@@ -1876,4 +1441,3 @@ class TelasProfessor:
         rgb = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
         darkened = tuple(max(0, int(c * 0.8)) for c in rgb)
         return f"#{darkened[0]:02x}{darkened[1]:02x}{darkened[2]:02x}"
-    
