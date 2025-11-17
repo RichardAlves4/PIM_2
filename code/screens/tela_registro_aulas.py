@@ -657,8 +657,164 @@ class TelaRegistroAulas:
         ).pack(pady=20)
     
     def show_editar_aula(self, aula, turma):
-        """Modal para editar aula"""
-        messagebox.showinfo("Em desenvolvimento", "Funcionalidade de edição de aula em desenvolvimento!")
+        """Modal para editar uma aula existente"""
+        dialog = ctk.CTkToplevel(self.app)
+        dialog.title("Editar Aula")
+        dialog.geometry("700x600")
+        dialog.grab_set()
+        dialog.resizable(height=False, width=False)
+
+        form_frame = ctk.CTkScrollableFrame(dialog, corner_radius=0)
+        form_frame.pack(fill="both", expand=True, padx=20, pady=20)
+        
+        title = ctk.CTkLabel(
+            form_frame,
+            text="✏️ Editar Aula",
+            font=ctk.CTkFont(size=20, weight="bold")
+        )
+        title.pack(pady=20)
+        
+        # Informação da turma (não editável)
+        ctk.CTkLabel(
+            form_frame,
+            text="Turma:",
+            font=ctk.CTkFont(size=14, weight="bold")
+        ).pack(anchor="w", padx=20, pady=(20, 5))
+        
+        ctk.CTkLabel(
+            form_frame,
+            text=f"{turma['nome']} - {turma['disciplina']}",
+            font=ctk.CTkFont(size=14),
+            text_color="gray"
+        ).pack(anchor="w", padx=20, pady=(0, 15))
+        
+        # Data da aula
+        ctk.CTkLabel(
+            form_frame,
+            text="Data da Aula:",
+            font=ctk.CTkFont(size=14, weight="bold")
+        ).pack(anchor="w", padx=20, pady=(10, 5))
+        
+        data_entry = ctk.CTkEntry(
+            form_frame,
+            placeholder_text="DD/MM/AAAA",
+            width=600,
+            height=40
+        )
+        data_entry.insert(0, aula['data'])
+        data_entry.pack(padx=20, pady=(0, 15))
+        
+        # Título da aula
+        limite_titulo = 46
+        titulo_var = ctk.StringVar(value=aula['titulo'])
+        
+        ctk.CTkLabel(
+            form_frame,
+            text="Título da Aula:",
+            font=ctk.CTkFont(size=14, weight="bold")
+        ).pack(anchor="w", padx=20, pady=(10, 5))
+        
+        titulo_entry = ctk.CTkEntry(
+            form_frame,
+            placeholder_text="Ex: Introdução à Álgebra Linear",
+            width=600,
+            height=40,
+            textvariable=titulo_var
+        )
+        titulo_entry.pack(padx=20, pady=(0, 15))
+        titulo_var.trace_add("write", self.limitar_caracteres(titulo_var, limite_titulo))
+        
+        # Conteúdo/descrição
+        ctk.CTkLabel(
+            form_frame,
+            text="Conteúdo da Aula (máximo 1000 caracteres):",
+            font=ctk.CTkFont(size=14, weight="bold")
+        ).pack(anchor="w", padx=20, pady=(10, 5))
+        
+        conteudo_text = ctk.CTkTextbox(
+            form_frame,
+            width=600,
+            height=150,
+            wrap="word",
+        )
+        conteudo_text.insert("0.0", aula['conteudo'])
+        conteudo_text.pack(padx=20, pady=(0, 15))
+        
+        # Observações
+        limite_texto_curto = 65
+        observacoes_var = ctk.StringVar(value=aula.get('observacoes', ''))
+        
+        ctk.CTkLabel(
+            form_frame,
+            text="Observações (opcional):",
+            font=ctk.CTkFont(size=14, weight="bold")
+        ).pack(anchor="w", padx=20, pady=(10, 5))
+        
+        observacoes_entry = ctk.CTkEntry(
+            form_frame,
+            placeholder_text="Ex: Prova na próxima aula",
+            width=600,
+            height=40,
+            textvariable=observacoes_var
+        )
+        observacoes_entry.pack(padx=20, pady=(0, 15))
+        observacoes_var.trace_add("write", self.limitar_caracteres(observacoes_var, limite_texto_curto))
+        
+        def salvar_edicao():
+            limite_texto = 1000
+            
+            data = data_entry.get().strip()
+            titulo = titulo_var.get().strip().title()
+            conteudo = conteudo_text.get("1.0", "end-1c").strip()
+            observacoes = observacoes_var.get().strip()
+            
+            if not all([data, titulo, conteudo]):
+                messagebox.showerror("Erro", "Preencha todos os campos obrigatórios!")
+                return
+            
+            if len(conteudo) > limite_texto:
+                messagebox.showerror("Erro", f"O conteúdo não pode ter mais de {limite_texto} caracteres.")
+                return
+            
+            from backend.turmas_backend import editar_aula
+            sucesso = editar_aula(
+                aula['id'],
+                data,
+                titulo,
+                conteudo,
+                observacoes
+            )
+            
+            if sucesso:
+                messagebox.showinfo("Sucesso", "Aula atualizada com sucesso!")
+                dialog.destroy()
+                self.show_aulas_turma(turma)
+            else:
+                messagebox.showerror("Erro", "Erro ao atualizar aula!")
+        
+        # Botões
+        buttons_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
+        buttons_frame.pack(pady=20)
+        
+        ctk.CTkButton(
+            buttons_frame,
+            text="✓ Salvar Alterações",
+            command=salvar_edicao,
+            width=200,
+            height=45,
+            fg_color="#2CC985",
+            hover_color="#25A066"
+        ).pack(side="left", padx=10)
+        
+        ctk.CTkButton(
+            buttons_frame,
+            text="✗ Cancelar",
+            command=dialog.destroy,
+            width=200,
+            height=45,
+            fg_color="gray",
+            hover_color="darkgray"
+        ).pack(side="left", padx=10)
     
     def voltar_menu(self):
         """Volta para o menu do professor"""

@@ -6,87 +6,39 @@
                "role": "ADMIN",
                "senha": "$2b$12$F/FPnGR00GvgKeYvmpUbNedGx0NMW27uZqoFxdgG5vzKW5ROJ09Ay"
           },
+          "aluno1@aluno.sge.com.br": {
+               "nome": "Aluno Um",
+               "email": "aluno1@aluno.sge.com.br",
+               "role": "USER",
+               "senha": "$2b$12$YtprKJjKfjFnqIiwPg6kaubKcL/37cQKz8tXFOM/MyqtWK.Ip.syi",
+               "rm": "202400001"
+          },
+          "aluno2@aluno.sge.com.br": {
+               "nome": "Aluno Dois",
+               "email": "aluno2@aluno.sge.com.br",
+               "role": "USER",
+               "senha": "$2b$12$JTaV5QAlQP.boAwzGsOhmuR93QhByQvtzIhFPrdCANgUuA1elzAs2",
+               "rm": "202400002"
+          },
+          "aluno3@aluno.sge.com.br": {
+               "nome": "Aluno Tres",
+               "email": "aluno3@aluno.sge.com.br",
+               "role": "USER",
+               "senha": "$2b$12$g2DuR/Aar376J3DBUe.viOQUUfSiaQOE.3uHVFJGi7N63x9.60zwG",
+               "rm": "202400003"
+          },
+          "aluno4@aluno.sge.com.br": {
+               "nome": "Aluno Quatro",
+               "email": "aluno4@aluno.sge.com.br",
+               "role": "USER",
+               "senha": "$2b$12$LBIG9mnYTZcELvQH8plUWeNOXuMEBP/sFmraj5E9Ye3WN8JnCk70e",
+               "rm": "202400004"
+          },
           "ageu@professor.sge.com.br": {
                "nome": "Ageu Alves",
                "email": "ageu@professor.sge.com.br",
                "role": "INSTRUCTOR",
-               "senha": "$2b$12$K9aPCo2g8Y07CXEkzu7CmOUsVlwqq2Y2M4F2.N798oOAQLQ8GpGSK"
-          },
-          "alan@aluno.sge.com.br": {
-               "nome": "Alan Pereira",
-               "email": "alan@aluno.sge.com.br",
-               "role": "USER",
-               "senha": "$2b$12$qtbMRVOZux/N0EB3LANEMuTKojXp8XZeOx4LLdmbMPlWJa7od.u2O",
-               "rm": "202400001"
-          },
-          "demetrio@aluno.sge.com.br": {
-               "nome": "Demetrio Oliveira",
-               "email": "demetrio@aluno.sge.com.br",
-               "role": "USER",
-               "senha": "$2b$12$JTjxi7Nb6RNvk.MRY/GkSuECVAtV8sOhJybWrFmgoKNP/o0xviETG",
-               "rm": "202400002"
-          },
-          "lucas@aluno.sge.com.br": {
-               "nome": "Lucas Espinosa",
-               "email": "lucas@aluno.sge.com.br",
-               "role": "USER",
-               "senha": "$2b$12$0oXW2vGbxzw.sNuKn3iFHeXKjs.zvpa05kdVv4rhehGeFWv37V5C6",
-               "rm": "202400003"
-          },
-          "richard@aluno.sge.com.br": {
-               "nome": "Richard Alves",
-               "email": "richard@aluno.sge.com.br",
-               "role": "USER",
-               "senha": "$2b$12$RsQBa01lPr8nvEk18wr.9en/29jaaqMZgpI0hw6U3bCMjbVTmklLe",
-               "rm": "202400004"
-          },
-          "izabelly@aluno.sge.com.br": {
-               "nome": "Izabelly Monarca",
-               "email": "izabelly@aluno.sge.com.br",
-               "role": "USER",
-               "senha": "$2b$12$OhIHsG1XojS0xfyz1KtlY.dV4EBvU5BcGKCRaUwbSvtTtI60DUdaq",
-               "rm": "202400005"
-          },
-          "pedro@aluno.sge.com.br": {
-               "nome": "Pedro Cesar",
-               "email": "pedro@aluno.sge.com.br",
-               "role": "USER",
-               "senha": "$2b$12$OvFivkxy8DkE0rDXRbIY3.j2VJVARJr5BP9edQMgvRiU7HLedA5eO",
-               "rm": "202400006"
-          },
-          "kimberly@aluno.sge.com.br": {
-               "nome": "Kimberly Silva",
-               "email": "kimberly@aluno.sge.com.br",
-               "role": "USER",
-               "senha": "$2b$12$nOCBncBIWcuDZ5ixfXgGHe0VcY0a9dXDoXMzIbSrDQn85nDKQe5MG",
-               "rm": "202400007"
-          },
-          "marcio@aluno.sge.com.br": {
-               "nome": "Marcio Souza",
-               "email": "marcio@aluno.sge.com.br",
-               "role": "USER",
-               "senha": "$2b$12$P6gEPq5y2i3F2GBo3ns24Ocw8hUEQIugHorIddBhQ6uOuNC8l1Lau",
-               "rm": "202400008"
-          },
-          "vinicius@aluno.sge.com.br": {
-               "nome": "Vinicius Costa",
-               "email": "vinicius@aluno.sge.com.br",
-               "role": "USER",
-               "senha": "$2b$12$QRH8Ihpvi9Gv8RaxRPv3OOT6ApWZL2.seh1JwO1z57CR5exy7l1zi",
-               "rm": "202400009"
-          },
-          "aluno123@aluno.sge.com.br": {
-               "nome": "Aluno123",
-               "email": "aluno123@aluno.sge.com.br",
-               "role": "USER",
-               "senha": "$2b$12$n8EwrgsF7c67i/wFZ4uIDOa0pJTElqITYzDcrZlcLnVl5ta82kGUK",
-               "rm": "202400010"
-          },
-          "professor123@professor.sge.com.br": {
-               "nome": "professor",
-               "email": "professor123@professor.sge.com.br",
-               "role": "INSTRUCTOR",
-               "senha": "$2b$12$.T5A.Z2ovSIeLE6Z8S.vNuGYKKdlfxZvqsU3GOmjp4EYRT2fTDNfS"
+               "senha": "$2b$12$9pUdpaBXutryWrwH.Rk2dO.aZdLHNtvzEab17NHeJ9ii14ybUY86S"
           }
      }
 }
