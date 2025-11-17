@@ -1,0 +1,45 @@
+{
+     "relatorios": {
+          "1": {
+               "id": "1",
+               "turma_id": "1",
+               "aula_id": "3",
+               "professor_email": "ageu@professor.sge.com.br",
+               "texto": "relatorio",
+               "data_criacao": "11/11/2025 15:21",
+               "data_finalizacao": "11/11/2025 15:21",
+               "finalizado": true
+          },
+          "2": {
+               "id": "2",
+               "turma_id": "3",
+               "aula_id": "5",
+               "professor_email": "ageu@professor.sge.com.br",
+               "texto": "relatorio",
+               "data_criacao": "12/11/2025 17:04",
+               "data_finalizacao": "12/11/2025 17:04",
+               "finalizado": true
+          },
+          "3": {
+               "id": "3",
+               "turma_id": "1",
+               "aula_id": "1",
+               "professor_email": "professor123@professor.sge.com.br",
+               "texto": "professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123professor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.br@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.br",
+               "data_criacao": "15/11/2025 07:19",
+               "data_finalizacao": "15/11/2025 08:09",
+               "finalizado": true
+          },
+          "4": {
+               "id": "4",
+               "turma_id": "1",
+               "aula_id": "2",
+               "professor_email": "professor123@professor.sge.com.br",
+               "texto": "professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123professor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.br@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.brprofessor123@professor.sge.com.br",
+               "data_criacao": "15/11/2025 08:37",
+               "data_finalizacao": null,
+               "finalizado": false
+          }
+     },
+     "proximo_id": 5
+}

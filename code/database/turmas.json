@@ -1,0 +1,38 @@
+{
+     "turmas": {
+          "1": {
+               "id": "1",
+               "nome": "Analise e Desenvolvimento de Sistemas",
+               "disciplina": "Python",
+               "professor_email": "professor123@professor.sge.com.br",
+               "professor_nome": "Ageu Alves",
+               "ano": "2025",
+               "periodo": "Noite",
+               "descricao": "Aulas de Python com Ageu!",
+               "data_criacao": "06/11/2025"
+          },
+          "2": {
+               "id": "2",
+               "nome": "editado",
+               "disciplina": "editado",
+               "professor_email": "professor123@professor.sge.com.br",
+               "professor_nome": "professor",
+               "ano": "2024",
+               "periodo": "Tarde",
+               "descricao": "editadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditadoeditado",
+               "data_criacao": "09/11/2025"
+          },
+          "3": {
+               "id": "3",
+               "nome": "turma A",
+               "disciplina": "Python",
+               "professor_email": "ageu@professor.sge.com.br",
+               "professor_nome": "Ageu Alves",
+               "ano": "2025",
+               "periodo": "Manhã",
+               "descricao": "Turma",
+               "data_criacao": "12/11/2025"
+          }
+     },
+     "proximo_id": 4
+}
