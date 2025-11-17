@@ -297,11 +297,11 @@ def get_alunos_disponiveis(turma_id):
 def adicionar_aluno_turma(turma_id, aluno_email):
     matriculas = carregar_json(MATRICULAS_FILE)
     
-    # ✅ CORREÇÃO: Inicializar estrutura se não existir
+    
     if 'matriculas' not in matriculas:
         matriculas['matriculas'] = {}
     
-    # Verificar se já está matriculado
+    
     for matricula in matriculas['matriculas'].values():
         if (matricula.get('turma_id') == str(turma_id) and 
             matricula.get('aluno_email') == aluno_email):
@@ -317,15 +317,15 @@ def adicionar_aluno_turma(turma_id, aluno_email):
     return True
     
 def atribuir_professor_turma(turma_id, professor_email):
-    """Atribui ou troca o professor de uma turma"""
+    
     dados_turmas = carregar_json(TURMAS_FILE)
     dados_users = carregar_json(USERS_FILE)
     
-    # Verificar se a turma existe
+    
     if str(turma_id) not in dados_turmas.get('turmas', {}):
         return False, "Turma não encontrada!"
     
-    # Verificar se o usuário existe e é professor
+    
     usuario = dados_users.get('users', {}).get(professor_email)
     if not usuario:
         return False, "Usuário não encontrado!"
@@ -333,7 +333,7 @@ def atribuir_professor_turma(turma_id, professor_email):
     if usuario.get('role') != 'INSTRUCTOR':
         return False, "O usuário selecionado não é um professor!"
     
-    # Atualizar o professor da turma
+    
     dados_turmas['turmas'][str(turma_id)]['professor_email'] = professor_email
     dados_turmas['turmas'][str(turma_id)]['professor_nome'] = usuario.get('nome', '')
     
@@ -341,7 +341,7 @@ def atribuir_professor_turma(turma_id, professor_email):
     return True, "Professor atribuído com sucesso!"
 
 def get_professores_disponiveis():
-    """Retorna lista de todos os professores do sistema"""
+    
     dados = carregar_json(USERS_FILE)
     usuarios = dados.get('users', {})
     

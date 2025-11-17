@@ -3,7 +3,6 @@ from tkinter import messagebox, filedialog
 from datetime import datetime
 
 class TelaRegistroAulas:
-    """Tela para registro de aulas ministradas"""
     
     def __init__(self, app, user_email):
         self.app = app
@@ -13,12 +12,12 @@ class TelaRegistroAulas:
         def callback(*args):
             conteudo = var.get()
             if len(conteudo) > limite:
-                # Corta o conteúdo no tamanho máximo
+                
                 var.set(conteudo[:limite])
         return callback
 
     def show_registro_aulas(self):
-        """Exibe a tela principal de registro de aulas"""
+        
         self.app.clear_window()
         
         main_frame = ctk.CTkScrollableFrame(self.app, corner_radius=0)
@@ -31,7 +30,7 @@ class TelaRegistroAulas:
         )
         title_label.pack(pady=(20, 30))
         
-        # Botão para registrar nova aula
+        
         new_btn = ctk.CTkButton(
             main_frame,
             text="➕ Registrar Nova Aula",
@@ -44,7 +43,7 @@ class TelaRegistroAulas:
         )
         new_btn.pack(pady=20)
         
-        # Listar turmas do professor
+        
         from backend.turmas_backend import get_turmas_professor
         turmas = get_turmas_professor(self.user_email)
         
@@ -77,7 +76,6 @@ class TelaRegistroAulas:
                     text_color="gray"
                 ).pack(anchor="w", pady=2)
                 
-                # Contar aulas
                 from backend.turmas_backend import get_aulas_turma
                 aulas = get_aulas_turma(turma['id'])
                 
@@ -122,7 +120,7 @@ class TelaRegistroAulas:
         back_btn.pack(pady=30)
     
     def show_nova_aula(self, turma=None):
-        """Modal para registrar uma nova aula"""
+        
         dialog = ctk.CTkToplevel(self.app)
         dialog.title("Registrar Nova Aula")
         dialog.geometry("700x600")
@@ -139,7 +137,6 @@ class TelaRegistroAulas:
         )
         title.pack(pady=20)
         
-        # Seleção de turma
         ctk.CTkLabel(
             form_frame,
             text="Turma:",
@@ -167,7 +164,6 @@ class TelaRegistroAulas:
         )
         turma_menu.pack(padx=20, pady=(0, 15))
         
-        # Data da aula
         ctk.CTkLabel(
             form_frame,
             text="Data da Aula:",
@@ -183,7 +179,6 @@ class TelaRegistroAulas:
         data_entry.insert(0, datetime.now().strftime("%d/%m/%Y"))
         data_entry.pack(padx=20, pady=(0, 15))
         
-        # Título da aula
         limite_titulo = 46
         titulo_var = ctk.StringVar()
         ctk.CTkLabel(
@@ -202,7 +197,7 @@ class TelaRegistroAulas:
         titulo_entry.pack(padx=20, pady=(0, 15))
         titulo_var.trace_add("write", self.limitar_caracteres(titulo_var, limite_titulo))
         
-        # Conteúdo/descrição
+        
         ctk.CTkLabel(
             form_frame,
             text="Conteúdo da Aula(máximo 1000 caracteres):",
@@ -217,7 +212,6 @@ class TelaRegistroAulas:
         )
         conteudo_text.pack(padx=20, pady=(0, 15))
         
-        # Observações
         limite_texto_curto = 65
         observacoes_var = ctk.StringVar()
         ctk.CTkLabel(
@@ -266,7 +260,7 @@ class TelaRegistroAulas:
             )
             
             if aula_id:
-                # Perguntar se deseja fazer chamada agora
+                
                 fazer_chamada = messagebox.askyesno(
                     "Aula Registrada",
                     "Aula registrada com sucesso!\n\nDeseja fazer a chamada agora?",
@@ -306,7 +300,7 @@ class TelaRegistroAulas:
         back_btn.pack(pady=30)
     
     def show_aulas_turma(self, turma):
-        """Exibe todas as aulas de uma turma"""
+        
         self.app.clear_window()
         
         main_frame = ctk.CTkScrollableFrame(self.app, corner_radius=0)
@@ -374,7 +368,7 @@ class TelaRegistroAulas:
                         wraplength=400
                     ).pack(anchor="w", pady=2)
                 
-                # Verificar se tem chamada
+                
                 from backend.turmas_backend import get_frequencia_aula
                 frequencia = get_frequencia_aula(aula['id'])
                 
@@ -427,7 +421,7 @@ class TelaRegistroAulas:
                     command=lambda a=aula: self.show_editar_aula(a, turma)
                 ).pack(pady=3)
         
-        # Botão para nova aula
+        
         new_btn = ctk.CTkButton(
             main_frame,
             text="➕ Registrar Nova Aula",
@@ -453,14 +447,13 @@ class TelaRegistroAulas:
         back_btn.pack(pady=10)
     
     def show_chamada(self, aula_id, turma):
-        """Tela para fazer chamada"""
+        
         dialog = ctk.CTkToplevel(self.app)
         dialog.title("Fazer Chamada")
         dialog.geometry("700x600")
         dialog.grab_set() 
         dialog.resizable(height=False, width=False)
         
-        # Frame scrollable para lista de alunos
         scroll_frame = ctk.CTkScrollableFrame(dialog, width=550, height=450)
         scroll_frame.pack(fill="both", expand=True, padx=20, pady=20)
 
@@ -507,7 +500,7 @@ class TelaRegistroAulas:
                     anchor="w"
                 ).pack(anchor="w")
             
-            # Switch para presente/ausente
+            
             presenca_var = ctk.BooleanVar(value=True)
             presencas[aluno['email']] = presenca_var
             
@@ -560,7 +553,7 @@ class TelaRegistroAulas:
         ).pack(pady=20)
     
     def show_ver_chamada(self, aula, turma):
-        """Visualiza a chamada de uma aula"""
+        
 
         dialog = ctk.CTkToplevel(self.app)
         dialog.title("Visualizar Chamada")
@@ -590,7 +583,6 @@ class TelaRegistroAulas:
         frequencia = get_frequencia_aula(aula['id'])
         alunos = get_alunos_turma(turma['id'])
         
-        # Estatísticas
         total = len(alunos)
         presentes = sum(1 for p in frequencia.values() if p)
         ausentes = total - presentes
@@ -608,10 +600,6 @@ class TelaRegistroAulas:
             font=ctk.CTkFont(size=16, weight="bold"),
             text_color="#2CC985" if percentual >= 75 else "#E74C3C"
         ).pack(pady=5)
-        
-        # Lista de alunos
-        # scroll_frame = ctk.CTkScrollableFrame(form_frame, width=550, height=400)
-        # scroll_frame.pack(pady=10, padx=20)
         
         for aluno in alunos:
             presente = frequencia.get(aluno['email'], False)
@@ -649,7 +637,7 @@ class TelaRegistroAulas:
         ctk.CTkButton(
             form_frame,
             text="✏️ Editar Chamada",
-            # 🎯 Chama a nova função show_editar_chamada
+            
             command=lambda: (dialog.destroy(), self.show_editar_chamada(aula['id'], turma)), 
             width=200,
             height=45,
@@ -668,7 +656,7 @@ class TelaRegistroAulas:
         ).pack(pady=20)
     
     def show_editar_aula(self, aula, turma):
-        """Modal para editar uma aula existente"""
+        
         dialog = ctk.CTkToplevel(self.app)
         dialog.title("Editar Aula")
         dialog.geometry("700x600")
@@ -685,7 +673,6 @@ class TelaRegistroAulas:
         )
         title.pack(pady=20)
         
-        # Informação da turma (não editável)
         ctk.CTkLabel(
             form_frame,
             text="Turma:",
@@ -699,7 +686,6 @@ class TelaRegistroAulas:
             text_color="gray"
         ).pack(anchor="w", padx=20, pady=(0, 15))
         
-        # Data da aula
         ctk.CTkLabel(
             form_frame,
             text="Data da Aula:",
@@ -715,7 +701,6 @@ class TelaRegistroAulas:
         data_entry.insert(0, aula['data'])
         data_entry.pack(padx=20, pady=(0, 15))
         
-        # Título da aula
         limite_titulo = 46
         titulo_var = ctk.StringVar(value=aula['titulo'])
         
@@ -735,7 +720,6 @@ class TelaRegistroAulas:
         titulo_entry.pack(padx=20, pady=(0, 15))
         titulo_var.trace_add("write", self.limitar_caracteres(titulo_var, limite_titulo))
         
-        # Conteúdo/descrição
         ctk.CTkLabel(
             form_frame,
             text="Conteúdo da Aula (máximo 1000 caracteres):",
@@ -751,7 +735,6 @@ class TelaRegistroAulas:
         conteudo_text.insert("0.0", aula['conteudo'])
         conteudo_text.pack(padx=20, pady=(0, 15))
         
-        # Observações
         limite_texto_curto = 65
         observacoes_var = ctk.StringVar(value=aula.get('observacoes', ''))
         
@@ -803,7 +786,6 @@ class TelaRegistroAulas:
             else:
                 messagebox.showerror("Erro", "Erro ao atualizar aula!")
         
-        # Botões
         buttons_frame = ctk.CTkFrame(form_frame, fg_color="transparent")
         buttons_frame.pack(pady=20)
         
@@ -826,7 +808,6 @@ class TelaRegistroAulas:
             fg_color="gray",
             hover_color="darkgray"
         ).pack(side="left", padx=10)
-    
 
     def show_editar_chamada(self, aula_id, turma):
         dialog = ctk.CTkToplevel(self.app)
@@ -835,7 +816,6 @@ class TelaRegistroAulas:
         dialog.grab_set() 
         dialog.resizable(height=False, width=False)
         
-        # Frame scrollable para lista de alunos
         scroll_frame = ctk.CTkScrollableFrame(dialog, width=550, height=450)
         scroll_frame.pack(fill="both", expand=True, padx=20, pady=20)
 
@@ -862,7 +842,6 @@ class TelaRegistroAulas:
         presencas = {}
         
         for aluno in alunos:
-            # Verifica o status atual da frequência
             status_inicial = frequencia_atual.get(aluno['email'], False)
             
             aluno_frame = ctk.CTkFrame(scroll_frame)
@@ -887,7 +866,6 @@ class TelaRegistroAulas:
                     anchor="w"
                 ).pack(anchor="w")
             
-            # Switch para presente/ausente (valor inicial carregado)
             presenca_var = ctk.BooleanVar(value=status_inicial)
             presencas[aluno['email']] = presenca_var
             
@@ -904,7 +882,6 @@ class TelaRegistroAulas:
         def salvar_edicao_chamada():
             presencas_dict = {email: var.get() for email, var in presencas.items()}
             
-            # Usa a mesma função de registro, ela deve ser capaz de sobrescrever
             sucesso = registrar_chamada(aula_id, presencas_dict)
             
             if sucesso:
@@ -915,7 +892,6 @@ class TelaRegistroAulas:
                     f"Chamada atualizada com sucesso!\n\nPresentes: {presentes}/{total}"
                 )
                 dialog.destroy()
-                # O ideal é voltar para a tela de visualização ou lista de aulas
                 self.show_registro_aulas() 
             else:
                 messagebox.showerror("Erro", "Erro ao atualizar chamada!")
@@ -926,7 +902,7 @@ class TelaRegistroAulas:
             command=salvar_edicao_chamada,
             width=200,
             height=45,
-            fg_color="#3B8EDC", # Cor azul para edição
+            fg_color="#3B8EDC", 
             hover_color="#36719F"
         ).pack(pady=20)
 
@@ -941,7 +917,7 @@ class TelaRegistroAulas:
         ).pack(pady=20)
     
     def voltar_menu(self):
-        """Volta para o menu do professor"""
+        
         from screens.telas_professor import TelasProfessor
         telas = TelasProfessor(self.app, self.user_email)
         telas.show_professor_menu()

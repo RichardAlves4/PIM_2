@@ -8,7 +8,7 @@ arquivo_usuarios = os.path.join(diretorio_bd, "users.json")
 users_db = {}
 
 def gerar_rm():
-    """Gera RM único para alunos no formato: 2024XXXXX"""
+    
     ano_atual = "2024"
     dados = carregar_usuarios_raw()
     usuarios = dados.get("users", {})
@@ -20,7 +20,7 @@ def gerar_rm():
     return f"{ano_atual}{novo_numero:05d}"
 
 def carregar_usuarios_raw():
-    """Carrega dados brutos do JSON"""
+    
     try:
         with open(arquivo_usuarios, "r") as json_aberto:
             return json.load(json_aberto)

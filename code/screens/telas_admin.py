@@ -12,7 +12,7 @@ class TelasAdmin:
     def show_editar_turma(self, turma):
         dialog = ctk.CTkToplevel(self.app)
         dialog.title(f"Editar Turma: {turma['nome']}")
-        dialog.geometry("700x750")  # Aumentei a altura
+        dialog.geometry("700x750")  
         dialog.grab_set()
         dialog.resizable(height=False, width=False)
 
@@ -30,28 +30,24 @@ class TelasAdmin:
         form_frame = ctk.CTkFrame(main_frame)
         form_frame.pack(pady=10, padx=80, fill="x")
         
-        # 1. Nome
         nome_label = ctk.CTkLabel(form_frame, text="Nome da Turma:", font=ctk.CTkFont(size=14, weight="bold"))
         nome_label.pack(pady=(20, 5), padx=20, anchor="w")
         nome_entry = ctk.CTkEntry(form_frame, height=40)
         nome_entry.insert(0, turma.get('nome', ''))
         nome_entry.pack(pady=(0, 15), padx=20, fill="x")
         
-        # 2. Disciplina
         disciplina_label = ctk.CTkLabel(form_frame, text="Disciplina:", font=ctk.CTkFont(size=14, weight="bold"))
         disciplina_label.pack(pady=(15, 5), padx=20, anchor="w")
         disciplina_entry = ctk.CTkEntry(form_frame, height=40)
         disciplina_entry.insert(0, turma.get('disciplina', ''))
         disciplina_entry.pack(pady=(0, 15), padx=20, fill="x")
         
-        # 3. Ano
         ano_label = ctk.CTkLabel(form_frame, text="Ano Letivo:", font=ctk.CTkFont(size=14, weight="bold"))
         ano_label.pack(pady=(15, 5), padx=20, anchor="w")
         ano_entry = ctk.CTkEntry(form_frame, height=40)
         ano_entry.insert(0, turma.get('ano', ''))
         ano_entry.pack(pady=(0, 15), padx=20, fill="x")
         
-        # 4. Período (RadioButton)
         periodo_label = ctk.CTkLabel(form_frame, text="Período:", font=ctk.CTkFont(size=14, weight="bold"))
         periodo_label.pack(pady=(15, 5), padx=20, anchor="w")
         
@@ -64,7 +60,6 @@ class TelasAdmin:
             rb = ctk.CTkRadioButton(periodo_frame, text=periodo, variable=periodo_var, value=periodo)
             rb.pack(side="left", padx=5)
         
-        # 5. PROFESSOR (EDITÁVEL!) 🎯
         prof_label = ctk.CTkLabel(form_frame, text="Professor:", font=ctk.CTkFont(size=14, weight="bold"))
         prof_label.pack(pady=(15, 5), padx=20, anchor="w")
         
@@ -82,7 +77,6 @@ class TelasAdmin:
             professor_options = [f"{p['nome']} ({p['email']})" for p in professores]
             professor_map = {f"{p['nome']} ({p['email']})": p['email'] for p in professores}
             
-            # Selecionar o professor atual
             professor_atual = f"{turma.get('professor_nome', 'N/A')} ({turma.get('professor_email', 'N/A')})"
             if professor_atual not in professor_options:
                 professor_atual = professor_options[0] if professor_options else None
@@ -98,7 +92,6 @@ class TelasAdmin:
             )
             professor_menu.pack(pady=(0, 15), padx=20)
 
-        # 6. Descrição
         descricao_label = ctk.CTkLabel(form_frame, text="Descrição:", font=ctk.CTkFont(size=14, weight="bold"))
         descricao_label.pack(pady=(15, 5), padx=20, anchor="w")
         
@@ -119,14 +112,12 @@ class TelasAdmin:
             
             from backend.turmas_backend import editar_turma, atribuir_professor_turma, get_detalhes_completos_turma
             
-            # 1. Editar dados básicos da turma
             sucesso = editar_turma(turma['id'], nome, disciplina, ano, periodo, descricao)
             
             if not sucesso:
                 messagebox.showerror("Erro", "Erro ao salvar edição da turma.")
                 return
             
-            # 2. Atribuir/trocar professor (se houver professores disponíveis)
             if professor_var and professores:
                 professor_email = professor_map.get(professor_var.get())
                 if professor_email:
@@ -273,10 +264,9 @@ class TelasAdmin:
         )
         title_label.pack(pady=(20, 30))
         
-        # Adicionar ANTES dos campos de nome, após o form_frame:
         form_frame = ctk.CTkFrame(main_frame)
         form_frame.pack(pady=10, padx=80, fill="x") 
-        # Seleção de Professor
+        
         prof_label = ctk.CTkLabel(form_frame, text="Professor Responsável:", font=ctk.CTkFont(size=14, weight="bold"))
         prof_label.pack(pady=(20, 5), padx=20, anchor="w")
 
@@ -304,8 +294,6 @@ class TelasAdmin:
                 height=40
             )
             professor_menu.pack(pady=(0, 15), padx=20)
-
-        # ... resto dos campos (nome, disciplina, etc)
         
         nome_label = ctk.CTkLabel(form_frame, text="Nome da Turma:", font=ctk.CTkFont(size=14, weight="bold"))
         nome_label.pack(pady=(20, 5), padx=20, anchor="w") 

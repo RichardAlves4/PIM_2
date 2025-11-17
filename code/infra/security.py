@@ -1,4 +1,3 @@
-# Importando a biblioteca bcrypt para criptografar senhas de forma segura
 import bcrypt
 
 # Função para criptografar a senha usando bcrypt

@@ -22,7 +22,6 @@ class TelasAluno:
         def callback(*args):
             conteudo = var.get()
             if len(conteudo) > limite:
-                # Corta o conteúdo no tamanho máximo
                 var.set(conteudo[:limite])
         return callback
     
@@ -179,7 +178,6 @@ class TelasAluno:
     def show_entregar_atividade(self, atividade):
         self.app.clear_window()
         
-        # ADICIONAR SCROLLABLE FRAME
         main_frame = ctk.CTkScrollableFrame(self.app, corner_radius=0)
         main_frame.pack(fill="both", expand=True, padx=20, pady=20)
         
