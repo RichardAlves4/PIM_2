@@ -48,6 +48,7 @@ def salvar_json(arquivo, dados):
 def get_user_data(email):
     dados = carregar_json(USERS_FILE)
     usuario = dados.get('users', {}).get(email, {})
+
     if usuario:
         usuario['email'] = email
     return usuario
@@ -64,7 +65,6 @@ def get_todos_usuarios(filtro='TODOS', search_term=None):
         passou_pelo_filtro_role = (filtro == 'TODOS' or user_data.get('role') == filtro)
         
         if passou_pelo_filtro_role:
-            
             passou_pelo_filtro_busca = True
             
             if search_term_lower:
@@ -83,11 +83,13 @@ def get_todos_usuarios(filtro='TODOS', search_term=None):
 
 def get_detalhes_completos_usuario(email):
     user_data = get_user_data(email)
+
     if not user_data:
         return None
     
     detalhes = user_data.copy()
     detalhes['data_cadastro'] = "N/A"   
+
     if user_data.get('role') == 'INSTRUCTOR':
         turmas = get_turmas_professor(email)
         detalhes['total_turmas'] = len(turmas)
@@ -96,7 +98,6 @@ def get_detalhes_completos_usuario(email):
         detalhes['total_atividades'] = len(atividades)
         aulas = get_todas_aulas_professor(email)
         detalhes['total_aulas'] = len(aulas)
-    
     elif user_data.get('role') == 'USER':
         turmas = get_turmas_aluno(email)
         detalhes['total_turmas'] = len(turmas)
@@ -107,7 +108,6 @@ def get_detalhes_completos_usuario(email):
         detalhes['media_geral'] = sum(medias) / len(medias) if medias else 0
         frequencia_media = calcular_frequencia_media_aluno(email)
         detalhes['frequencia_media'] = frequencia_media
-        
         dados_matriculas = carregar_json(MATRICULAS_FILE)
 
         if email in dados_matriculas.get('matriculas', {}):
@@ -137,6 +137,7 @@ def editar_usuario(email, nome, role, senha_criptografada=None):
     
 def excluir_usuario(email):
     dados = carregar_json(USERS_FILE)
+
     if email in dados.get('users', {}):
         del dados['users'][email]
         salvar_json(USERS_FILE, dados)
@@ -145,6 +146,7 @@ def excluir_usuario(email):
 
 def adicionar_usuario(nome, email, senha, role):
     dados = carregar_json(USERS_FILE)
+
     if 'users' not in dados:
         dados['users'] = {}
     
@@ -172,6 +174,7 @@ def criar_turma(professor_email, nome, disciplina, ano, periodo, descricao):
     
     if 'turmas' not in dados:
         dados['turmas'] = {}
+
     if 'proximo_id' not in dados:
         dados['proximo_id'] = 1
     
@@ -213,6 +216,7 @@ def get_turmas_professor(professor_email):
     matriculas = carregar_json(MATRICULAS_FILE).get('matriculas', {})
     
     turmas_prof = []
+
     for turma_id, turma in dados.get('turmas', {}).items():
         if turma.get('professor_email') == professor_email:
             turma_copy = turma.copy()
@@ -227,6 +231,7 @@ def get_turmas_aluno(aluno_email):
     matriculas = carregar_json(MATRICULAS_FILE).get('matriculas', {})
     
     turmas_aluno = []
+
     for matricula in matriculas.values():
         if matricula.get('aluno_email') == aluno_email:
             turma_id = matricula.get('turma_id')
@@ -241,6 +246,7 @@ def get_todas_turmas():
     matriculas = carregar_json(MATRICULAS_FILE).get('matriculas', {})
     
     todas_turmas = []
+
     for turma_id, turma in dados.get('turmas', {}).items():
         turma_copy = turma.copy()
         alunos_turma = [m for m in matriculas.values() if m.get('turma_id') == turma_id]
@@ -268,6 +274,7 @@ def get_alunos_turma(turma_id):
     matriculas = carregar_json(MATRICULAS_FILE).get('matriculas', {})
     
     alunos = []
+
     for matricula in matriculas.values():
         if matricula.get('turma_id') == str(turma_id):
             aluno_email = matricula.get('aluno_email')
@@ -279,7 +286,6 @@ def get_alunos_turma(turma_id):
 
 def get_alunos_disponiveis(turma_id):
     todos_alunos = get_todos_usuarios(filtro='USER')
-    
     dados_matriculas = carregar_json(MATRICULAS_FILE)
     todas_matriculas = dados_matriculas.get('matriculas', {})
     
@@ -297,11 +303,11 @@ def get_alunos_disponiveis(turma_id):
 def adicionar_aluno_turma(turma_id, aluno_email):
     matriculas = carregar_json(MATRICULAS_FILE)
     
-    # ✅ CORREÇÃO: Inicializar estrutura se não existir
+    
     if 'matriculas' not in matriculas:
         matriculas['matriculas'] = {}
     
-    # Verificar se já está matriculado
+    
     for matricula in matriculas['matriculas'].values():
         if (matricula.get('turma_id') == str(turma_id) and 
             matricula.get('aluno_email') == aluno_email):
@@ -317,23 +323,20 @@ def adicionar_aluno_turma(turma_id, aluno_email):
     return True
     
 def atribuir_professor_turma(turma_id, professor_email):
-    """Atribui ou troca o professor de uma turma"""
     dados_turmas = carregar_json(TURMAS_FILE)
     dados_users = carregar_json(USERS_FILE)
     
-    # Verificar se a turma existe
     if str(turma_id) not in dados_turmas.get('turmas', {}):
         return False, "Turma não encontrada!"
     
-    # Verificar se o usuário existe e é professor
     usuario = dados_users.get('users', {}).get(professor_email)
+
     if not usuario:
         return False, "Usuário não encontrado!"
     
     if usuario.get('role') != 'INSTRUCTOR':
         return False, "O usuário selecionado não é um professor!"
     
-    # Atualizar o professor da turma
     dados_turmas['turmas'][str(turma_id)]['professor_email'] = professor_email
     dados_turmas['turmas'][str(turma_id)]['professor_nome'] = usuario.get('nome', '')
     
@@ -341,11 +344,11 @@ def atribuir_professor_turma(turma_id, professor_email):
     return True, "Professor atribuído com sucesso!"
 
 def get_professores_disponiveis():
-    """Retorna lista de todos os professores do sistema"""
     dados = carregar_json(USERS_FILE)
     usuarios = dados.get('users', {})
     
     professores = []
+
     for email, user_data in usuarios.items():
         if user_data.get('role') == 'INSTRUCTOR':
             prof_info = user_data.copy()
@@ -374,8 +377,8 @@ def editar_turma(turma_id, nome, disciplina, ano, periodo, descricao):
 
 def remover_aluno_turma(turma_id, aluno_email):
     matriculas = carregar_json(MATRICULAS_FILE)
-    
     matricula_id_remover = None
+
     for matricula_id, matricula in matriculas.get('matriculas', {}).items():
         if (matricula.get('turma_id') == str(turma_id) and 
             matricula.get('aluno_email') == aluno_email):
@@ -455,6 +458,7 @@ def excluir_turma(turma_id):
         salvar_json(TURMAS_FILE, dados)
         
         return True
+    
     except Exception as e:
         print(f"Erro ao excluir turma {turma_id}: {e}")
         return False
@@ -464,6 +468,7 @@ def registrar_aula(turma_id, data, titulo, conteudo, observacoes=""):
     
     if 'aulas' not in dados:
         dados['aulas'] = {}
+
     if 'proximo_id' not in dados:
         dados['proximo_id'] = 1
     
@@ -585,6 +590,7 @@ def calcular_frequencia_aluno_turma(aluno_email, turma_id):
     
     for aula in aulas:
         freq_id = f"{aula['id']}_{aluno_email}"
+
         if freq_id in dados_freq.get('frequencias', {}):
             if dados_freq['frequencias'][freq_id].get('presente'):
                 presencas += 1
@@ -609,6 +615,7 @@ def get_relatorio_frequencia_turma(turma_id):
     aulas = get_aulas_turma(turma_id)
     
     relatorio = []
+
     for aluno in alunos:
         freq_percentual = calcular_frequencia_aluno_turma(aluno['email'], turma_id)
         
@@ -616,6 +623,7 @@ def get_relatorio_frequencia_turma(turma_id):
         faltas = 0
         
         dados_freq = carregar_json(FREQUENCIA_FILE)
+
         for aula in aulas:
             freq_id = f"{aula['id']}_{aluno['email']}"
             if freq_id in dados_freq.get('frequencias', {}):
@@ -641,6 +649,7 @@ def criar_atividade(turma_id, titulo, descricao, data_entrega, valor, arquivo_pa
     
     if 'atividades' not in dados:
         dados['atividades'] = {}
+
     if 'proximo_id' not in dados:
         dados['proximo_id'] = 1
     
@@ -691,10 +700,12 @@ def get_atividades_turma_aluno(turma_id, aluno_email):
     entregas = carregar_json(ENTREGAS_FILE).get('entregas', {})
     
     atividades_aluno = []
+
     for atividade in atividades:
         ativ_copy = atividade.copy()
         
         entrega_aluno = None
+
         for entrega in entregas.values():
             if (entrega.get('atividade_id') == atividade['id'] and 
                 entrega.get('aluno_email') == aluno_email):
@@ -725,6 +736,7 @@ def get_atividades_com_entregas(professor_email):
     turmas_dados = carregar_json(TURMAS_FILE).get('turmas', {})
     
     atividades_completas = []
+
     for atividade in atividades:
         ativ_copy = atividade.copy()
         
@@ -753,10 +765,12 @@ def get_detalhes_atividade_professor(atividade_id):
     entregas_dados = carregar_json(ENTREGAS_FILE).get('entregas', {})
     
     atividade = dados_atividades.get('atividades', {}).get(str(atividade_id))
+
     if not atividade:
         return None
     
     entregas = []
+
     for entrega in entregas_dados.values():
         if entrega.get('atividade_id') == str(atividade_id):
             entrega_copy = entrega.copy()
@@ -841,6 +855,7 @@ def entregar_atividade(atividade_id, aluno_email, arquivo_path=None, comentario=
     
     if 'entregas' not in dados:
         dados['entregas'] = {}
+
     if 'proximo_id' not in dados:
         dados['proximo_id'] = 1
     
@@ -985,10 +1000,12 @@ def get_boletim_aluno(aluno_email):
     turmas = get_turmas_aluno(aluno_email)
     
     boletim = []
+
     for turma in turmas:
         notas = get_notas_aluno_turma(aluno_email, turma['id'])
         
         media = 0
+
         if notas:
             total_pontos = sum([n['nota'] for n in notas])
             total_valor = sum([n['valor'] for n in notas])
@@ -997,6 +1014,7 @@ def get_boletim_aluno(aluno_email):
         frequencia = calcular_frequencia_aluno_turma(aluno_email, turma['id'])
         
         status = 'Sem notas'
+
         if media > 0:
             if media >= 7 and frequencia >= 75:
                 status = 'Aprovado'
@@ -1021,6 +1039,7 @@ def get_boletim_turma(turma_id):
     alunos = get_alunos_turma(turma_id)
     
     boletim = []
+
     for aluno in alunos:
         notas = get_notas_aluno_turma(aluno['email'], turma_id)
         
@@ -1033,6 +1052,7 @@ def get_boletim_turma(turma_id):
         frequencia = calcular_frequencia_aluno_turma(aluno['email'], turma_id)
         
         status = 'Sem notas'
+
         if media > 0:
             if media >= 7 and frequencia >= 75:
                 status = 'Aprovado'
@@ -1077,6 +1097,7 @@ def get_estatisticas_gerais():
     total_aulas = len(aulas_data)
     
     entregas_com_nota = [e for e in entregas_data.values() if e.get('nota') is not None]
+
     if entregas_com_nota:
         medias = []
         for entrega in entregas_com_nota:
@@ -1111,9 +1132,11 @@ def get_estatisticas_detalhadas():
     usuarios = get_todos_usuarios('USER')
     
     alunos_com_media = []
+
     for usuario in usuarios:
         boletim = get_boletim_aluno(usuario['email'])
         medias = [t['media'] for t in boletim if t.get('media') and t['media'] > 0]
+
         if medias:
             media_geral = sum(medias) / len(medias)
             alunos_com_media.append({
@@ -1126,6 +1149,7 @@ def get_estatisticas_detalhadas():
     
     professores = get_todos_usuarios('INSTRUCTOR')
     professores_ativos = []
+
     for prof in professores:
         turmas = get_turmas_professor(prof['email'])
         atividades = get_todas_atividades_professor(prof['email'])
@@ -1142,9 +1166,11 @@ def get_estatisticas_detalhadas():
     
     todas_turmas = get_todas_turmas()
     turmas_com_media = []
+
     for turma in todas_turmas:
         boletim = get_boletim_turma(turma['id'])
         medias = [a['media'] for a in boletim if a.get('media') and a['media'] > 0]
+
         if medias:
             media_turma = sum(medias) / len(medias)
             aprovados = len([m for m in medias if m >= 7])
@@ -1213,6 +1239,7 @@ def criar_relatorio_aula(turma_id, aula_id, professor_email, texto):
     
     if 'relatorios' not in dados:
         dados['relatorios'] = {}
+
     if 'proximo_id' not in dados:
         dados['proximo_id'] = 1
     
@@ -1278,11 +1305,13 @@ def get_relatorios_professor(professor_email):
             relatorio_copy = relatorio.copy()
             
             turma = carregar_json(TURMAS_FILE).get('turmas', {}).get(relatorio['turma_id'])
+
             if turma:
                 relatorio_copy['turma_nome'] = turma.get('nome', 'N/A')
                 relatorio_copy['disciplina'] = turma.get('disciplina', 'N/A')
             
             aula = get_aula_by_id(relatorio['aula_id'])
+
             if aula:
                 relatorio_copy['aula_titulo'] = aula.get('titulo', 'N/A')
                 relatorio_copy['aula_data'] = aula.get('data', 'N/A')
@@ -1300,6 +1329,7 @@ def get_relatorios_turma(turma_id):
             relatorio_copy = relatorio.copy()
             
             aula = get_aula_by_id(relatorio['aula_id'])
+
             if aula:
                 relatorio_copy['aula_titulo'] = aula.get('titulo', 'N/A')
                 relatorio_copy['aula_data'] = aula.get('data', 'N/A')
@@ -1316,15 +1346,18 @@ def get_todos_relatorios():
         relatorio_copy = relatorio.copy()
         
         professor = get_user_data(relatorio['professor_email'])
+
         if professor:
             relatorio_copy['professor_nome'] = professor.get('nome', 'N/A')
         
         turma = carregar_json(TURMAS_FILE).get('turmas', {}).get(relatorio['turma_id'])
+
         if turma:
             relatorio_copy['turma_nome'] = turma.get('nome', 'N/A')
             relatorio_copy['disciplina'] = turma.get('disciplina', 'N/A')
         
         aula = get_aula_by_id(relatorio['aula_id'])
+        
         if aula:
             relatorio_copy['aula_titulo'] = aula.get('titulo', 'N/A')
             relatorio_copy['aula_data'] = aula.get('data', 'N/A')

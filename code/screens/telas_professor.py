@@ -12,7 +12,9 @@ class TelasProfessor:
 
     def limitar_caracteres(self, var, limite):
         def callback(*args):
+
             conteudo = var.get()
+
             if len(conteudo) > limite:
                 var.set(conteudo[:limite])
         return callback
@@ -216,13 +218,13 @@ class TelasProfessor:
                     text_color="gray",
                     wrap="word",
                     height=120,
-                    
                 )
                 conteudo_aula.pack(anchor="w", pady=(5, 2), fill="x", expand=True)
                 conteudo_aula.insert("0.0", aula['conteudo'])
                 conteudo_aula.configure(state="disabled")
         
         atividades = get_atividades_turma(turma['id'])
+
         if not atividades:
             ctk.CTkLabel(tabs.tab("📋 Atividades"), text="Nenhuma atividade criada", text_color="gray").pack(pady=20)
         else:
@@ -480,6 +482,7 @@ class TelasProfessor:
                 return
             
             limite_texto = 2000
+
             if len(texto) > limite_texto:
                 messagebox.showerror("Erro", f"O conteúdo não pode ter mais de {limite_texto} caracteres.")
                 return
@@ -519,6 +522,7 @@ class TelasProfessor:
                 return
             
             limite_texto = 2000
+
             if len(texto) > limite_texto:
                 messagebox.showerror("Erro", f"O conteúdo não pode ter mais de {limite_texto} caracteres.")
                 return
@@ -631,7 +635,6 @@ class TelasProfessor:
         turma_id = relatorio['turma_id']
         titulo = aula.get('titulo', 'N/A')
         data = aula.get('data_registro', 'N/A')
-
         turma_detalhes = get_detalhes_completos_turma(turma_id)
         nome = turma_detalhes.get('nome', 'N/A')
         disciplina = turma_detalhes.get('disciplina', 'N/A')
@@ -696,7 +699,11 @@ class TelasProfessor:
         atividades = get_atividades_com_entregas(self.user_email)
         
         if not atividades:
-            ctk.CTkLabel(main_frame, text="Nenhuma atividade criada ainda.", text_color="gray").pack(pady=50)
+            ctk.CTkLabel(
+                main_frame, 
+                text="Nenhuma atividade criada ainda.", 
+                text_color="gray"
+            ).pack(pady=50)
         else:
             for atividade in atividades:
                 ativ_frame = ctk.CTkFrame(main_frame)
@@ -819,13 +826,18 @@ class TelasProfessor:
             font=ctk.CTkFont(size=16, weight="bold")
         ).pack(pady=15)
         
-        tabs = ctk.CTkTabview(main_frame, width=900, height=400)
+        tabs = ctk.CTkTabview(
+            main_frame, 
+            width=900, 
+            height=400
+        )
         tabs.pack(pady=20, padx=40)
         
         tabs.add("✅ Entregas Recebidas")
         tabs.add("⚠️ Não Entregaram")
         
         entregas = detalhes['entregas']
+
         if not entregas:
             ctk.CTkLabel(tabs.tab("✅ Entregas Recebidas"), text="Nenhuma entrega ainda.", text_color="gray").pack(pady=20)
         else:
@@ -869,6 +881,7 @@ class TelasProfessor:
                     ).pack(pady=3)
                 
                 btn_text = "✏️ Reavaliar" if entrega.get('nota') is not None else "✓ Avaliar"
+
                 ctk.CTkButton(
                     btn_frame,
                     text=btn_text,
@@ -879,6 +892,7 @@ class TelasProfessor:
                 ).pack(pady=3)
         
         nao_entregaram = detalhes['alunos_nao_entregaram']
+
         if not nao_entregaram:
             ctk.CTkLabel(
                 tabs.tab("⚠️ Não Entregaram"), 
@@ -976,6 +990,7 @@ class TelasProfessor:
         resposta_text.pack(padx=15, pady=(0, 15))
         
         comentario = entrega.get('comentario', '')
+
         if comentario:
             resposta_text.insert("1.0", comentario)
         else:
@@ -1271,6 +1286,7 @@ class TelasProfessor:
         
         limite_titulo = 46
         titulo_var = ctk.StringVar()
+
         ctk.CTkLabel(
             form_frame,
             text="Título da Atividade:",
@@ -1321,6 +1337,7 @@ class TelasProfessor:
         
         limite_valor = 3
         valor_var = ctk.StringVar()
+
         ctk.CTkLabel(
             form_frame,
             text="Valor (pontos):",
@@ -1338,6 +1355,7 @@ class TelasProfessor:
         valor_var.trace_add("write", self.limitar_caracteres(valor_var, limite_valor))
         
         arquivo_path = None
+        
         arquivo_label = ctk.CTkLabel(
             form_frame,
             text="Nenhum arquivo selecionado",

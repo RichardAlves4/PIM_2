@@ -4,8 +4,7 @@ from infra import security as infra
 def login():
     banco.carregar_usuarios()
     print("\nLOGIN\n")
-
-    # Coleta as credenciais do aluno
+    
     email = input("Email: ").strip().lower()
     senha = input("Senha: ").strip()
 
