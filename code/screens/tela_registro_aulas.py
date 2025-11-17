@@ -371,7 +371,7 @@ class TelaRegistroAulas:
                         text=f"Obs: {aula['observacoes']}",
                         font=ctk.CTkFont(size=12),
                         text_color="#E67E22",
-                        wraplength=500
+                        wraplength=400
                     ).pack(anchor="w", pady=2)
                 
                 # Verificar se tem chamada
@@ -647,6 +647,17 @@ class TelaRegistroAulas:
             status_label.pack(side="right", padx=15, pady=10)
         
         ctk.CTkButton(
+            form_frame,
+            text="✏️ Editar Chamada",
+            # 🎯 Chama a nova função show_editar_chamada
+            command=lambda: (dialog.destroy(), self.show_editar_chamada(aula['id'], turma)), 
+            width=200,
+            height=45,
+            fg_color="#9B59B6",
+            hover_color="#7D3C98",
+        ).pack(pady=10)
+
+        ctk.CTkButton(
             dialog,
             text="Fechar",
             command=dialog.destroy,
@@ -815,6 +826,119 @@ class TelaRegistroAulas:
             fg_color="gray",
             hover_color="darkgray"
         ).pack(side="left", padx=10)
+    
+
+    def show_editar_chamada(self, aula_id, turma):
+        dialog = ctk.CTkToplevel(self.app)
+        dialog.title("Editar Chamada")
+        dialog.geometry("700x600")
+        dialog.grab_set() 
+        dialog.resizable(height=False, width=False)
+        
+        # Frame scrollable para lista de alunos
+        scroll_frame = ctk.CTkScrollableFrame(dialog, width=550, height=450)
+        scroll_frame.pack(fill="both", expand=True, padx=20, pady=20)
+
+        title = ctk.CTkLabel(
+            scroll_frame,
+            text=f"✏️ Editar Chamada - {turma['nome']}",
+            font=ctk.CTkFont(size=20, weight="bold")
+        )
+        title.pack(pady=20)
+
+        from backend.turmas_backend import get_alunos_turma, get_frequencia_aula, registrar_chamada
+
+        frequencia_atual = get_frequencia_aula(aula_id)
+        alunos = get_alunos_turma(turma['id'])
+        
+        if not alunos:
+            ctk.CTkLabel(
+                scroll_frame,
+                text="Nenhum aluno matriculado nesta turma.",
+                text_color="gray"
+            ).pack(pady=20)
+            return
+        
+        presencas = {}
+        
+        for aluno in alunos:
+            # Verifica o status atual da frequência
+            status_inicial = frequencia_atual.get(aluno['email'], False)
+            
+            aluno_frame = ctk.CTkFrame(scroll_frame)
+            aluno_frame.pack(pady=5, padx=10, fill="x")
+            
+            info_frame = ctk.CTkFrame(aluno_frame, fg_color="transparent")
+            info_frame.pack(side="left", fill="x", expand=True, padx=15, pady=10)
+            
+            ctk.CTkLabel(
+                info_frame,
+                text=aluno['nome'],
+                font=ctk.CTkFont(size=14, weight="bold"),
+                anchor="w"
+            ).pack(anchor="w")
+            
+            if aluno.get('rm'):
+                ctk.CTkLabel(
+                    info_frame,
+                    text=f"RM: {aluno['rm']}",
+                    font=ctk.CTkFont(size=12),
+                    text_color="gray",
+                    anchor="w"
+                ).pack(anchor="w")
+            
+            # Switch para presente/ausente (valor inicial carregado)
+            presenca_var = ctk.BooleanVar(value=status_inicial)
+            presencas[aluno['email']] = presenca_var
+            
+            switch = ctk.CTkSwitch(
+                aluno_frame,
+                text="Presente",
+                variable=presenca_var,
+                onvalue=True,
+                offvalue=False,
+                progress_color="#2CC985"
+            )
+            switch.pack(side="right", padx=15, pady=10)
+        
+        def salvar_edicao_chamada():
+            presencas_dict = {email: var.get() for email, var in presencas.items()}
+            
+            # Usa a mesma função de registro, ela deve ser capaz de sobrescrever
+            sucesso = registrar_chamada(aula_id, presencas_dict)
+            
+            if sucesso:
+                presentes = sum(1 for p in presencas_dict.values() if p)
+                total = len(presencas_dict)
+                messagebox.showinfo(
+                    "Sucesso",
+                    f"Chamada atualizada com sucesso!\n\nPresentes: {presentes}/{total}"
+                )
+                dialog.destroy()
+                # O ideal é voltar para a tela de visualização ou lista de aulas
+                self.show_registro_aulas() 
+            else:
+                messagebox.showerror("Erro", "Erro ao atualizar chamada!")
+        
+        ctk.CTkButton(
+            scroll_frame,
+            text="✓ Salvar Edições",
+            command=salvar_edicao_chamada,
+            width=200,
+            height=45,
+            fg_color="#3B8EDC", # Cor azul para edição
+            hover_color="#36719F"
+        ).pack(pady=20)
+
+        ctk.CTkButton(
+            dialog,
+            text="Fechar",
+            command=dialog.destroy,
+            width=200,
+            height=45,
+            fg_color="gray",
+            hover_color="darkgray"
+        ).pack(pady=20)
     
     def voltar_menu(self):
         """Volta para o menu do professor"""
