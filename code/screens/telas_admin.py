@@ -1,4 +1,3 @@
-# Importa as bibliotecas necessárias para a interface gráfica e funções utilitárias
 import customtkinter as ctk
 from tkinter import messagebox, filedialog
 from datetime import datetime
@@ -13,9 +12,7 @@ class TelasAdmin:
         self.user_email = user_email # Email do administrador/professor logado
         
     def show_editar_turma(self, turma):
-        """
-        Cria e exibe uma janela pop-up (Toplevel) para editar os detalhes de uma turma existente.
-        """
+       
         # Cria a janela pop-up
         dialog = ctk.CTkToplevel(self.app)
         dialog.title(f"Editar Turma: {turma['nome']}")
@@ -237,10 +234,7 @@ class TelasAdmin:
         
     # Função para exibir as turmas de um professor
     def show_turmas_professor(self):
-        """
-        Exibe a lista de turmas associadas ao usuário logado (professor).
-        Permite visualizar detalhes e editar turmas.
-        """
+        
         self.app.clear_window() # Limpa o conteúdo da janela principal
         
         # Frame principal com barra de rolagem
@@ -346,9 +340,7 @@ class TelasAdmin:
         back_btn.pack(pady=30)
         
     def show_criar_turma(self):
-        """
-        Exibe a tela com o formulário para a criação de uma nova turma.
-        """
+        
         self.app.clear_window() # Limpa o conteúdo da janela principal
 
         # Container com scroll
@@ -555,9 +547,7 @@ class TelasAdmin:
     
     # Exibe os detalhes de uma turma (usado após a criação)
     def show_detalhes_turma_criada(self, turma):
-        """
-        Exibe a tela de detalhes de uma turma recém-criada, focando na matrícula de alunos.
-        """
+        
         self.app.clear_window() 
         
         # Frame principal com scroll
@@ -641,7 +631,6 @@ class TelasAdmin:
         )
         back_btn.pack(pady=30)
     
-    # Importa o módulo CustomTkinter (ctk) e messagebox do Tkinter
     import customtkinter as ctk
     from tkinter import messagebox
 
