@@ -831,7 +831,7 @@ class TelasAluno:
         )
         back_btn.pack(pady=30)
 
-def show_boletim_completo(self):
+    def show_boletim_completo(self):
         # 1. Limpa a janela principal.
         self.app.clear_window()
 
@@ -990,7 +990,7 @@ def show_boletim_completo(self):
         )
         back_btn.pack(pady=30)
 
-def exportar_boletim_pdf(self, user_data, boletim):
+    def exportar_boletim_pdf(self, user_data, boletim):
         from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
         from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
         from reportlab.lib.units import cm
@@ -1104,7 +1104,7 @@ def exportar_boletim_pdf(self, user_data, boletim):
             # 7. Trata erros na exportação.
             messagebox.showerror("Erro", f"Erro ao exportar boletim:\n{str(e)}")
     
-def darken_color(self, hex_color):
+    def darken_color(self, hex_color):
         # 1. Remove o '#' inicial.
         hex_color = hex_color.lstrip('#')
         # 2. Converte a cor hexadecimal para uma tupla RGB de inteiros.

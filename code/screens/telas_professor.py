@@ -887,7 +887,8 @@ class TelasProfessor:
                     text=btn_text,
                     width=100,
                     height=35,
-                    fg_color="#2CC985",
+                    fg_color="#2CC985", 
+                    hover_color="#25A066",
                     command=lambda e=entrega: self.avaliar_entrega(e, atividade)
                 ).pack(pady=3)
         

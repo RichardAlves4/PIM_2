@@ -838,15 +838,6 @@ class TelasAdmin:
                     wraplength=500
                 ).pack(side="left", padx=20, pady=10)
         
-        # Botão para criar nova atividade
-        add_ativ_btn = ctk.CTkButton(
-            tabs.tab("📋 Atividades"),
-            text="➕ Criar Atividade",
-            width=200,
-            command=lambda: self.show_criar_atividade(turma)
-        )
-        add_ativ_btn.pack(pady=10)
-        
         # Botão de "Voltar" que retorna para o menu do administrador
         back_btn = ctk.CTkButton(
             main_frame,
