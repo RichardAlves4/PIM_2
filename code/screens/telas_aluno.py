@@ -42,7 +42,7 @@ class TelasAluno:
         # Limpa todos os widgets existentes na janela principal da aplicação
         self.app.clear_window() 
 
-        # Cria um frame com barra de rolagem para acomodar o conteúdo (útil para telas menores)
+        # Cria um frame com barra de rolagem para acomodar o conteúdo
         scroll_container = ctk.CTkScrollableFrame(self.app, corner_radius=0)
         scroll_container.pack(fill="both", expand=True, padx=0, pady=0)
         
@@ -50,17 +50,17 @@ class TelasAluno:
         main_frame = ctk.CTkFrame(scroll_container, corner_radius=0)
         main_frame.pack(padx=20, pady=20, fill="x")
 
-        # Importa as funções de dados necessárias (isso pode ser movido para o topo do arquivo)
+        # Importa as funções de dados para acessar os dados do usuário
         from backend.turmas_backend import get_user_data
         from database.banco import users_db
-        # Tenta obter os dados do usuário do banco de dados ou chama a função de busca
+        # Tenta obter os dados do usuário do banco de dados
         user_data = users_db.get(self.user_email, get_user_data(self.user_email))
 
         # Cabeçalho de Boas-Vindas
         header_frame = ctk.CTkFrame(main_frame)
         header_frame.pack(fill="x", padx=20, pady=(20, 30))
 
-        # Rótulo de título com o nome do aluno e emoji
+        # Rótulo de título com o nome do aluno
         title_label = ctk.CTkLabel(
             header_frame, 
             text=f"👨‍🎓 Bem-vindo, {user_data['nome']}!", 
@@ -87,7 +87,7 @@ class TelasAluno:
         )
         subtitle_label.pack()
 
-        # Botões de Navegação do Menu
+        # Frame para adicionar os botões
         buttons_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
         buttons_frame.pack(expand=True)
 
@@ -130,8 +130,8 @@ class TelasAluno:
         )
         title_label.pack(pady=(20, 30))
 
-        # Busca as turmas do aluno no backend
-        from backend.turmas_backend import get_turmas_aluno # Importação local desnecessária se já estiver no topo
+        # Importa a função para pegar a turma do aluno
+        from backend.turmas_backend import get_turmas_aluno 
         turmas = get_turmas_aluno(self.user_email)
 
         # Verifica se há turmas e exibe a mensagem apropriada
