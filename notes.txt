@@ -23,14 +23,3 @@ senha: professor123
 ADMIN
 email: admin@secretaria.sge.com.br
 senha: adm123
-
-#dimensão máxima e minima para à janela
-janela.maxsize(width=900, height=550)
-janela.minsize(width=500, height=300)
-
-#dita qual dimensão o usuário pode manipular
-janela.resizable(width=False, height=True)
-
-scrollbar_height=8
-
-aluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.braluno123@aluno.sge.com.br
