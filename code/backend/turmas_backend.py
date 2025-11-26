@@ -26,7 +26,8 @@ def safe_parse_date(date_string, date_format, default_date=None):
 # .parent.parent move dois níveis acima (assumindo que o script esteja em um subdiretório, como 'src' ou 'utils').
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-DATABASE_DIR = BASE_DIR / "database" # Define o diretório onde os arquivos de banco de dados serão armazenados.
+#DATABASE_DIR = BASE_DIR / "database" # Define o diretório onde os arquivos de banco de dados serão armazenados.
+DATABASE_DIR = Path(r"\\192.168.0.28\jsons")
 
 # Caminhos completos para os arquivos JSON dentro do DATABASE_DIR.
 # Estes arquivos armazenam dados para diferentes entidades
