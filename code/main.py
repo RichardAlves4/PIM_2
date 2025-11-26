@@ -1,27 +1,59 @@
-import customtkinter as ctk # Importa o módulo para criar a interface gráfica
-from tkinter import messagebox # Importa a classe messagebox do tkinter para exibir caixas de diálogo (alertas, erros, sucesso)
-import sys # Importa o módulo sys para manipulação do sistema (ex: sair da aplicação)
-from pathlib import Path # Importa a classe Path do módulo pathlib para manipulação de caminhos de arquivos de forma orientada a objetos
+import customtkinter as ctk
+from tkinter import messagebox
+import sys
+from pathlib import Path
 
 # Define o diretório base como o diretório pai do arquivo atual
 BASE_DIR = Path(__file__).parent
-# Insere o diretório base no caminho de busca do Python (necessário para importar módulos internos)
 sys.path.insert(0, str(BASE_DIR))
 
-# Importa funções e variáveis do módulo de banco de dados local
+# Caminho da rede onde ficará o users.json
+DATABASE_DIR = Path(r"\\192.168.0.28\jsons")
+
+# ================================
+# CONFIGURA O BANCO DE DADOS AQUI
+# ================================
+import database.banco as banco  # importa o módulo inteiro primeiro
+banco.set_diretorio_bd(str(DATABASE_DIR))  # envia o caminho da rede
+# Só agora é seguro importar as funções
 from database.banco import carregar_usuarios, salvar_usuarios, users_db, gerar_rm
-# Importa a função de verificação de senha do módulo de segurança
+# ================================
+
+# Importa a função de verificação de senha
 from infra.security import verificar_senha
 
-# Importa as classes de tela para cada tipo de usuário
+# Importa telas
 from screens.telas_professor import TelasProfessor
 from screens.telas_aluno import TelasAluno
 from screens.telas_admin import TelasAdmin
 
-# Configura o modo de aparência padrão do CustomTkinter para "dark"
+# Configura o CustomTkinter
 ctk.set_appearance_mode("dark")
-# Configura o tema de cor padrão dos widgets para "blue"
 ctk.set_default_color_theme("blue")
+#import customtkinter as ctk # Importa o módulo para criar a interface gráfica
+#from tkinter import messagebox # Importa a classe messagebox do tkinter para exibir caixas de diálogo (alertas, erros, sucesso)
+#import sys # Importa o módulo sys para manipulação do sistema (ex: sair da aplicação)
+#from pathlib import Path # Importa a classe Path do módulo pathlib para manipulação de caminhos de arquivos de forma orientada a objetos
+
+# Define o diretório base como o diretório pai do arquivo atual
+#BASE_DIR = Path(__file__).parent
+# Insere o diretório base no caminho de busca do Python (necessário para importar módulos internos)
+#sys.path.insert(0, str(BASE_DIR))
+
+# Importa funções e variáveis do módulo de banco de dados local
+#from database.banco import carregar_usuarios, salvar_usuarios, users_db, gerar_rm
+# Importa a função de verificação de senha do módulo de segurança
+#from infra.security import verificar_senha
+
+# Importa as classes de tela para cada tipo de usuário
+#from screens.telas_professor import TelasProfessor
+#from screens.telas_aluno import TelasAluno
+#from screens.telas_admin import TelasAdmin
+
+# Configura o modo de aparência padrão do CustomTkinter para "dark"
+#ctk.set_appearance_mode("dark")
+# Configura o tema de cor padrão dos widgets para "blue"
+#ctk.set_default_color_theme("blue")
 
 # Define a classe principal da aplicação, herdando de ctk.CTk (a janela principal)
 class SistemaGestaoEscolar(ctk.CTk):
