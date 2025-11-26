@@ -2,13 +2,31 @@ import os
 import json
 import bcrypt
 
-# Obtém o caminho do diretório onde este script está sendo executado.
+# Diretório padrão (caso o main.py não defina outro)
 diretorio_bd = os.path.dirname(__file__)
-# Constrói o caminho completo para o arquivo 'users.json' dentro do mesmo diretório.
+
+# Caminho do arquivo users.json (será atualizado se o diretório mudar)
 arquivo_usuarios = os.path.join(diretorio_bd, "users.json")
 
-# Dicionário global que armazenará os dados dos usuários em memória durante a execução do programa.
+# Função para permitir que o main.py altere o diretório do banco de dados
+def set_diretorio_bd(novo_diretorio):
+    global diretorio_bd, arquivo_usuarios
+    diretorio_bd = novo_diretorio
+    arquivo_usuarios = os.path.join(diretorio_bd, "users.json")
+
+# Dicionário global que armazenará os dados dos usuários em memória
 users_db = {}
+#import os
+#import json
+#import bcrypt
+
+# Obtém o caminho do diretório onde este script está sendo executado.
+#diretorio_bd = os.path.dirname(__file__)
+# Constrói o caminho completo para o arquivo 'users.json' dentro do mesmo diretório.
+#arquivo_usuarios = os.path.join(diretorio_bd, "users.json")
+
+# Dicionário global que armazenará os dados dos usuários em memória durante a execução do programa.
+#users_db = {}
 
 def gerar_rm():
     
